@@ -14,11 +14,14 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable=false,name = "cid")
+    private Long  cid;//学院id
+
     @Column(nullable=false,name = "tid")
     private Long  tid;//教师id
 
-    @Column(nullable=false,name = "college_id")
-    private Long  collegeId;//学院id
+    @Column(nullable=false,name = "teacher")
+    private String teacher;//教师姓名
 
     @Column(nullable=false,name = "name")
     private String  name;//课程名称
@@ -44,21 +47,24 @@ public class Course {
     @Column(name = "scope")
     private String scope;//上课节次
 
-    @Column(name="grade")//年级
-    private String grade;//上课节次
+    @Column(name = "time")
+    private String time;//上课时间
 
-    @Column(name="classes")//年级
+    @Column(name="grade")
+    private String grade;//分数
+
+    @Column(name="classes")
     private String classes;//年级
 
     @Column(name = "is_arrange")
     private Integer isArrange = 0;//是否被安排 0：代表未安排 1：代表被安排,默认是0
 
-    public Long getCollegeId() {
-        return collegeId;
+    public Long getCid() {
+        return cid;
     }
 
-    public void setCollegeId(Long collegeId) {
-        this.collegeId = collegeId;
+    public void setCid(Long cid) {
+        this.cid = cid;
     }
 
     public Integer getWeek() {
@@ -163,5 +169,21 @@ public class Course {
 
     public void setClasses(String classes) {
         this.classes = classes;
+    }
+
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

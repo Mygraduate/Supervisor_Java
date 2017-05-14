@@ -6,6 +6,7 @@ import com.graduate.system.course.service.CourseService;
 import com.graduate.system.teacher.model.Teacher;
 import com.graduate.system.teacher.service.TeacherService;
 import com.graduate.utils.BeanMapper;
+import com.graduate.utils.DateUtil;
 import com.graduate.utils.excel.ExcelUtils;
 import com.graduate.utils.excel.exception.FormatException;
 import org.apache.commons.collections.CollectionUtils;
@@ -31,6 +32,9 @@ public class ExcelService {
     @Autowired
     TeacherService<Teacher> teacherService;
 
+    @Autowired
+    TimeService timeService;
+
     //导入时将覆盖更新原来导入的课程表
     public void importCourseByExcel(Long collegeId, String path) throws Exception {
         List<ImportDTO> data = ExcelUtils.startImport(path, ImportDTO.class);
@@ -41,7 +45,6 @@ public class ExcelService {
         }
         for(String name : teacherMap.keySet()){
             Teacher exists = teacherService.findTeacherByname(StringUtils.substringBefore(name,"("));
-
             if(exists != null ){
                 teacherMap.put(name,exists.getId());
                 original = courseService.findAllByTid(exists.getId());
@@ -57,37 +60,18 @@ public class ExcelService {
 
         for(ImportDTO dto : data){
             dto.setTid(teacherMap.get(dto.getTeacher()));
-            dto.setDay(covert2number(StringUtils.substringBefore(dto.getDay(),"(")));
+            dto.setDay(String.valueOf(DateUtil.weekDays(StringUtils.substringBefore(dto.getDay(),"("))));
         }
 
         List<Course> courses = BeanMapper.mapList(data,Course.class);
         for(Course course : courses){
-            course.setCollegeId(collegeId);
+            course.setCid(collegeId);
+            course.setTime(timeService.calTimeByWeekAndDay(course.getWeek(),course.getDay()));
         }
-
         courseService.save(merge(original,courses));
     }
 
-    private String covert2number(String day){
-        switch (day){
-            case "一":
-                return "1";
-            case "二":
-                return "2";
-            case "三":
-                return "3";
-            case "四":
-                return "4";
-            case "五":
-                return "5";
-            case "六":
-                return "6";
-            case "日":
-                return "7";
-            default:
-                return "0";
-        }
-    }
+
 
     private List<Course> merge(List<Course> originals,List<Course> sources){
         for(Course source : sources ){

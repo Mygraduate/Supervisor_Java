@@ -3,6 +3,7 @@ package com.graduate.common;
 import com.graduate.utils.DateUtil;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,7 +18,10 @@ import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import java.beans.PropertyEditorSupport;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import static javax.management.Query.value;
 
@@ -60,39 +64,4 @@ public class BaseController {
         });
     }
 
-    //分页和排序
-    public Pageable buildPageRequest(HttpServletRequest request) {
-        String pageNo = request.getParameter("pageNo");
-        String pageSize = request.getParameter("pageSize");
-        String order = request.getParameter("order");
-        String orderField = request.getParameter("orderField");
-        if (StringUtils.isNoneBlank(pageNo) &&
-                StringUtils.isNoneBlank(pageSize) &&
-                StringUtils.isNoneBlank(order) &&
-                StringUtils.isNoneBlank(orderField)) {
-            Sort sort = new Sort(Sort.Direction.DESC, orderField);
-            if (StringUtils.equals(order, "ASC")) {
-                sort = new Sort(Sort.Direction.ASC, orderField);
-            }
-            Pageable pageable = new PageRequest(Integer.parseInt(pageNo) - 1, Integer.parseInt(pageSize), sort);
-            return pageable;
-        }
-        return null;
-    }
-
-    //搜索
-    public Specification buildPageSearch(HttpServletRequest request) {
-        String searchField = request.getParameter("searchField");
-        String searchValue = request.getParameter("searchValue");
-        if (StringUtils.isNoneBlank(searchField) && StringUtils.isNoneBlank(searchValue)) {
-            Specification specification = new Specification() {
-                @Override
-                public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                    return criteriaBuilder.like(root.<String>get(searchField), "%" + searchValue + "%");
-                }
-            };
-            return specification;
-        }
-        return null;
-    }
 }

@@ -4,17 +4,23 @@ import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 
 import com.graduate.config.serializer.FastJsonHttpMessageConverterEx;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.MultipartFilter;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
+import javax.servlet.MultipartConfigElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -67,6 +73,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         return fastJsonHttpMessageConverter;
     }
 
+
+
 //    @Override
 //    public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
 //        super.configureHandlerExceptionResolvers(exceptionResolvers);
@@ -77,13 +85,16 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 //        resolver.setExceptionMappings(props);
 //        exceptionResolvers.add(resolver);
 //    }
-    
-    @Bean
-    public CommonsMultipartResolver commonsMultipartResolver() {
-        final CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
-        commonsMultipartResolver.setMaxUploadSize(20*1024*1024);
-        return commonsMultipartResolver;
-    }
+
+
+//    @Bean(name = {"multipartResolver"})
+//    public MultipartResolver multipartResolver() {
+//        CommonsMultipartResolver cmr = new CommonsMultipartResolver();
+//        cmr.setMaxInMemorySize(20*1024*1024);
+//        return cmr;
+//    }
+
+
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {

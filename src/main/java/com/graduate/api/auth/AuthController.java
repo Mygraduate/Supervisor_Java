@@ -37,7 +37,6 @@ public class AuthController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public BaseJsonData createAuthenticationToken(
             @RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException{
-        task.stop();
         BaseJsonData<HashMap<String,Object>> data = new BaseJsonData<>();
         HashMap<String,Object> map = new HashMap<>();
         try {

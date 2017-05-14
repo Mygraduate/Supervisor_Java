@@ -63,7 +63,6 @@ public class ExcelUtils {
         Date end = new Date();
         System.out.println(end.getTime() - start.getTime());
     }
-
     //初始化导入配置
     private static List<ImportField> initConfig(){
         List<ImportField> fields = new ArrayList<>();
@@ -128,7 +127,7 @@ public class ExcelUtils {
         }
         throw new FormatException("导入课程表格式错误！不存在列"+errorMsg);
     }
-
+    //导入excel
     private static List<Map<String,String>> importExcel(HashMap<String,Object> analysisResult) throws FormatException{
         List<ImportField> fields = (List<ImportField>) analysisResult.get(FIELDS);
         HSSFSheet hssfSheet = (HSSFSheet) analysisResult.get(SHEET);
@@ -223,7 +222,6 @@ public class ExcelUtils {
         }
         return list;
     }
-
     //自定义配置
     public static<T> List<T> startImport(String path,List<ImportField> configs,Class<T> target) throws IOException, FormatException {
         HashMap<String,Object> result = analysisExcel(path,configs);
@@ -231,7 +229,6 @@ public class ExcelUtils {
         List<T> list = BeanMapper.mapList(data, target);
         return list;
     }
-
     //默认配置
     public static<T> List<T> startImport(String path,Class<T> target)throws IOException, FormatException{
         List<ImportField> fields = initConfig();
@@ -240,4 +237,6 @@ public class ExcelUtils {
         List<T> list = BeanMapper.mapList(data,target);
         return list;
     }
+
+    
 }

@@ -1,13 +1,19 @@
 package com.graduate.common;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,11 +58,36 @@ public abstract  class BaseService<T>{
         return  toList(getRepository().findAll());
     }
 
-    public Page<T> findAll(Specification specification,Pageable pageable) throws Exception {
-        return  getRepository().findAll(specification,pageable);
+    //分页，排序，搜索
+    public Page<T> findAll(int pageNo,int pageSize,HashMap<String,String> orderVals,HashMap<String,Object> searchVals) throws Exception {
+        return  getRepository().findAll(buildSearch(searchVals),buildPage(pageNo,pageSize,orderVals));
 
     }
 
+    //普通分页
+    public Page<T> findAll(int pageNo,int pageSize) throws Exception {
+        return  getRepository().findAll(buildPage(pageNo,pageSize,null));
+    }
+
+    //普通分页,排序
+    public Page<T> findAll(int pageNo,int pageSize,HashMap<String,String> orderVals) throws Exception {
+        return  getRepository().findAll(buildPage(pageNo,pageSize,orderVals));
+    }
+
+    //不分页多条件搜索并排序
+    public List<T> findAll(HashMap<String,Object> searchVals,HashMap<String,String> orderVals) throws Exception {
+        return  getRepository().findAll(buildSearch(searchVals),buildSort(orderVals));
+    }
+
+    //自定义搜索和排序,不分页
+    public List<T> findAll(Specification specification,Sort sort) throws Exception {
+        return  getRepository().findAll(specification,sort);
+    }
+
+    //自定义搜索和排序，分页
+    public Page<T> findAll(Specification specification,Pageable pageable) throws Exception {
+        return  getRepository().findAll(specification,pageable);
+    }
 
     public List<T> findAll(List <Long> iterable) throws Exception {
         return toList(getRepository().findAll(iterable));
@@ -64,9 +95,7 @@ public abstract  class BaseService<T>{
 
 
     public long count() throws Exception {
-
         return getRepository().count();
-
     }
 
 
@@ -105,5 +134,49 @@ public abstract  class BaseService<T>{
         return  list;
     }
 
+    //分页和排序
+    public Pageable buildPage(int pageNo,int pageSize,HashMap<String,String> orders) {
+        return new PageRequest(pageNo - 1, pageSize,buildSort(orders));
+    }
 
+    public Sort buildSort(HashMap<String,String> orders){
+        List<Sort.Order> list = new ArrayList<>();
+        for(String key : orders.keySet()){
+            String direction = orders.get(key);
+            if(StringUtils.isNoneBlank(direction)){
+                if(StringUtils.equals("ASC",direction)){
+                    list.add(new Sort.Order(Sort.Direction.ASC,key));
+                }else{
+                    list.add(new Sort.Order(Sort.Direction.DESC,key));
+                }
+            }
+        }
+        return  new Sort(list);
+    }
+
+
+    //搜索
+    public  Specification buildSearch(HashMap<String,Object> vals) {
+        return new Specification() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Predicate predicate = criteriaBuilder.conjunction();
+                for (String key : vals.keySet()) {
+                    Object val = vals.get(key);
+                    if(NumberUtils.isNumber(val.toString())){
+                        predicate.getExpressions().add(
+                                criteriaBuilder.equal(root.get(key).as(Integer.class),val)
+                        );
+                    }else if(val instanceof String){
+                        if(StringUtils.isNoneBlank(val.toString())){
+                            predicate.getExpressions().add(
+                                    criteriaBuilder.like(root.<String>get(key), "%" + val + "%")
+                            );
+                        }
+                    }
+                }
+                return predicate;
+            }
+        };
+    }
 }
