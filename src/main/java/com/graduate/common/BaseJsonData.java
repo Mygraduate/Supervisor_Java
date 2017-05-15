@@ -44,4 +44,34 @@ public class BaseJsonData<T> implements Serializable {
     public void setData(T data) {
         this.data = data;
     }
+
+    public static BaseJsonData ok(){
+        BaseJsonData json = new BaseJsonData();
+        json.setCode(1);
+        json.setMsg("操作成功");
+        return json;
+    }
+
+    public static BaseJsonData ok(Object data){
+        BaseJsonData json = new BaseJsonData();
+        json.setCode(1);
+        json.setMsg("查询成功");
+        json.setData(data);
+        return json;
+    }
+
+    public static BaseJsonData fail(){
+        BaseJsonData json = new BaseJsonData();
+        json.setCode(-1);
+        json.setMsg("操作失败");
+        return json;
+    }
+
+    public static BaseJsonData fail(Object data){
+        BaseJsonData json = new BaseJsonData();
+        json.setCode(-1);
+        json.setMsg("操作失败");
+        json.setData(data);
+        return json;
+    }
 }
