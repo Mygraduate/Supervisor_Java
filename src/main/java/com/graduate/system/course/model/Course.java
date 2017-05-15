@@ -51,10 +51,10 @@ public class Course {
     private String time;//上课时间
 
     @Column(name="grade")
-    private String grade;//分数
+    private String grade;//年级
 
     @Column(name="classes")
-    private String classes;//年级
+    private String classes;//班级
 
     @Column(name = "is_arrange")
     private Integer isArrange = 0;//是否被安排 0：代表未安排 1：代表被安排,默认是0

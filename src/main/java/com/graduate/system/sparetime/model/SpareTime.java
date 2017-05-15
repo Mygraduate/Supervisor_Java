@@ -13,8 +13,8 @@ public class SpareTime {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable=false,name = "tid")
-    private Long tid;//教师id
+    @Column(nullable=false,name = "uid")
+    private Long uid;//用户id
     @Column(nullable=false,name = "cid")
     private Long  cid;//学院id
 
@@ -38,12 +38,12 @@ public class SpareTime {
         this.id = id;
     }
 
-    public Long getTid() {
-        return tid;
+    public Long getUid() {
+        return uid;
     }
 
-    public void setTid(Long tid) {
-        this.tid = tid;
+    public void setUid(Long uid) {
+        this.uid = uid;
     }
 
     public Integer getWeek() {

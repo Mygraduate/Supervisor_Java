@@ -15,12 +15,8 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "uid")
-    @ApiModelProperty(notes = "用户表uid")
-    private Long uid;//教师号
-
-    @Column(name = "role_id")
-    private Long roleId;//角色id
+    @Column(name = "cid")
+    private Long cid;//学院号
 
     @Column(nullable=false,name = "name")
     private String name;//教师姓名
@@ -34,14 +30,6 @@ public class Teacher {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
     }
 
     public String getName() {
@@ -60,11 +48,11 @@ public class Teacher {
         this.title = title;
     }
 
-    public Long getUid() {
-        return uid;
+    public Long getCid() {
+        return cid;
     }
 
-    public void setUid(Long uid) {
-        this.uid = uid;
+    public void setCid(Long cid) {
+        this.cid = cid;
     }
 }
