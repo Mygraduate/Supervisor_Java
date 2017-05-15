@@ -50,7 +50,6 @@ public class ExcelService {
                 original = courseService.findAllByTid(exists.getId());
             }else{
                 Teacher teacher = new Teacher();
-                teacher.setCid(collegeId);
                 teacher.setName(StringUtils.substringBefore(name,"("));
                 teacher.setTitle(StringUtils.substringBetween(name,"(",")"));
                 teacherService.save(teacher);

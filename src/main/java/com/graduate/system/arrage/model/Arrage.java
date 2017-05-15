@@ -17,8 +17,8 @@ public class Arrage {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable=false,name = "cid")
-    private Long cid;//课程id
+    @Column(nullable=false,name = "course_id")
+    private Long courseId;//课程id
 
     @Column(nullable=false,name = "college_id")
     private Long  collegeId;//学院id
@@ -26,14 +26,9 @@ public class Arrage {
     @Column(nullable=false,name = "tid")
     private Long tid;//教师id
 
-    @Column(nullable=false,name = "stid")
-    private Long stid;//督导员id
+    @Column(nullable=false,name = "groups")
+    private String groups;//督导组
 
-    @Column(nullable=false,name = "pid")
-    private Long pid;//母安排id
-
-    @Column(nullable=false,name = "type")
-    private Integer type;//0：代表是母安排，1：代表是子安排
 
     @Column(nullable=false,name = "status")
     private Integer status;//0：未确定，1：代表是已确定，2：代表是待执行，3：代表已执行
@@ -46,21 +41,6 @@ public class Arrage {
         this.id = id;
     }
 
-    public Long getPid() {
-        return pid;
-    }
-
-    public void setPid(Long pid) {
-        this.pid = pid;
-    }
-
-    public Long getCid() {
-        return cid;
-    }
-
-    public void setCid(Long cid) {
-        this.cid = cid;
-    }
 
     public Long getTid() {
         return tid;
@@ -68,22 +48,6 @@ public class Arrage {
 
     public void setTid(Long tid) {
         this.tid = tid;
-    }
-
-    public Long getStid() {
-        return stid;
-    }
-
-    public void setStid(Long stid) {
-        this.stid = stid;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public Integer getStatus() {
@@ -100,5 +64,21 @@ public class Arrage {
 
     public void setCollegeId(Long collegeId) {
         this.collegeId = collegeId;
+    }
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getGroups() {
+        return groups;
+    }
+
+    public void setGroups(String groups) {
+        this.groups = groups;
     }
 }

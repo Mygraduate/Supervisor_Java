@@ -20,6 +20,10 @@ public class User{
     @ApiModelProperty(notes = "表id",required = false,hidden = true)
     private Long id;
 
+    @Column(nullable=false,name = "cid")
+    @ApiModelProperty(notes = "学院id",required = false)
+    private Long cid;//学院表id
+
     @Column(nullable=false,name = "username",unique = true)
     @ApiModelProperty(notes = "账号")
     private String username;//账号
@@ -90,6 +94,14 @@ public class User{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getCid() {
+        return cid;
+    }
+
+    public void setCid(Long cid) {
+        this.cid = cid;
     }
 
     public User() {

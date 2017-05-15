@@ -15,8 +15,8 @@ public class SpareTime {
 
     @Column(nullable=false,name = "tid")
     private Long tid;//教师id
-    @Column(nullable=false,name = "college_id")
-    private Long  collegeId;//学院id
+    @Column(nullable=false,name = "cid")
+    private Long  cid;//学院id
 
     @Column(nullable=false,name = "week")
     private Integer week;//空闲周
@@ -78,11 +78,11 @@ public class SpareTime {
         this.isArrange = isArrange;
     }
 
-    public Long getCollegeId() {
-        return collegeId;
+    public Long getCid() {
+        return cid;
     }
 
-    public void setCollegeId(Long collegeId) {
-        this.collegeId = collegeId;
+    public void setCid(Long cid) {
+        this.cid = cid;
     }
 }
