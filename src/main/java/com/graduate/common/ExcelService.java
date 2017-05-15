@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import static com.graduate.utils.excel.ExcelUtils.startImport;
@@ -36,8 +37,8 @@ public class ExcelService {
     TimeService timeService;
 
     //导入时将覆盖更新原来导入的课程表
-    public void importCourseByExcel(Long collegeId, String path) throws Exception {
-        List<ImportDTO> data = ExcelUtils.startImport(path, ImportDTO.class);
+    public void importCourseByExcel(Long collegeId, InputStream inputStream) throws Exception {
+        List<ImportDTO> data = ExcelUtils.startImport(inputStream, ImportDTO.class);
         HashMap<String,Long> teacherMap = new HashMap<>();
         List<Course> original = new ArrayList<>();
         for(ImportDTO dto : data){
@@ -50,6 +51,7 @@ public class ExcelService {
                 original = courseService.findAllByTid(exists.getId());
             }else{
                 Teacher teacher = new Teacher();
+                teacher.setCid(collegeId);
                 teacher.setName(StringUtils.substringBefore(name,"("));
                 teacher.setTitle(StringUtils.substringBetween(name,"(",")"));
                 teacherService.save(teacher);

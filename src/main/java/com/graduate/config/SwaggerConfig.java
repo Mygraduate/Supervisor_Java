@@ -25,7 +25,7 @@ public class SwaggerConfig {
     @Bean
     public Docket createRestApi() {
         ParameterBuilder aParameterBuilder = new ParameterBuilder();
-        aParameterBuilder.name("Authorization").description("i").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
+        aParameterBuilder.name("Authorization").description("token").modelRef(new ModelRef("string")).parameterType("header").required(false).build();
         List<Parameter> aParameters = new ArrayList<Parameter>();
         aParameters.add(aParameterBuilder.build());
         return new Docket(DocumentationType.SWAGGER_2)

@@ -1,11 +1,19 @@
 package com.graduate.api.excel;
 
+import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
+import com.graduate.common.ExcelService;
 import com.graduate.system.user.model.User;
+import com.graduate.system.user.service.UserService;
+import com.graduate.timer.MessageTask;
+import com.graduate.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -19,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.graduate.utils.UserUtil.getUser;
 import static org.springframework.security.oauth2.common.AuthenticationScheme.form;
 
 /**
@@ -26,20 +35,30 @@ import static org.springframework.security.oauth2.common.AuthenticationScheme.fo
  */
 @Controller
 @RequestMapping("api/excel")
-//@Api(value = "api/excel", description = "所有excel的导入和导出")
-public class ExcelController {
+@Api(value = "api/excel", description = "所有excel的导入和导出")
+public class ExcelController extends BaseController {
 
-    //@ApiOperation(value="上传课程表", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MASTER')")
-    @RequestMapping("/import")
+    private static final Logger logger = LoggerFactory.getLogger(ExcelController.class);
+
+    @Autowired
+    UserService<User> userService;
+
+    @Autowired
+    ExcelService excelService;
+
+    @ApiOperation(value="上传课程表", notes="")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
+    @RequestMapping(value = "/import",method = RequestMethod.POST)
     @ResponseBody
     public BaseJsonData importCourse(@RequestParam("file") MultipartFile file ) {
-        BaseJsonData data = new BaseJsonData();
-        HashMap<String,Object> map = new HashMap<>();
-
-        data.setCode(1);
-        data.setData(map);
-        data.setMsg("查询成功");
-        return data;
+      Long cid = userService.findUserByname( UserUtil.getUserName()).getCid();
+        try {
+            excelService.importCourseByExcel(cid,file.getInputStream());
+        } catch (Exception e) {
+           e.printStackTrace();
+           logger.error(e.getMessage(),e);
+           return BaseJsonData.fail(e.getMessage());
+        }
+        return BaseJsonData.ok();
     }
 }

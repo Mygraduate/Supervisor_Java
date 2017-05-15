@@ -163,6 +163,9 @@ public abstract  class BaseService<T>{
                 Predicate predicate = criteriaBuilder.conjunction();
                 for (String key : vals.keySet()) {
                     Object val = vals.get(key);
+                    if(val == null){
+                        continue;
+                    }
                     if(NumberUtils.isNumber(val.toString())){
                         predicate.getExpressions().add(
                                 criteriaBuilder.equal(root.get(key).as(Integer.class),val)

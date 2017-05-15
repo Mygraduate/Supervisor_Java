@@ -51,7 +51,7 @@ public class ExcelUtils {
         for(String path : paths){
             try {
                 List<ImportField> fields = initConfig();
-                HashMap<String,Object> result = analysisExcel(path,fields);
+                HashMap<String,Object> result = analysisExcel(new FileInputStream(path),fields);
                 List<Map<String,String>>data = importExcel(result);
                 List<TestField> list = BeanMapper.mapList(data,TestField.class);
             }catch (Exception e){
@@ -83,10 +83,10 @@ public class ExcelUtils {
 
     }
     //分析即将导入的文件
-    private static HashMap<String,Object> analysisExcel(String path, List<ImportField> fields) throws IOException,FormatException{
+    private static HashMap<String,Object> analysisExcel(InputStream inputStream, List<ImportField> fields) throws IOException,FormatException{
         HashMap<String,Object> analysisResult = new HashMap<>();
         int progress = 0;//扫描进度
-        HSSFWorkbook hssfWorkbook = new HSSFWorkbook(new FileInputStream(path));
+        HSSFWorkbook hssfWorkbook = new HSSFWorkbook(inputStream);
         HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(0);//默认获取第一个
         if (hssfSheet == null) {
             throw new FormatException("读取模板文件为空！");
@@ -223,16 +223,16 @@ public class ExcelUtils {
         return list;
     }
     //自定义配置
-    public static<T> List<T> startImport(String path,List<ImportField> configs,Class<T> target) throws IOException, FormatException {
-        HashMap<String,Object> result = analysisExcel(path,configs);
+    public static<T> List<T> startImport(InputStream inputStream,List<ImportField> configs,Class<T> target) throws IOException, FormatException {
+        HashMap<String,Object> result = analysisExcel(inputStream,configs);
         List<Map<String,String>>data = importExcel(result);
         List<T> list = BeanMapper.mapList(data, target);
         return list;
     }
     //默认配置
-    public static<T> List<T> startImport(String path,Class<T> target)throws IOException, FormatException{
+    public static<T> List<T> startImport(InputStream inputStream,Class<T> target)throws IOException, FormatException{
         List<ImportField> fields = initConfig();
-        HashMap<String,Object> result = analysisExcel(path,fields);
+        HashMap<String,Object> result = analysisExcel(inputStream,fields);
         List<Map<String,String>>data = importExcel(result);
         List<T> list = BeanMapper.mapList(data,target);
         return list;
