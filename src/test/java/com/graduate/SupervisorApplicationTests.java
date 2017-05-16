@@ -25,6 +25,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -50,7 +51,7 @@ public class SupervisorApplicationTests {
 		//System.out.println(timeService.calWeekDayByTime("2017-4-23"));
 		//task.stop();
 		try {
-			excelService.importCourseByExcel(1L,"C:\\Users\\Administrator\\Desktop\\demo3.xls");
+			excelService.importCourseByExcel(1L,new FileInputStream("C:\\Users\\Administrator\\Desktop\\demo3.xls"));
 		} catch (Exception e){
             e.printStackTrace();
         }
@@ -60,8 +61,8 @@ public class SupervisorApplicationTests {
             HashMap<String,Object> vals = new HashMap<>();
             vals.put("week",6);
 //            vals.put("day",1);
-            vals.put("scope","6-7");
-            vals.put("teacher","陈");
+			vals.put("scope","6-7");
+			vals.put("teacher","陈");
 			Page<Course> page = courseService.findAll(0,3,null,vals);
 			System.out.println(JSON.toJSONString(page));
 		}catch (Exception e){
