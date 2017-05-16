@@ -39,14 +39,14 @@ public class CourseController extends BaseController {
     @ApiOperation(value="获取用户列表", notes="")
     @RequestMapping(value={"/page"}, method= RequestMethod.POST)
     public BaseJsonData getPage(
-            @ApiParam(value = "页数")@RequestParam(value = "pageNo") int pageNo,
-            @ApiParam(value = "页数")@RequestParam(value = "pageSize") int pageSize,
+            @ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
+            @ApiParam(value = "页长")@RequestParam(value = "pageSize") int pageSize,
             @ApiParam(value = "学院id")@RequestParam(value = "cid",required = false) Long cid,
-            @ApiParam(value = "周数")@RequestParam(value = "week",required = false) int week,
+            @ApiParam(value = "周数")@RequestParam(value = "week",required = false) Integer week,
             @ApiParam(value = "天数")@RequestParam(value = "day",required = false) Long day,
             @ApiParam(value = "节次")@RequestParam(value = "scope",required = false) String scope,
             @ApiParam(value = "教师姓名")@RequestParam(value = "teacher",required = false) String teacher,
-            @ApiParam(value = "是否有安排")@RequestParam(value = "is_arrange",required = false) int is_arrange,
+            @ApiParam(value = "是否有安排")@RequestParam(value = "isArrange",required = false) Integer isArrange,
             @ApiParam(value = "年级")@RequestParam(value = "grade",required = false) String grade,
             @ApiParam(value = "班级")@RequestParam(value = "classes",required = false) String classes,
             @ApiParam(value = "上课地点")@RequestParam(value = "address",required = false) String address){
@@ -57,7 +57,7 @@ public class CourseController extends BaseController {
             searchVals.put("day",day);
             searchVals.put("scope",scope);
             searchVals.put("teacher",teacher);
-            searchVals.put("is_arrange",is_arrange);
+            searchVals.put("isArrange",isArrange);
             searchVals.put("grade",grade);
             searchVals.put("classes",classes);
             searchVals.put("address",address);
