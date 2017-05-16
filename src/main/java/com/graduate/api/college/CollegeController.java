@@ -38,7 +38,7 @@ public class CollegeController extends BaseController {
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
-            return data.fail();
+            return data.fail(e.getMessage());
         }
     }
 
@@ -54,7 +54,7 @@ public class CollegeController extends BaseController {
             return data.ok(map);
         }catch (Exception e){
             e.printStackTrace();
-            return data.fail();
+            return data.fail(e.getMessage());
         }
     }
 
@@ -68,7 +68,7 @@ public class CollegeController extends BaseController {
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
-            return data.fail();
+            return data.fail(e.getMessage());
         }
     }
 
@@ -84,7 +84,7 @@ public class CollegeController extends BaseController {
             return data.ok(map);
         }catch (Exception e){
             e.printStackTrace();
-            return data.fail();
+            return data.fail(e.getMessage());
         }
     }
 
