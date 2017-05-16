@@ -1,11 +1,14 @@
 package com.graduate.api.college;
 
+import com.graduate.api.course.CourseController;
 import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
 import com.graduate.system.college.model.College;
 import com.graduate.system.college.service.CollegeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +28,8 @@ import java.util.List;
 @Api(value = "api/college", description = "学院接口")
 public class CollegeController extends BaseController {
 
+    private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
+
     @Autowired
     private CollegeService<College> collegeService;
 
@@ -38,6 +43,7 @@ public class CollegeController extends BaseController {
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
+            logger.error(e.getMessage(),e);
             return data.fail(e.getMessage());
         }
     }
@@ -52,6 +58,7 @@ public class CollegeController extends BaseController {
             return data.ok(collegelist);
         }catch (Exception e){
             e.printStackTrace();
+            logger.error(e.getMessage(),e);
             return data.fail(e.getMessage());
         }
     }
@@ -66,6 +73,7 @@ public class CollegeController extends BaseController {
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
+            logger.error(e.getMessage(),e);
             return data.fail(e.getMessage());
         }
     }
@@ -76,10 +84,11 @@ public class CollegeController extends BaseController {
     public BaseJsonData updateCollegeList(@RequestBody College college) {
         BaseJsonData data = new BaseJsonData();
         try{
-            College college1=collegeService.findOne(college.getId());
-            return data.ok(college1);
+            collegeService.save(college);
+            return data.ok();
         }catch (Exception e){
             e.printStackTrace();
+            logger.error(e.getMessage(),e);
             return data.fail(e.getMessage());
         }
     }
