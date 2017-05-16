@@ -1,13 +1,18 @@
 package com.graduate.api.user;
 
+import com.graduate.api.course.CourseController;
 import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
 import com.graduate.system.user.model.User;
+import com.graduate.system.user.model.UserAndRole;
+import com.graduate.system.user.service.UserAndRoleService;
 import com.graduate.system.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AbstractPageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,42 +32,95 @@ import java.util.List;
 @Api(value = "api/account", description = "用户登录公用接口")
 public class UserController extends BaseController {
 
+    private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
+
     @Autowired
     private UserService<User> userService;
+
+    @Autowired
+    private UserAndRoleService<UserAndRole> userAndRoleService;
 
     @ApiOperation(value="获取用户列表", notes="")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value={"/list"}, method=RequestMethod.POST)
     public BaseJsonData getUserList() {
         BaseJsonData data = new BaseJsonData();
-        HashMap<String,Object> map = new HashMap<>();
-
         try{
-            List<User> r = userService.findAll();
-            map.put("info",r);
+            List<User> userList = userService.findAll();
+
+            return data.ok(userList);
         }catch (Exception e){
             e.printStackTrace();
-
+            logger.error(e.getMessage(),e);
+            return data.fail(e.getMessage());
         }
-        data.setCode(1);
-        data.setData(map);
-        data.setMsg("查询成功");
-        return data;
     }
 
     @ApiOperation(value="创建用户", notes="根据User对象创建用户")
-    @ApiImplicitParam(name = "user", value = "用户详细实体user", required = true, dataType = "User")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/create", method=RequestMethod.POST)
-    public String createUser(@RequestBody User user) {
+    public BaseJsonData createUser(@RequestBody User user,@RequestParam("roleId") Long roleId) {
+        BaseJsonData data = new BaseJsonData();
         try {
-            User user1 = userService.save(user);
+            userService.save(user);
+            UserAndRole userAndRole = new UserAndRole();
+            userAndRole.setRoleId(roleId);
+            userAndRole.setUid(user.getId());
+            return data.ok();
         }catch (Exception e){
             e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return data.fail(e.getMessage());
         }
 
-        return "success";
     }
+
+    @ApiOperation(value="删除用户", notes="")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value={"/delete"}, method=RequestMethod.POST)
+    public BaseJsonData deleteUserList(@RequestBody List<User> user) {
+        BaseJsonData data = new BaseJsonData();
+        try{
+            userService.delete(user);
+            return data.ok();
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return data.fail(e.getMessage());
+        }
+    }
+
+
+    @ApiOperation(value="修改用户", notes="")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value={"/update"}, method=RequestMethod.POST)
+    public BaseJsonData updateCollegeList(@RequestBody User user) {
+        BaseJsonData data = new BaseJsonData();
+        try{
+            userService.save(user);
+            return data.ok();
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return data.fail(e.getMessage());
+        }
+    }
+
+    @ApiOperation(value="根据账号获取用户信息", notes="")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value={"/userinfo"}, method=RequestMethod.POST)
+    public BaseJsonData getUserInfo(String username) {
+        BaseJsonData data = new BaseJsonData();
+        try{
+            User userInfo = userService.findUserByname(username);
+            return data.ok(userInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return data.fail(e.getMessage());
+        }
+    }
+
 
 
 

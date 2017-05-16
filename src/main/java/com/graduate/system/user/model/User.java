@@ -133,6 +133,8 @@ public class User{
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", tid=" + tid +
+                ", cid=" + cid +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", wecat='" + wecat + '\'' +

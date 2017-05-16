@@ -4,6 +4,7 @@ package com.graduate.system.user.dao;
 import com.graduate.common.BaseDao;
 import com.graduate.system.user.model.User;
 import org.apache.poi.ss.formula.functions.T;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
