@@ -34,7 +34,7 @@ public class CollegeController extends BaseController {
     public BaseJsonData createCollege(@RequestBody College college) {
         BaseJsonData data = new BaseJsonData();
         try {
-            College college1 = collegeService.save(college);
+            collegeService.save(college);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
@@ -47,11 +47,9 @@ public class CollegeController extends BaseController {
     @RequestMapping(value={"/list"}, method=RequestMethod.POST)
     public BaseJsonData getCollegeList() {
         BaseJsonData data = new BaseJsonData();
-        HashMap<String,Object> map = new HashMap<>();
         try{
             List<College> collegelist = collegeService.findAll();
-            map.put("info",collegelist);
-            return data.ok(map);
+            return data.ok(collegelist);
         }catch (Exception e){
             e.printStackTrace();
             return data.fail(e.getMessage());
@@ -61,7 +59,7 @@ public class CollegeController extends BaseController {
     @ApiOperation(value="删除学院", notes="")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value={"/delete"}, method=RequestMethod.POST)
-    public BaseJsonData deleteCollegeList(@RequestBody College college) {
+    public BaseJsonData deleteCollegeList(@RequestBody List<College> college) {
         BaseJsonData data = new BaseJsonData();
         try{
             collegeService.delete(college);
@@ -77,11 +75,9 @@ public class CollegeController extends BaseController {
     @RequestMapping(value={"/update"}, method=RequestMethod.POST)
     public BaseJsonData updateCollegeList(@RequestBody College college) {
         BaseJsonData data = new BaseJsonData();
-        HashMap<String,Object> map = new HashMap<>();
         try{
             College college1=collegeService.findOne(college.getId());
-            map.put("info",college1);
-            return data.ok(map);
+            return data.ok(college1);
         }catch (Exception e){
             e.printStackTrace();
             return data.fail(e.getMessage());
