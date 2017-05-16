@@ -25,6 +25,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -50,7 +51,7 @@ public class SupervisorApplicationTests {
 		//System.out.println(timeService.calWeekDayByTime("2017-4-23"));
 		//task.stop();
 		try {
-			excelService.importCourseByExcel(1L,"C:\\Users\\Administrator\\Desktop\\demo3.xls");
+			excelService.importCourseByExcel(1L,new FileInputStream("C:\\Users\\Administrator\\Desktop\\demo3.xls"));
 		} catch (Exception e){
             e.printStackTrace();
         }
