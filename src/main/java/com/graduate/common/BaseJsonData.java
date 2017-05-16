@@ -70,7 +70,7 @@ public class BaseJsonData<T> implements Serializable {
     public static BaseJsonData fail(Object data){
         BaseJsonData json = new BaseJsonData();
         json.setCode(-1);
-        json.setMsg("操作失败");
+        json.setMsg("查询失败");
         json.setData(data);
         return json;
     }

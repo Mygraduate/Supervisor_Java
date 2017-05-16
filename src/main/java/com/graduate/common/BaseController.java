@@ -1,9 +1,13 @@
 package com.graduate.common;
 
+import com.graduate.system.user.model.User;
+import com.graduate.system.user.service.UserService;
 import com.graduate.utils.DateUtil;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,6 +33,7 @@ import static javax.management.Query.value;
  * Created by konglinghai on 2017/3/21.
  */
 public class BaseController {
+
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

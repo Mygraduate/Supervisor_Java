@@ -71,7 +71,7 @@ public class MessageTask implements SchedulingConfigurer {
 
         @Override
         public void run() {
-            System.out.println("5秒执行一次");
+
         }
     }
 
