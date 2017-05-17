@@ -10,11 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -93,7 +91,7 @@ public class TeacherController {
     @ApiOperation(value="根据老师姓名获取老师信息", notes="")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value={"/teacherinfo"}, method=RequestMethod.POST)
-    public BaseJsonData getTeacherInfo(String teachername) {
+    public BaseJsonData getTeacherInfo(@RequestParam("teachername") String teachername) {
         BaseJsonData data = new BaseJsonData();
         try{
             Teacher teacherInfo = teacherService.findTeacherByname(teachername);
@@ -105,10 +103,25 @@ public class TeacherController {
         }
     }
 
+    @ApiOperation(value="根据老师id获取老师信息", notes="")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value={"/teacherinfoByid"}, method=RequestMethod.POST)
+    public BaseJsonData getTeacherInfoByid(@RequestParam("id") Long id) {
+        BaseJsonData data = new BaseJsonData();
+        try{
+            Teacher teacherInfo = teacherService.findTeacherByid(id);
+            return data.ok(teacherInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return data.fail(e.getMessage());
+        }
+    }
+
     @ApiOperation(value="根据学院获取学院老师信息", notes="")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value={"/teacherlistbycid"}, method=RequestMethod.POST)
-    public BaseJsonData getTeacherInfoBycid(Long cid) {
+    public BaseJsonData getTeacherInfoBycid(@RequestParam("cid")Long cid) {
         BaseJsonData data = new BaseJsonData();
         try{
             List<Teacher> teacherInfo = teacherService.findTeacherBycid(cid);

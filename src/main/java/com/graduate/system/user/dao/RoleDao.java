@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
  */
 
 public interface RoleDao extends BaseDao<Role>{
+    Role findRoleById(Long id);//根据id查询对应的角色
 }

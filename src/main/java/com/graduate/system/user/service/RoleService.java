@@ -4,6 +4,7 @@ import com.graduate.common.BaseDao;
 import com.graduate.common.BaseService;
 
 import com.graduate.system.user.dao.RoleDao;
+import com.graduate.system.user.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Service;
@@ -20,5 +21,9 @@ public class RoleService<T> extends BaseService<T> {
         return mapper;
     }
 
+    public Role findRoleById(Long id){
+
+        return mapper.findRoleById(id);
+    }
 
 }

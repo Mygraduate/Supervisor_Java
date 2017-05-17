@@ -11,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -86,6 +83,21 @@ public class CollegeController extends BaseController {
         try{
             collegeService.save(college);
             return data.ok();
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return data.fail(e.getMessage());
+        }
+    }
+
+    @ApiOperation(value="根据学院id获取学院信息", notes="")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value={"/collegeinfoByid"}, method=RequestMethod.POST)
+    public BaseJsonData getcollegeInfoByid(@RequestParam("id") Long id) {
+        BaseJsonData data = new BaseJsonData();
+        try{
+            College collegeInfo = collegeService.findCollegeByid(id);
+            return data.ok(collegeInfo);
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(),e);

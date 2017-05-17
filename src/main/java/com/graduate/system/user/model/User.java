@@ -17,7 +17,7 @@ import java.util.Date;
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @ApiModelProperty(notes = "表id",required = false,hidden = true)
+    @ApiModelProperty(notes = "表id",required = false)
     private Long id;
 
     @Column(name = "tid")
