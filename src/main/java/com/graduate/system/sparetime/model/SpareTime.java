@@ -85,4 +85,21 @@ public class SpareTime {
     public void setCid(Long cid) {
         this.cid = cid;
     }
+
+    public SpareTime() {
+    }
+
+    @Override
+    public String toString() {
+        return "SpareTime{" +
+                "id=" + id +
+                ", uid=" + uid +
+                ", cid=" + cid +
+                ", week=" + week +
+                ", day=" + day +
+                ", scope='" + scope + '\'' +
+                ", isArrange=" + isArrange +
+                '}';
+    }
+
 }
