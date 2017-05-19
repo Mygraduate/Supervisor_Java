@@ -157,6 +157,7 @@ public abstract  class BaseService<T>{
 
     //搜索
     public  Specification buildSearch(HashMap<String,Object> vals) {
+
         return new Specification() {
             @Override
             public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
@@ -174,6 +175,7 @@ public abstract  class BaseService<T>{
                         if(StringUtils.isNoneBlank(val.toString())){
                             predicate.getExpressions().add(
                                     criteriaBuilder.like(root.<String>get(key), "%" + val + "%")
+
                             );
                         }
                     }
