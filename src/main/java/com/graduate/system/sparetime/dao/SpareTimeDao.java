@@ -1,14 +1,17 @@
 package com.graduate.system.sparetime.dao;
 
 
+import com.graduate.common.BaseDao;
 import com.graduate.system.sparetime.model.SpareTime;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Created by konglinghai on 2017/3/19.
  */
 
 @Repository
-public interface SpareTimeDao extends PagingAndSortingRepository<SpareTime, Long> {
+public interface SpareTimeDao extends BaseDao<SpareTime> {
+    List<SpareTime> findSpareTimeByuid(Long uid);//根据用户查找用户空闲时间
 }

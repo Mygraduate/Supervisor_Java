@@ -1,9 +1,8 @@
-package com.graduate.api.teacher;
+package com.graduate.api.sparetime;
 
-import com.graduate.api.course.CourseController;
 import com.graduate.common.BaseJsonData;
-import com.graduate.system.teacher.model.Teacher;
-import com.graduate.system.teacher.service.TeacherService;
+import com.graduate.system.sparetime.model.SpareTime;
+import com.graduate.system.sparetime.service.SparetimeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -18,25 +17,23 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/5/16.
+ * Created by Administrator on 2017/5/19.
  */
-
 @RestController
-@RequestMapping("api/teacher")
-@Api(value = "api/teacher", description = "老师接口")
-public class TeacherController {
-    private static final Logger logger = LoggerFactory.getLogger(TeacherController.class);
+@RequestMapping("api/sparetime")
+@Api(value = "api/sparetime", description = "用户空闲时间接口")
+public class SparetimeController {
+    private static final Logger logger = LoggerFactory.getLogger(SparetimeController.class);
 
     @Autowired
-    private TeacherService<Teacher> teacherService;
+    private SparetimeService<SpareTime> sparetimeService;
 
-    @ApiOperation(value="新增老师", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ApiOperation(value="新增用户空闲表", notes="")
     @RequestMapping(value={"/create"}, method= RequestMethod.POST)
-    public BaseJsonData createTeacher(@RequestBody Teacher teacher) {
+    public BaseJsonData createSparetime(@RequestBody List<SpareTime> sparetimes){
         BaseJsonData data = new BaseJsonData();
         try {
-            teacherService.save(teacher);
+            sparetimeService.save(sparetimes);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
@@ -45,27 +42,21 @@ public class TeacherController {
         }
     }
 
-    @ApiOperation(value="获取老师列表", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ApiOperation(value="获取用户空闲列表", notes="")
     @RequestMapping(value={"/list"}, method=RequestMethod.POST)
-    public BaseJsonData getTeacherList(
+    public BaseJsonData getusersparetime(
             @ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
             @ApiParam(value = "页长")@RequestParam(value = "pageSize") Integer pageSize,
-            @ApiParam(value = "学院id")@RequestParam(value = "cid",required = false) Long cid,
-            @ApiParam(value = "老师id")@RequestParam(value = "tid",required = false) Long tid,
-            @ApiParam(value = "老师姓名")@RequestParam(value = "tname",required = false) String tname,
-            @ApiParam(value = "职称")@RequestParam(value = "title",required = false) String title
-    ) {
+            @ApiParam(value = "用户id")@RequestParam(value = "uid") Long uid
+    ){
         try{
             HashMap<String,Object> searchVals = new HashMap<>();
-            searchVals.put("id",tid);
-            searchVals.put("cid",cid);
-            searchVals.put("name",tname);
-            searchVals.put("title",title);
+            searchVals.put("uid",uid);
             HashMap<String,String> orderVals = new HashMap<>();
-            orderVals.put("id","ASC");
-            Page<Teacher> page = teacherService.findAll(pageNo,pageSize,orderVals,searchVals);
+            orderVals.put("week","ASC");
+            Page<SpareTime> page = sparetimeService.findAll(pageNo,pageSize,orderVals,searchVals);
             return BaseJsonData.ok(page);
+
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(),e);
@@ -73,13 +64,15 @@ public class TeacherController {
         }
     }
 
-    @ApiOperation(value="删除老师", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ApiOperation(value="删除用户空闲时间", notes="")
     @RequestMapping(value={"/delete"}, method=RequestMethod.POST)
-    public BaseJsonData deleteTeacherList(@RequestBody List<Teacher> teacher) {
+    public BaseJsonData deleteUserSparetime(
+            @ApiParam(value = "用户id")@RequestParam(value = "uid") Long uid
+    ) {
         BaseJsonData data = new BaseJsonData();
         try{
-            teacherService.delete(teacher);
+            List<SpareTime> listsp=sparetimeService.findSpareTimeByuid(uid);
+            sparetimeService.delete(listsp);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
@@ -88,13 +81,24 @@ public class TeacherController {
         }
     }
 
-    @ApiOperation(value="修改老师", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ApiOperation(value="修改空闲时间", notes="")
     @RequestMapping(value={"/update"}, method=RequestMethod.POST)
-    public BaseJsonData updateTeacherList(@RequestBody Teacher teacher) {
+    public BaseJsonData updateUserSparetime(@RequestBody List<SpareTime> spareTimeListnew) {
         BaseJsonData data = new BaseJsonData();
         try{
-            teacherService.save(teacher);
+            Long uid=spareTimeListnew.get(0).getUid();
+            List<SpareTime> spareTimeListold=sparetimeService.findSpareTimeByuid(uid);
+            for (SpareTime o:spareTimeListold) {
+                for (SpareTime n:spareTimeListnew) {
+                    if(o.getWeek()==n.getWeek()&&o.getDay()==o.getDay()){
+                        n.setId(o.getId());
+                        spareTimeListold.remove(o);
+                        break;
+                    }
+                }
+            }
+            sparetimeService.delete(spareTimeListold);
+            sparetimeService.save(spareTimeListnew);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
@@ -102,6 +106,5 @@ public class TeacherController {
             return data.fail(e.getMessage());
         }
     }
-
 
 }
