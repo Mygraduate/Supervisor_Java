@@ -13,20 +13,25 @@ import com.graduate.system.user.model.UserAndRole;
 import com.graduate.system.user.service.RoleService;
 import com.graduate.system.user.service.UserAndRoleService;
 import com.graduate.system.user.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AbstractPageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,33 +56,50 @@ public class UserController extends BaseController {
     @Autowired
     private RoleService<Role> roleService;
 
+    @Autowired
+    private TeacherService<Teacher> teacherService;
+
+    @Autowired
+    private CollegeService<College> collegeService;
+
 
     @ApiOperation(value="获取用户列表", notes="")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value={"/list"}, method=RequestMethod.POST)
-    public BaseJsonData getUserList() {
-        BaseJsonData data = new BaseJsonData();
+    public BaseJsonData getUserList(@ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
+                                    @ApiParam(value = "页长")@RequestParam(value = "pageSize") int pageSize,
+                                    @ApiParam(value = "用户id")@RequestParam(value = "uid",required = false) Long uid,
+                                    @ApiParam(value = "角色id")@RequestParam(value = "roleId",required = false) Long roleId,
+                                    @ApiParam(value = "学院id")@RequestParam(value = "cid",required = false) Long cid,
+                                    @ApiParam(value = "用户账号")@RequestParam(value = "username",required = false) String username,
+                                    @ApiParam(value = "老师姓名")@RequestParam(value = "name",required = false) String name,
+                                    @ApiParam(value = "老师职称")@RequestParam(value = "title",required = false) String title
+    ) {
         try{
-            List<User> userList = userService.findAll();
-            return data.ok(userList);
+            HashMap<String,Object> searchVals = new HashMap<>();
+            searchVals.put("uid",uid);
+            searchVals.put("roleId",roleId);
+            searchVals.put("cid",cid);
+            searchVals.put("username",username);
+            searchVals.put("name",name);
+            searchVals.put("title",title);
+            HashMap<String,String> orderVals = new HashMap<>();
+            orderVals.put("uid","ASC");
+            Page<UserAndRole> userList = userAndRoleService.findAll(buildSearch(searchVals),userAndRoleService.buildPage(pageNo,pageSize,orderVals));
+            return BaseJsonData.ok(userList);
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(),e);
-            return data.fail(e.getMessage());
+            return BaseJsonData.fail(e.getMessage());
         }
     }
 
     @ApiOperation(value="创建用户", notes="根据User对象创建用户")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/create", method=RequestMethod.POST)
-    public BaseJsonData createUser(@RequestBody User user,@RequestParam("roleId") Long roleId) {
+    public BaseJsonData createUser(@RequestBody UserAndRole userAndRole) {
         BaseJsonData data = new BaseJsonData();
         try {
-            user.setLastPasswordResetDate(new Date());
-            userService.save(user);
-            UserAndRole userAndRole = new UserAndRole();
-            userAndRole.setRoleId(roleId);
-            userAndRole.setUid(user.getId());
             userAndRoleService.save(userAndRole);
             return data.ok();
         }catch (Exception e){
@@ -91,14 +113,10 @@ public class UserController extends BaseController {
     @ApiOperation(value="删除用户", notes="")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value={"/delete"}, method=RequestMethod.POST)
-    public BaseJsonData deleteUserList(@RequestBody List<User> user) {
+    public BaseJsonData deleteUserList(@RequestBody List<UserAndRole> userAndRole) {
         BaseJsonData data = new BaseJsonData();
         try{
-            userService.delete(user);
-            for (User u:user) {
-                UserAndRole uar = userAndRoleService.findRoleByUid(u.getId());
-                userAndRoleService.delete(uar);
-            }
+            userAndRoleService.delete(userAndRole);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
@@ -111,13 +129,10 @@ public class UserController extends BaseController {
     @ApiOperation(value="修改用户", notes="")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value={"/update"}, method=RequestMethod.POST)
-    public BaseJsonData updateUsereList(@RequestBody User user,@RequestParam("roleId")Long roleId) {
+    public BaseJsonData updateUsereList(@RequestBody UserAndRole userAndRole) {
         BaseJsonData data = new BaseJsonData();
         try{
-            userService.save(user);
-            UserAndRole uar = userAndRoleService.findRoleByUid(user.getId());
-            uar.setRoleId(roleId);
-            userAndRoleService.save(uar);
+            userAndRoleService.save(userAndRole);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
@@ -126,95 +141,48 @@ public class UserController extends BaseController {
         }
     }
 
-    @ApiOperation(value="根据账号获取用户信息", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value={"/userinfobyname"}, method=RequestMethod.POST)
-    public BaseJsonData getUserInfoByName(@RequestParam("username")String username) {
-        BaseJsonData data = new BaseJsonData();
-        try{
-            User userInfo = userService.findUserByname(username);
-            return data.ok(userInfo);
-        }catch (Exception e){
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
-            return data.fail(e.getMessage());
-        }
-    }
 
-    @ApiOperation(value="根据用户id获取用户信息", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value={"/userinfobyid"}, method=RequestMethod.POST)
-    public BaseJsonData getUserInfoById(@RequestParam("id")Long id) {
-        BaseJsonData data = new BaseJsonData();
-        try{
-            User userInfo = userService.findUserByid(id);
-            return data.ok(userInfo);
-        }catch (Exception e){
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
-            return data.fail(e.getMessage());
-        }
-    }
 
-    @ApiOperation(value="根据用户id获取用户角色id", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value={"/userroleinfo"}, method=RequestMethod.POST)
-    public BaseJsonData getUserRoleInfo(@RequestParam("uid")Long uid) {
-        BaseJsonData data = new BaseJsonData();
-        try{
-            UserAndRole uar = userAndRoleService.findRoleByUid(uid);
-            return data.ok(uar);
-        }catch (Exception e){
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
-            return data.fail(e.getMessage());
-        }
-    }
+    //搜索
+    public Specification buildSearch(HashMap<String,Object> vals) {
+        return new Specification() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Predicate predicate = criteriaBuilder.conjunction();
 
-//    @ApiOperation(value="修改用户角色", notes="")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @RequestMapping(value={"/udrole"}, method=RequestMethod.POST)
-//    public BaseJsonData updateusertorole(@RequestBody UserAndRole userandrole) {
-//        BaseJsonData data = new BaseJsonData();
-//        try{
-//            userAndRoleService.save(userandrole);
-//            return data.ok();
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            logger.error(e.getMessage(),e);
-//            return data.fail(e.getMessage());
-//        }
-//    }
-
-    @ApiOperation(value="根据角色查询用户id", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value={"/userlistbyuarid"}, method=RequestMethod.POST)
-    public BaseJsonData getuserListbyrole(@RequestParam("id")Long id) {
-        BaseJsonData data = new BaseJsonData();
-        try{
-            List<UserAndRole> userList = userAndRoleService.finduserandroleByRoleId(id);
-            return data.ok(userList);
-        }catch (Exception e){
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
-            return data.fail(e.getMessage());
-        }
-    }
-    
-
-    @ApiOperation(value="根据角色id获取角色信息", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value={"/roleinfo"}, method=RequestMethod.POST)
-    public BaseJsonData getRoleInfo(@RequestParam("id")Long id) {
-        BaseJsonData data = new BaseJsonData();
-        try{
-            Role roleinfo = roleService.findRoleById(id);
-            return data.ok(roleinfo);
-        }catch (Exception e){
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
-            return data.fail(e.getMessage());
-        }
+                if(vals.get("uid")!=null&&NumberUtils.isNumber(vals.get("uid").toString())){
+                    predicate.getExpressions().add(
+                                    criteriaBuilder.equal(root.<String>get("uid"),NumberUtils.toLong(vals.get("uid").toString()))
+                            );
+                }
+                if(vals.get("roleId")!=null&&NumberUtils.isNumber(vals.get("roleId").toString())){
+                    predicate.getExpressions().add(
+                            criteriaBuilder.equal(root.<String>get("roleId"),NumberUtils.toLong(vals.get("roleId").toString()))
+                    );
+                }
+                if(vals.get("cid")!=null&&NumberUtils.isNumber(vals.get("cid").toString())){
+                    predicate.getExpressions().add(
+                            criteriaBuilder.equal(root.<User>get("user").get("cid"),NumberUtils.toLong(vals.get("cid").toString()))
+                    );
+                }
+                if(vals.get("username")!=null&&StringUtils.isNotBlank(vals.get("username").toString())){
+                    predicate.getExpressions().add(
+                            criteriaBuilder.like(root.<User>get("user").get("username"),"%"+vals.get("cid").toString()+"%")
+                    );
+                }
+                if(vals.get("name")!=null&&StringUtils.isNotBlank(vals.get("name").toString())){
+                    predicate.getExpressions().add(
+                            criteriaBuilder.like(root.<User>get("user").get("teacher").get("name"),"%"+vals.get("name").toString()+"%")
+                    );
+                }
+                if(vals.get("title")!=null&&StringUtils.isNotBlank(vals.get("title").toString())){
+                    predicate.getExpressions().add(
+                            criteriaBuilder.like(root.<User>get("user").get("teacher").get("title"),"%"+vals.get("title").toString()+"%")
+                    );
+                }
+                return predicate;
+            }
+        };
     }
 
 

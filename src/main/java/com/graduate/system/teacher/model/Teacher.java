@@ -15,6 +15,7 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+
     @Column(name = "cid")
     private Long cid;//学院号
 
@@ -54,5 +55,8 @@ public class Teacher {
 
     public void setCid(Long cid) {
         this.cid = cid;
+    }
+
+    public Teacher() {
     }
 }
