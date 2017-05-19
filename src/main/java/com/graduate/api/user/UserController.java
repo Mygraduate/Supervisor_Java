@@ -45,22 +45,10 @@ import java.util.List;
 @Api(value = "api/account", description = "用户登录公用接口")
 public class UserController extends BaseController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
-
-    @Autowired
-    private UserService<User> userService;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserAndRoleService<UserAndRole> userAndRoleService;
-
-    @Autowired
-    private RoleService<Role> roleService;
-
-    @Autowired
-    private TeacherService<Teacher> teacherService;
-
-    @Autowired
-    private CollegeService<College> collegeService;
 
 
     @ApiOperation(value="获取用户列表", notes="")
@@ -85,7 +73,7 @@ public class UserController extends BaseController {
             searchVals.put("title",title);
             HashMap<String,String> orderVals = new HashMap<>();
             orderVals.put("uid","ASC");
-            Page<UserAndRole> userList = userAndRoleService.findAll(buildSearch(searchVals),userAndRoleService.buildPage(pageNo,pageSize,orderVals));
+            Page<UserAndRole> userList = userAndRoleService.findAllByField(searchVals,pageNo,pageSize,orderVals);
             return BaseJsonData.ok(userList);
         }catch (Exception e){
             e.printStackTrace();
@@ -140,53 +128,4 @@ public class UserController extends BaseController {
             return data.fail(e.getMessage());
         }
     }
-
-
-
-    //搜索
-    public Specification buildSearch(HashMap<String,Object> vals) {
-        return new Specification() {
-            @Override
-            public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                Predicate predicate = criteriaBuilder.conjunction();
-
-                if(vals.get("uid")!=null&&NumberUtils.isNumber(vals.get("uid").toString())){
-                    predicate.getExpressions().add(
-                                    criteriaBuilder.equal(root.<String>get("uid"),NumberUtils.toLong(vals.get("uid").toString()))
-                            );
-                }
-                if(vals.get("roleId")!=null&&NumberUtils.isNumber(vals.get("roleId").toString())){
-                    predicate.getExpressions().add(
-                            criteriaBuilder.equal(root.<String>get("roleId"),NumberUtils.toLong(vals.get("roleId").toString()))
-                    );
-                }
-                if(vals.get("cid")!=null&&NumberUtils.isNumber(vals.get("cid").toString())){
-                    predicate.getExpressions().add(
-                            criteriaBuilder.equal(root.<User>get("user").get("cid"),NumberUtils.toLong(vals.get("cid").toString()))
-                    );
-                }
-                if(vals.get("username")!=null&&StringUtils.isNotBlank(vals.get("username").toString())){
-                    predicate.getExpressions().add(
-                            criteriaBuilder.like(root.<User>get("user").get("username"),"%"+vals.get("cid").toString()+"%")
-                    );
-                }
-                if(vals.get("name")!=null&&StringUtils.isNotBlank(vals.get("name").toString())){
-                    predicate.getExpressions().add(
-                            criteriaBuilder.like(root.<User>get("user").get("teacher").get("name"),"%"+vals.get("name").toString()+"%")
-                    );
-                }
-                if(vals.get("title")!=null&&StringUtils.isNotBlank(vals.get("title").toString())){
-                    predicate.getExpressions().add(
-                            criteriaBuilder.like(root.<User>get("user").get("teacher").get("title"),"%"+vals.get("title").toString()+"%")
-                    );
-                }
-                return predicate;
-            }
-        };
-    }
-
-
-
-
-
 }

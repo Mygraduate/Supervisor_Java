@@ -26,7 +26,7 @@ import java.util.List;
 @Api(value = "api/college", description = "学院接口")
 public class CollegeController extends BaseController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CollegeController.class);
 
     @Autowired
     private CollegeService<College> collegeService;
@@ -112,6 +112,5 @@ public class CollegeController extends BaseController {
 //            return data.fail(e.getMessage());
 //        }
 //    }
-
-
+//
 }

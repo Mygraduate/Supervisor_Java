@@ -44,7 +44,6 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
 
         Role role = null;
         try {
-//            role = roleService.findOne(uAr.getRoleId());
             role = roleService.findOne(uAr.getRole().getId());
         } catch (Exception e) {
             e.printStackTrace();

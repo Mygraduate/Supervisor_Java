@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping("api/teacher")
 @Api(value = "api/teacher", description = "老师接口")
 public class TeacherController {
-    private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
+    private static final Logger logger = LoggerFactory.getLogger(TeacherController.class);
 
     @Autowired
     private TeacherService<Teacher> teacherService;
