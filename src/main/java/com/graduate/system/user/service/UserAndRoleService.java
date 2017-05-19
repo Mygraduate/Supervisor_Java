@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by konglinghai on 2017/3/20.
  */
@@ -24,5 +26,9 @@ public class UserAndRoleService<T> extends BaseService<T> {
 
     public UserAndRole findRoleByUid(Long uid){
         return mapper.findUserAndRoleByUid(uid);
+    }
+
+    public List<UserAndRole>  finduserandroleByRoleId (Long roleId){
+        return mapper.findUserAndRoleByRoleId(roleId);
     }
 }

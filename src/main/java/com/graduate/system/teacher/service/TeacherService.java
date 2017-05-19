@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+
 /**
  * Created by konglinghai on 2017/5/11.
  */
@@ -24,6 +27,14 @@ public class TeacherService<T> extends BaseService<T> {
 
     public Teacher findTeacherByname(String name){
         return mapper.findTeacherByname(name);
+    }
+
+    public Teacher findTeacherByid(Long id){
+        return mapper.findTeacherByid(id);
+    }
+
+    public List<Teacher> findTeacherBycid(Long cid){
+        return mapper.findTeacherBycid(cid);
     }
 
 }

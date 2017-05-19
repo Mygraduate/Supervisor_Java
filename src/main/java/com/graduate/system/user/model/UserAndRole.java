@@ -14,8 +14,14 @@ public class UserAndRole {
     private Long id;
     @Column(name = "uid")
     private Long uid;//用户id
+    @OneToOne(cascade = { CascadeType.MERGE,CascadeType.PERSIST, CascadeType.REMOVE } )
+    @JoinColumn(name="uid",referencedColumnName = "id",insertable = false,updatable = false)
+    private User user;
     @Column(name = "role_id")
     private Long roleId;//角色id
+    @ManyToOne(cascade = CascadeType.PERSIST  )
+    @JoinColumn(name="role_id",referencedColumnName = "id",insertable = false,updatable = false)
+    private Role role;
 
     public Long getId() {
         return id;
@@ -42,6 +48,22 @@ public class UserAndRole {
     }
 
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     public UserAndRole() {
     }
 
@@ -50,7 +72,9 @@ public class UserAndRole {
         return "UserAndRole{" +
                 "id=" + id +
                 ", uid=" + uid +
+                ", user=" + user +
                 ", roleId=" + roleId +
+                ", role=" + role +
                 '}';
     }
 }

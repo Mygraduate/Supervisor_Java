@@ -51,7 +51,8 @@ public class ExcelController extends BaseController {
     @RequestMapping(value = "/import",method = RequestMethod.POST)
     @ResponseBody
     public BaseJsonData importCourse(@RequestParam("file") MultipartFile file ) {
-      Long cid = userService.findUserByname( UserUtil.getUserName()).getCid();
+//      Long cid = userService.findUserByname( UserUtil.getUserName()).getCid();
+        Long cid = userService.findUserByname( UserUtil.getUserName()).getCollege().getId();
         try {
             excelService.importCourseByExcel(cid,file.getInputStream());
         } catch (Exception e) {

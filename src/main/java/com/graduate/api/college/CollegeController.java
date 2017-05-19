@@ -7,14 +7,12 @@ import com.graduate.system.college.model.College;
 import com.graduate.system.college.service.CollegeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,15 +49,22 @@ public class CollegeController extends BaseController {
     @ApiOperation(value="获取学院列表", notes="")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value={"/list"}, method=RequestMethod.POST)
-    public BaseJsonData getCollegeList() {
-        BaseJsonData data = new BaseJsonData();
+    public BaseJsonData getCollegeList(
+            @ApiParam(value = "学院id")@RequestParam(value = "cid",required = false) Long cid,
+            @ApiParam(value = "学院姓名")@RequestParam(value = "name",required = false) Integer name
+    ) {
         try{
-            List<College> collegelist = collegeService.findAll();
-            return data.ok(collegelist);
+            HashMap<String,Object> searchVals = new HashMap<>();
+            searchVals.put("id",cid);
+            searchVals.put("name",name);
+            HashMap<String,String> orderVals = new HashMap<>();
+            orderVals.put("id","ASC");
+            List<College> collegelist = collegeService.findAll(searchVals,orderVals);
+            return BaseJsonData.ok(collegelist);
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(),e);
-            return data.fail(e.getMessage());
+            return BaseJsonData.fail(e.getMessage());
         }
     }
 
@@ -92,6 +97,21 @@ public class CollegeController extends BaseController {
             return data.fail(e.getMessage());
         }
     }
+
+//    @ApiOperation(value="根据学院id获取学院信息", notes="")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @RequestMapping(value={"/collegeinfoByid"}, method=RequestMethod.POST)
+//    public BaseJsonData getcollegeInfoByid(@RequestParam("id") Long id) {
+//        BaseJsonData data = new BaseJsonData();
+//        try{
+//            College collegeInfo = collegeService.findCollegeByid(id);
+//            return data.ok(collegeInfo);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            logger.error(e.getMessage(),e);
+//            return data.fail(e.getMessage());
+//        }
+//    }
 
 
 }

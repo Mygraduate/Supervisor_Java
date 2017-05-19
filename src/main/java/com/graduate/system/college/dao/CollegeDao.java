@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface CollegeDao extends BaseDao<College> {
+    College findCollegeByid(Long id);//根据id查找学院信息
 }

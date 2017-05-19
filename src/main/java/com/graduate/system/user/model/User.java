@@ -1,5 +1,7 @@
 package com.graduate.system.user.model;
 
+import com.graduate.system.college.model.College;
+import com.graduate.system.teacher.model.Teacher;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -17,18 +19,23 @@ import java.util.Date;
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @ApiModelProperty(notes = "表id",required = false,hidden = true)
+    @ApiModelProperty(notes = "表id",required = false)
     private Long id;
 
     @Column(name = "tid")
     @ApiModelProperty(notes = "教师id",required = false)
     private Long tid;//教师表id
-
-
+    @ManyToOne(cascade = CascadeType.PERSIST )
+    @JoinColumn(name="tid",referencedColumnName = "id",insertable = false,updatable = false)
+    private Teacher teacher;
 
     @Column(nullable=false,name = "cid")
     @ApiModelProperty(notes = "学院id",required = false)
     private Long cid;//学院表id
+
+    @ManyToOne(cascade = CascadeType.PERSIST )
+    @JoinColumn(name="cid",referencedColumnName = "id",insertable = false,updatable = false)
+    private College college;
 
     @Column(nullable=false,name = "username",unique = true)
     @ApiModelProperty(notes = "账号")
@@ -118,6 +125,22 @@ public class User{
         this.tid = tid;
     }
 
+    public College getCollege() {
+        return college;
+    }
+
+    public void setCollege(College college) {
+        this.college = college;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
+
     public User() {
     }
 
@@ -133,6 +156,10 @@ public class User{
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", tid=" + tid +
+                ", teacher=" + teacher +
+                ", cid=" + cid +
+                ", college=" + college +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", wecat='" + wecat + '\'' +

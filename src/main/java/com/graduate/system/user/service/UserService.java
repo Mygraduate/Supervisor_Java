@@ -28,4 +28,9 @@ public class UserService<T> extends BaseService<T> {
 
         return mapper.findUserByUsername(username);
     }
+    public User findUserByid(Long id){
+
+        return mapper.findUserById(id);
+    }
+
 }

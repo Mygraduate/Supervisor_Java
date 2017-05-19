@@ -3,6 +3,7 @@ package com.graduate.system.college.service;
 import com.graduate.common.BaseDao;
 import com.graduate.common.BaseService;
 import com.graduate.system.college.dao.CollegeDao;
+import com.graduate.system.college.model.College;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,5 +20,8 @@ public class CollegeService<T> extends BaseService<T> {
         return mapper;
     }
 
+    public College findCollegeByid(Long id){
+        return mapper.findCollegeByid(id);
+    }
 
 }

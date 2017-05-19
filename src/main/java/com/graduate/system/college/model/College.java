@@ -21,6 +21,9 @@ public class College {
     @Column(name = "des")
     private String des;//描述
 
+    public College() {
+    }
+
     public Long getId() {
         return id;
     }
