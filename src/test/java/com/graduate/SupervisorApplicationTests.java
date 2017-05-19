@@ -3,8 +3,10 @@ package com.graduate;
 import com.alibaba.fastjson.JSON;
 import com.graduate.common.ExcelService;
 import com.graduate.common.TimeService;
+import com.graduate.system.college.model.College;
 import com.graduate.system.course.model.Course;
 import com.graduate.system.course.service.CourseService;
+import com.graduate.system.teacher.model.Teacher;
 import com.graduate.timer.MessageTask;
 import com.graduate.utils.excel.exception.FormatException;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+
+import static org.apache.coyote.http11.Constants.a;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -45,29 +50,39 @@ public class SupervisorApplicationTests {
 	@Autowired
 	private CourseService<Course> courseService;
 
+
 	@Test
 	public void contextLoads() {
 		//System.out.println(timeService.calTimeByWeekAndDay(1,1));
 		//System.out.println(timeService.calWeekDayByTime("2017-4-23"));
 		//task.stop();
-		try {
-			excelService.importCourseByExcel(1L,new FileInputStream("C:\\Users\\Administrator\\Desktop\\demo3.xls"));
-		} catch (Exception e){
-            e.printStackTrace();
-        }
-		Sort sort = new Sort(Sort.Direction.DESC, "id");
-		Pageable pageable = new PageRequest(0,3,sort);
-		try{
-            HashMap<String,Object> vals = new HashMap<>();
-            vals.put("week",6);
-//            vals.put("day",1);
-			vals.put("scope","6-7");
-			vals.put("teacher","陈");
-			Page<Course> page = courseService.findAll(0,3,null,vals);
-			System.out.println(JSON.toJSONString(page));
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+//		try {
+//			excelService.importCourseByExcel(1L,new FileInputStream("C:\\Users\\Administrator\\Desktop\\demo3.xls"));
+//		} catch (Exception e){
+//            e.printStackTrace();
+//        }
+//		Sort sort = new Sort(Sort.Direction.DESC, "id");
+//		Pageable pageable = new PageRequest(0,3,sort);
+//		try{
+//            HashMap<String,Object> vals = new HashMap<>();
+//            vals.put("week",6);
+////            vals.put("day",1);
+//			vals.put("scope","6-7");
+//			vals.put("teacher","陈");
+//			Page<Course> page = courseService.findAll(0,3,null,vals);
+//			System.out.println(JSON.toJSONString(page));
+//		}catch (Exception e){
+//			e.printStackTrace();
+//		}
+//		try{
+//			HashMap<String,Object> serachVals = new HashMap<>();
+//			serachVals.put("")
+//			arrageTestService.findAll()
+//			//System.out.println(JSON.toJSONString(list));
+//		}catch (Exception e){
+//			e.printStackTrace();
+//		}
+
 	}
 
 	//分页

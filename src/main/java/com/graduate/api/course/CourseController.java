@@ -36,7 +36,7 @@ public class CourseController extends BaseController {
     @Autowired
     CourseService<Course> courseService;
 
-    @ApiOperation(value="获取用户列表", notes="")
+    @ApiOperation(value="获取课程列表", notes="")
     @RequestMapping(value={"/page"}, method= RequestMethod.POST)
     public BaseJsonData getPage(
             @ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
