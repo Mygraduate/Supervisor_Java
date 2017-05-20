@@ -52,7 +52,7 @@ public class CourseService<T> extends BaseService<T> {
                continue;
            }
            for(int day = 1; day<8;day++){
-               List<Course> list_day = CourseUtil.findListByDay(courses,day);
+               List<Course> list_day = CourseUtil.findListByDay(list_week,day);
                CourseUtil.thisDaySpare(week,day,times,list_day,cid,uid);
            }
        }

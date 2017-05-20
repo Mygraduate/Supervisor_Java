@@ -50,15 +50,15 @@ public class CourseUtil {
 
     public static void thisWeekSpare(int week,List<SpareTime> times,List<Course> courses,Long cid,Long uid){
         for(int day=1;day<8;day++){
-            times.add(autoCreateSpareDay(week,day,times,courses,cid,uid));
+            autoCreateSpareDay(week,day,times,courses,cid,uid);
         }
     }
 
     public static  void thisDaySpare(int week,int day,List<SpareTime> times,List<Course> courses,Long cid,Long uid){
-        times.add(autoCreateSpareDay(week,day,times,courses,cid,uid));
+        autoCreateSpareDay(week,day,times,courses,cid,uid);
     }
 
-    private static SpareTime autoCreateSpareDay(int week,int day,List<SpareTime> times,List<Course> courses,Long cid,Long uid){
+    private static void autoCreateSpareDay(int week,int day,List<SpareTime> times,List<Course> courses,Long cid,Long uid){
         SpareTime time = new SpareTime();
         time.setCid(cid);
         time.setDay(day);
@@ -76,7 +76,7 @@ public class CourseUtil {
         }else{
             for(Course course : courses){
                 for(int scope = 1;scope<12;scope++){
-                    if(CourseUtil.isSeries(course.getScope(),scope)){
+                    if(!CourseUtil.isSeries(course.getScope(),scope)){
                         scopes = scopes +","+scope;
                     }
                 }
@@ -86,7 +86,5 @@ public class CourseUtil {
                 times.add(time);
             }
         }
-
-        return time;
     }
 }
