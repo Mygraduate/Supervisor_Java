@@ -3,37 +3,20 @@ package com.graduate.api.user;
 import com.graduate.api.course.CourseController;
 import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
-import com.graduate.system.college.model.College;
-import com.graduate.system.college.service.CollegeService;
-import com.graduate.system.teacher.model.Teacher;
-import com.graduate.system.teacher.service.TeacherService;
-import com.graduate.system.user.model.Role;
 import com.graduate.system.user.model.User;
 import com.graduate.system.user.model.UserAndRole;
-import com.graduate.system.user.service.RoleService;
 import com.graduate.system.user.service.UserAndRoleService;
 import com.graduate.system.user.service.UserService;
 import io.swagger.annotations.*;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.AbstractPageRequest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,6 +32,9 @@ public class UserController extends BaseController {
 
     @Autowired
     private UserAndRoleService<UserAndRole> userAndRoleService;
+
+    @Autowired
+    private UserService<User> userService;
 
 
     @ApiOperation(value="获取用户列表", notes="")
@@ -85,9 +71,13 @@ public class UserController extends BaseController {
     @ApiOperation(value="创建用户", notes="根据User对象创建用户")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/create", method=RequestMethod.POST)
-    public BaseJsonData createUser(@RequestBody UserAndRole userAndRole) {
+    public BaseJsonData createUser(@RequestBody User user, @ApiParam(value = "角色id")@RequestParam(value = "roleId") Long roleId) {
         BaseJsonData data = new BaseJsonData();
         try {
+            userService.save(user);
+            UserAndRole userAndRole=new UserAndRole();
+            userAndRole.setUid(user.getId());
+            userAndRole.setRoleId(roleId);
             userAndRoleService.save(userAndRole);
             return data.ok();
         }catch (Exception e){
@@ -101,10 +91,15 @@ public class UserController extends BaseController {
     @ApiOperation(value="删除用户", notes="")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value={"/delete"}, method=RequestMethod.POST)
-    public BaseJsonData deleteUserList(@RequestBody List<UserAndRole> userAndRole) {
+    public BaseJsonData deleteUserList(@RequestBody List<User> users) {
         BaseJsonData data = new BaseJsonData();
         try{
-            userAndRoleService.delete(userAndRole);
+            List<UserAndRole> list=new ArrayList<UserAndRole>();
+            for (User u: users) {
+                UserAndRole userAndRole=userAndRoleService.findRoleByUid(u.getId());
+                list.add(userAndRole);
+            }
+            userAndRoleService.delete(list);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();

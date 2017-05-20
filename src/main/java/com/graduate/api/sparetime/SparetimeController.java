@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -88,11 +89,13 @@ public class SparetimeController {
         try{
             Long uid=spareTimeListnew.get(0).getUid();
             List<SpareTime> spareTimeListold=sparetimeService.findSpareTimeByuid(uid);
-            for (SpareTime o:spareTimeListold) {
-                for (SpareTime n:spareTimeListnew) {
-                    if(o.getWeek()==n.getWeek()&&o.getDay()==o.getDay()){
-                        n.setId(o.getId());
-                        spareTimeListold.remove(o);
+            for (Iterator<SpareTime> o = spareTimeListold.iterator(); o.hasNext();) {
+                SpareTime os=o.next();
+                for (Iterator<SpareTime> n = spareTimeListnew.iterator(); n.hasNext();) {
+                    SpareTime ns=n.next();
+                    if(os.getWeek()==ns.getWeek()&&os.getDay()==ns.getDay()){
+                        ns.setId(os.getId());
+                        o.remove();
                         break;
                     }
                 }
