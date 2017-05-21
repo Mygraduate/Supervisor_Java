@@ -1,5 +1,6 @@
 package com.graduate.api.college;
 
+import com.alibaba.fastjson.JSON;
 import com.graduate.api.course.CourseController;
 import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,8 +52,10 @@ public class CollegeController extends BaseController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value={"/list"}, method=RequestMethod.POST)
     public BaseJsonData getCollegeList(
+            @ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
+            @ApiParam(value = "页长")@RequestParam(value = "pageSize") Integer pageSize,
             @ApiParam(value = "学院id")@RequestParam(value = "cid",required = false) Long cid,
-            @ApiParam(value = "学院姓名")@RequestParam(value = "name",required = false) Integer name
+            @ApiParam(value = "学院姓名")@RequestParam(value = "name",required = false) String name
     ) {
         try{
             HashMap<String,Object> searchVals = new HashMap<>();
@@ -59,8 +63,8 @@ public class CollegeController extends BaseController {
             searchVals.put("name",name);
             HashMap<String,String> orderVals = new HashMap<>();
             orderVals.put("id","ASC");
-            List<College> collegelist = collegeService.findAll(searchVals,orderVals);
-            return BaseJsonData.ok(collegelist);
+            Page<College> collegelist = collegeService.findAll(pageNo,pageSize,orderVals,searchVals);
+            return BaseJsonData.ok(JSON.toJSON(collegelist));
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(),e);

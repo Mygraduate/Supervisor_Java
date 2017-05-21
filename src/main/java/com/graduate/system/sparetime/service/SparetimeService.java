@@ -21,4 +21,6 @@ public class SparetimeService<T> extends BaseService<T> {
     public BaseDao init(){return mapper;}
 
     public List<SpareTime> findSpareTimeByuid(Long uid){return mapper.findSpareTimeByuid(uid);}
+
+    public List<SpareTime> findSpareTimeBycid(Long cid){return mapper.findSpareTimeBycid(cid);}
 }
