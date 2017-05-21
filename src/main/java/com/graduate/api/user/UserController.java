@@ -1,5 +1,6 @@
 package com.graduate.api.user;
 
+import com.alibaba.fastjson.JSON;
 import com.graduate.api.course.CourseController;
 import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
@@ -60,7 +61,7 @@ public class UserController extends BaseController {
             HashMap<String,String> orderVals = new HashMap<>();
             orderVals.put("uid","ASC");
             Page<UserAndRole> userList = userAndRoleService.findAllByField(searchVals,pageNo,pageSize,orderVals);
-            return BaseJsonData.ok(userList);
+            return BaseJsonData.ok(JSON.toJSON(userList));
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(),e);
