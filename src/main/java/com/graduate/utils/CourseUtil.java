@@ -2,6 +2,8 @@ package com.graduate.utils;
 
 import com.graduate.system.course.model.Course;
 import com.graduate.system.sparetime.model.SpareTime;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -48,6 +50,19 @@ public class CourseUtil {
         return false;
     }
 
+    public static String buildScope(String scopes){
+        int start = Integer.parseInt(StringUtils.substringBefore(scopes,"-"));
+        int end = Integer.parseInt(StringUtils.substringAfter(scopes,"-"));
+        String newScopes ="";
+        for(int i=start;i<end+1;i++){
+            newScopes = newScopes+","+i;
+        }
+        if(StringUtils.isNoneBlank(newScopes)){
+            return newScopes.substring(1);
+        }
+        return newScopes;
+    }
+
     public static void thisWeekSpare(int week,List<SpareTime> times,List<Course> courses,Long cid,Long uid){
         for(int day=1;day<8;day++){
             autoCreateSpareDay(week,day,times,courses,cid,uid);
@@ -87,4 +102,12 @@ public class CourseUtil {
             }
         }
     }
+
+    public static void reBuildScope(List<Course> courses){
+        for(Course course : courses){
+            course.setScope(buildScope(course.getScope()));
+        }
+    }
+
+
 }

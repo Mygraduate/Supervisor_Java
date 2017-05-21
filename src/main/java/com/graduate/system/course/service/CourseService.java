@@ -43,20 +43,5 @@ public class CourseService<T> extends BaseService<T> {
         return mapper.findAllByTid(tid);
     }
 
-    public List<SpareTime> autoCreateSpareTime(List<Course> courses,Long cid,Long uid){
-       List<SpareTime> times = new ArrayList<>();
-       for(int week = 1; week<21 ;week++){
-           List<Course> list_week = CourseUtil.findListByWeek(courses,week);
-           if(list_week.size()==0){
-               CourseUtil.thisWeekSpare(week,times,list_week,cid,uid);
-               continue;
-           }
-           for(int day = 1; day<8;day++){
-               List<Course> list_day = CourseUtil.findListByDay(list_week,day);
-               CourseUtil.thisDaySpare(week,day,times,list_day,cid,uid);
-           }
-       }
-       return times;
-    }
 
 }

@@ -14,4 +14,5 @@ import java.util.List;
 @Repository
 public interface SpareTimeDao extends BaseDao<SpareTime> {
     List<SpareTime> findSpareTimeByuid(Long uid);//根据用户查找用户空闲时间
+    List<SpareTime> findSpareTimeBycid(Long cid);//查询整个学院的督导员空闲时间
 }

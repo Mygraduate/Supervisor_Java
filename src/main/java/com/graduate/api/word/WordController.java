@@ -44,17 +44,17 @@ public class WordController extends BaseController {
     WordService wordService;
 
     @ApiOperation(value="导出课程表", notes="")
-    @PreAuthorize("hasRole('ROLE_MASTER')")
-    @RequestMapping(value = "/export",method = RequestMethod.POST)
+    @RequestMapping(value = "/export",method = RequestMethod.GET)
     public void  exportCourse(
+            @ApiParam(value = "学院id")@RequestParam(value = "cid") Long cid,
+            @ApiParam(value = "教师姓名")@RequestParam(value = "teacher") String teacher,
+            @ApiParam(value = "专业")@RequestParam(value = "major",required = false) String major,
             @ApiParam(value = "周数")@RequestParam(value = "week",required = false) Integer week,
             @ApiParam(value = "天数")@RequestParam(value = "day",required = false) Long day,
-            @ApiParam(value = "教师姓名")@RequestParam(value = "teacher") String teacher,
             @ApiParam(value = "年级")@RequestParam(value = "grade",required = false) String grade,
             @ApiParam(value = "班级")@RequestParam(value = "classes",required = false) String classes,
             HttpServletRequest request, HttpServletResponse response) {
         try{
-            Long cid = userService.findUserByname( UserUtil.getUserName()).getCid();
             HashMap<String,Object> searchVals = new HashMap<>();
             searchVals.put("cid",cid);
             searchVals.put("week",week);
@@ -62,7 +62,8 @@ public class WordController extends BaseController {
             searchVals.put("teacher",teacher);
             searchVals.put("grade",grade);
             searchVals.put("classes",classes);
-            String wordFileName = String.valueOf(new Date().getTime());
+            searchVals.put("major",major);
+            String wordFileName = teacher;
             String savePath = wordService.exportClassPlan(searchVals,wordFileName);
 
             response.setCharacterEncoding("utf-8");
