@@ -1,5 +1,6 @@
 package com.graduate.api.teacher;
 
+import com.alibaba.fastjson.JSON;
 import com.graduate.api.course.CourseController;
 import com.graduate.common.BaseJsonData;
 import com.graduate.system.teacher.model.Teacher;
@@ -65,7 +66,7 @@ public class TeacherController {
             HashMap<String,String> orderVals = new HashMap<>();
             orderVals.put("id","ASC");
             Page<Teacher> page = teacherService.findAll(pageNo,pageSize,orderVals,searchVals);
-            return BaseJsonData.ok(page);
+            return BaseJsonData.ok(JSON.toJSON(page));
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(),e);
