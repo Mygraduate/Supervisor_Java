@@ -1,8 +1,11 @@
 package com.graduate;
 
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.fastjson.JSON;
 import com.graduate.common.ExcelService;
 import com.graduate.common.TimeService;
+import com.graduate.system.arrage.dto.ArrageConfig;
+import com.graduate.system.arrage.model.Arrage;
 import com.graduate.system.college.model.College;
 import com.graduate.system.course.model.Course;
 import com.graduate.system.course.service.CourseService;
@@ -10,6 +13,7 @@ import com.graduate.system.sparetime.model.SpareTime;
 import com.graduate.system.sparetime.service.SparetimeService;
 import com.graduate.system.teacher.model.Teacher;
 import com.graduate.timer.MessageTask;
+import com.graduate.utils.ArrageUtil;
 import com.graduate.utils.excel.exception.FormatException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -31,6 +35,7 @@ import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -85,15 +90,35 @@ public class SupervisorApplicationTests {
 //		}catch (Exception e){
 //			e.printStackTrace();
 //		}
+//        try {
+//            List<Course> courses = courseService.findAllByTid(-1l);
+//            System.out.println(courses);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
         try {
-            List<Course> courses = courseService.findAll();
-            List<SpareTime> spareTimes = courseService.autoCreateSpareTime(courses,1l,1l);
-            System.out.println(spareTimes);
-            sparetimeService.save(spareTimes);
+            HashMap<String,Object> searchVals = new HashMap<>();
+            searchVals.put("cid",1l);
+            HashMap<String,String> orderVals = new HashMap<>();
+            orderVals.put("week","ASC");
+            List<Course> courses = courseService.findAll(searchVals,orderVals);
+            List<SpareTime> spareTimes = sparetimeService.findSpareTimeBytid(1l);
+            ArrageConfig config = new ArrageConfig();
+            config.setApercent(100);
+            config.setDayListen(1);
+            config.setWeekListen(2);
+            config.setMaxPeople(3);
+            config.setMinPeople(1);
+            config.setTotal(20);
+            config.setStartDay(1);
+            config.setStartWeek(1);
+            config.setEndWeek(20);
+            List<Arrage> arrages = new ArrayList<>();
+            System.out.println(JSON.toJSONString(ArrageUtil.autoCreateArrage(arrages,courses,spareTimes,config)));
+            System.out.println(JSON.toJSONString(arrages));
         }catch (Exception e){
             e.printStackTrace();
         }
-
 
 	}
 
