@@ -44,7 +44,7 @@ public class UserController extends BaseController {
 
 
     @ApiOperation(value="获取用户列表", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MASTER')")
     @RequestMapping(value={"/list"}, method=RequestMethod.POST)
     public BaseJsonData getUserList(@ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
                                     @ApiParam(value = "页长")@RequestParam(value = "pageSize") int pageSize,
@@ -75,7 +75,7 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation(value="创建用户", notes="根据User对象创建用户")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MASTER')")
     @RequestMapping(value="/create", method=RequestMethod.POST)
     public BaseJsonData createUser(@RequestBody User user, @ApiParam(value = "角色id")@RequestParam(value = "roleId") Long roleId) {
         BaseJsonData data = new BaseJsonData();
@@ -95,7 +95,7 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation(value="删除用户", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MASTER')")
     @RequestMapping(value={"/delete"}, method=RequestMethod.POST)
     public BaseJsonData deleteUserList(@RequestBody List<User> users) {
         BaseJsonData data = new BaseJsonData();
@@ -116,7 +116,7 @@ public class UserController extends BaseController {
 
 
     @ApiOperation(value="修改用户", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MASTER')")
     @RequestMapping(value={"/update"}, method=RequestMethod.POST)
     public BaseJsonData updateUsereList(@RequestBody UserAndRole userAndRole) {
         BaseJsonData data = new BaseJsonData();

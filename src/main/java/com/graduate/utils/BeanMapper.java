@@ -36,8 +36,5 @@ public class BeanMapper {
         dozer.map(source, destinationObject);
     }
 
-
-
-
 }
 

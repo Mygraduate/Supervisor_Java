@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.sun.tools.doclint.Entity.ne;
 
@@ -46,6 +48,7 @@ public class CourseController extends BaseController {
             @ApiParam(value = "天数")@RequestParam(value = "day",required = false) Long day,
             @ApiParam(value = "节次")@RequestParam(value = "scope",required = false) String scope,
             @ApiParam(value = "教师姓名")@RequestParam(value = "teacher",required = false) String teacher,
+            @ApiParam(value = "专业")@RequestParam(value = "major",required = false) String major,
             @ApiParam(value = "是否有安排")@RequestParam(value = "isArrange",required = false) Integer isArrange,
             @ApiParam(value = "年级")@RequestParam(value = "grade",required = false) String grade,
             @ApiParam(value = "班级")@RequestParam(value = "classes",required = false) String classes,
@@ -61,6 +64,7 @@ public class CourseController extends BaseController {
             searchVals.put("grade",grade);
             searchVals.put("classes",classes);
             searchVals.put("address",address);
+            searchVals.put("major",major);
            HashMap<String,String> orderVals = new HashMap<>();
            orderVals.put("week","ASC");
            Page<Course> page =  courseService.findAll(pageNo,pageSize,orderVals,searchVals);
@@ -71,4 +75,26 @@ public class CourseController extends BaseController {
             return BaseJsonData.fail(e.getMessage());
         }
     }
+
+    @ApiOperation(value="根据教师id获取专业列表", notes="")
+    @RequestMapping(value={"/list/major"}, method= RequestMethod.POST)
+    public BaseJsonData getPage(
+            @ApiParam(value = "教师id")@RequestParam(value = "tid") Long tid
+            ){
+        try {
+            List<Course> list = courseService.findAllByTid(tid);
+            List<String> major = new ArrayList<>();
+            for(Course course : list){
+                if(!major.contains(course.getMajor())){
+                    major.add(course.getMajor());
+                }
+            }
+            return BaseJsonData.ok(major);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return BaseJsonData.fail(e.getMessage());
+        }
+    }
+
 }

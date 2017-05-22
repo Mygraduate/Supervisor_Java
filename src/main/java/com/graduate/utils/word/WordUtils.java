@@ -3,6 +3,7 @@ package com.graduate.utils.word;
 import com.alibaba.fastjson.JSON;
 import com.graduate.system.course.model.Course;
 import com.graduate.utils.BeanMapper;
+import com.graduate.utils.CourseUtil;
 import com.graduate.utils.excel.config.ImportField;
 import com.graduate.utils.excel.config.TestField;
 import org.apache.commons.collections.CollectionUtils;
@@ -18,6 +19,10 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
+
+import static com.graduate.utils.CourseUtil.findListByDay;
+import static com.graduate.utils.CourseUtil.findListByWeek;
+import static com.graduate.utils.CourseUtil.isSeries;
 
 /**
  * Created by konglinghai on 2017/5/16.
@@ -49,7 +54,7 @@ public class WordUtils {
         XWPFDocument doc = new XWPFDocument(new FileInputStream(templatePath));
         int index = 1;
         for(XWPFTable table : doc.getTables()){
-            List<Course> week_result = findListByWeek(courses,index);
+            List<Course> week_result = CourseUtil.findListByWeek(courses,index);
 
             if(week_result.size()==0){
                 index++;
@@ -57,17 +62,17 @@ public class WordUtils {
             }
             for (int column = 2; column < 7; column++)
             {
-                List<Course> day_result = findListByDay(week_result,column-1);
+                List<Course> day_result = CourseUtil.findListByDay(week_result,column-1);
                 if(day_result.size() == 0){
                     continue;
                 }
                 for(Course course : day_result){
                     for (int row = 1; row < 12; row++)
                     {
-                        if(isSeries(course.getScope(),row) == false){
+                        if(CourseUtil.isSeries(course.getScope(),row) == false){
                             continue;
                         }
-                        table.getRow(row).getCell(column).setText(formatClass(course));
+                        table.getRow(row).getCell(column).setText(CourseUtil.formatClass(course));
                     }
                 }
 
@@ -114,40 +119,5 @@ public class WordUtils {
 
     }
 
-    private static List<Course> findListByWeek(List<Course> courses,int week){
-        List<Course> results = new ArrayList<>();
-        for(Course course : courses){
-            if(course.getWeek().equals(week)){
-                results.add(course);
-            }
-        }
-        return results;
-    }
 
-    private static List<Course> findListByDay(List<Course> courses,int day){
-        List<Course> results = new ArrayList<>();
-        for(Course course : courses){
-            if(course.getDay().equals(day)){
-                results.add(course);
-            }
-        }
-        return results;
-    }
-
-
-    private static String formatClass(Course course){
-        String info = course.getContent()+"\r"+course.getType()+"\r"+course.getScope()+"\r"+course.getAddress();
-        return info;
-    }
-
-    private static boolean isSeries(String scopes,int scope){
-        int start = Integer.parseInt(StringUtils.substringBefore(scopes,"-"));
-        int end = Integer.parseInt(StringUtils.substringAfter(scopes,"-"));
-        for(int i=start;i<end+1;i++){
-            if(i == scope){
-                return true;
-            }
-        }
-        return false;
-    }
 }

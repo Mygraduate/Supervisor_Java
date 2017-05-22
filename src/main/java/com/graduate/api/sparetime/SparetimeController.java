@@ -1,9 +1,14 @@
 package com.graduate.api.sparetime;
 
+import com.alibaba.fastjson.JSON;
 import com.graduate.common.BaseJsonData;
-import com.graduate.system.sparetime.dto.SumDTO;
-import com.graduate.system.sparetime.model.SpareTime;
+
+import com.graduate.system.sparetime.dto.SumDTO;import com.graduate.system.course.model.Course;
+import com.graduate.system.course.service.CourseService;import com.graduate.system.sparetime.model.SpareTime;
 import com.graduate.system.sparetime.service.SparetimeService;
+import com.graduate.system.user.model.User;
+import com.graduate.system.user.service.UserService;
+import com.graduate.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -27,6 +32,12 @@ public class SparetimeController {
 
     @Autowired
     private SparetimeService<SpareTime> sparetimeService;
+
+    @Autowired
+    private UserService<User> userService;
+
+    @Autowired
+    private CourseService<Course> courseService;
 
     @ApiOperation(value="新增用户空闲表", notes="")
     @RequestMapping(value={"/create"}, method= RequestMethod.POST)
@@ -55,8 +66,7 @@ public class SparetimeController {
             HashMap<String,String> orderVals = new HashMap<>();
             orderVals.put("week","ASC");
             Page<SpareTime> page = sparetimeService.findAll(pageNo,pageSize,orderVals,searchVals);
-            return BaseJsonData.ok(page);
-
+            return BaseJsonData.ok(JSON.toJSON(page));
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(),e);
@@ -143,4 +153,39 @@ public class SparetimeController {
         }
     }
 
+
+    @ApiOperation(value="自动填补空闲时间", notes="")
+    @RequestMapping(value={"/auto/create"}, method=RequestMethod.POST)
+    public BaseJsonData autoCreateUserSparetime(
+            @ApiParam(value = "用户id")@RequestParam(value = "uid") Long uid,
+            @ApiParam(value = "教师id没有tid传-1")@RequestParam(value = "tid") Long tid,
+            @ApiParam(value = "起始周前端默认1")@RequestParam(value = "start") Integer startWeek,
+            @ApiParam(value = "终止周前端默认20")@RequestParam(value = "end") Integer endWeek
+    ) {
+        Long cid = userService.findUserByname( UserUtil.getUserName()).getCid();
+        BaseJsonData data = new BaseJsonData();
+        try{
+            List<Course> courses = courseService.findAllByTid(tid);
+            List<SpareTime> list = sparetimeService.autoCreateSpareTime(courses,cid,uid,startWeek,endWeek);
+            List<SpareTime> spareTimeListold=sparetimeService.findSpareTimeByuid(uid);
+            for (Iterator<SpareTime> o = spareTimeListold.iterator(); o.hasNext();) {
+                SpareTime os=o.next();
+                for (Iterator<SpareTime> n = list.iterator(); n.hasNext();) {
+                    SpareTime ns=n.next();
+                    if(os.getWeek()==ns.getWeek()&&os.getDay()==ns.getDay()){
+                        ns.setId(os.getId());
+                        o.remove();
+                        break;
+                    }
+                }
+            }
+            sparetimeService.delete(spareTimeListold);
+            sparetimeService.save(list);
+            return data.ok();
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return data.fail(e.getMessage());
+        }
+    }
 }

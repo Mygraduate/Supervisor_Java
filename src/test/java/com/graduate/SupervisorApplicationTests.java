@@ -6,6 +6,8 @@ import com.graduate.common.TimeService;
 import com.graduate.system.college.model.College;
 import com.graduate.system.course.model.Course;
 import com.graduate.system.course.service.CourseService;
+import com.graduate.system.sparetime.model.SpareTime;
+import com.graduate.system.sparetime.service.SparetimeService;
 import com.graduate.system.teacher.model.Teacher;
 import com.graduate.timer.MessageTask;
 import com.graduate.utils.excel.exception.FormatException;
@@ -50,7 +52,8 @@ public class SupervisorApplicationTests {
 	@Autowired
 	private CourseService<Course> courseService;
 
-
+    @Autowired
+    private SparetimeService<SpareTime> sparetimeService;
 	@Test
 	public void contextLoads() {
 		//System.out.println(timeService.calTimeByWeekAndDay(1,1));
@@ -82,6 +85,15 @@ public class SupervisorApplicationTests {
 //		}catch (Exception e){
 //			e.printStackTrace();
 //		}
+        try {
+            List<Course> courses = courseService.findAll();
+//            List<SpareTime> spareTimes = courseService.autoCreateSpareTime(courses,1l,1l);
+//            System.out.println(spareTimes);
+//            sparetimeService.save(spareTimes);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 
 	}
 

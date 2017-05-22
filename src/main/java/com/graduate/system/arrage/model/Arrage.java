@@ -1,5 +1,10 @@
 package com.graduate.system.arrage.model;
 
+import com.graduate.system.college.model.College;
+import com.graduate.system.course.model.Course;
+import com.graduate.system.teacher.model.Teacher;
+import com.graduate.system.user.model.User;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,12 +24,22 @@ public class Arrage {
 
     @Column(nullable=false,name = "course_id")
     private Long courseId;//课程id
+    @OneToOne(cascade = {CascadeType.PERSIST} )
+    @JoinColumn(name="course_id",referencedColumnName = "id",insertable = false,updatable = false)
+    private Course course;
+
 
     @Column(nullable=false,name = "college_id")
     private Long  collegeId;//学院id
+    @OneToOne(cascade = {CascadeType.PERSIST} )
+    @JoinColumn(name="college_id",referencedColumnName = "id",insertable = false,updatable = false)
+    private College college;
 
     @Column(nullable=false,name = "tid")
     private Long tid;//教师id
+    @OneToOne(cascade = {CascadeType.PERSIST} )
+    @JoinColumn(name="tid",referencedColumnName = "id",insertable = false,updatable = false)
+    private Teacher teacher;
 
     @Column(nullable=false,name = "groups")
     private String groups;//督导组
@@ -80,5 +95,29 @@ public class Arrage {
 
     public void setGroups(String groups) {
         this.groups = groups;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public College getCollege() {
+        return college;
+    }
+
+    public void setCollege(College college) {
+        this.college = college;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 }
