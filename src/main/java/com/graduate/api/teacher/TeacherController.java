@@ -32,7 +32,7 @@ public class TeacherController {
     private TeacherService<Teacher> teacherService;
 
     @ApiOperation(value="新增老师", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
     @RequestMapping(value={"/create"}, method= RequestMethod.POST)
     public BaseJsonData createTeacher(@RequestBody Teacher teacher) {
         BaseJsonData data = new BaseJsonData();
@@ -47,7 +47,7 @@ public class TeacherController {
     }
 
     @ApiOperation(value="获取老师列表", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
     @RequestMapping(value={"/list"}, method=RequestMethod.POST)
     public BaseJsonData getTeacherList(
             @ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
@@ -75,7 +75,7 @@ public class TeacherController {
     }
 
     @ApiOperation(value="删除老师", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
     @RequestMapping(value={"/delete"}, method=RequestMethod.POST)
     public BaseJsonData deleteTeacherList(@RequestBody List<Teacher> teacher) {
         BaseJsonData data = new BaseJsonData();
@@ -90,7 +90,7 @@ public class TeacherController {
     }
 
     @ApiOperation(value="修改老师", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
     @RequestMapping(value={"/update"}, method=RequestMethod.POST)
     public BaseJsonData updateTeacherList(@RequestBody Teacher teacher) {
         BaseJsonData data = new BaseJsonData();
@@ -101,6 +101,22 @@ public class TeacherController {
             e.printStackTrace();
             logger.error(e.getMessage(),e);
             return data.fail(e.getMessage());
+        }
+    }
+
+    @ApiOperation(value="获取全部老师列表", notes="")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
+    @RequestMapping(value={"/list/all"}, method=RequestMethod.POST)
+    public BaseJsonData getAllTeacherList(
+            @ApiParam(value = "学院id")@RequestParam(value = "cid") Long cid
+    ) {
+        try{
+            List<Teacher> list=teacherService.findTeacherBycid(cid);
+            return BaseJsonData.ok(JSON.toJSON(list));
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return BaseJsonData.fail(e.getMessage());
         }
     }
 
