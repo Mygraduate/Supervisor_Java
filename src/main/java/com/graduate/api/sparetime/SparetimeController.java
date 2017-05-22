@@ -138,6 +138,7 @@ public class SparetimeController {
                 if(!list.containsKey(String.valueOf(s.getUid()))){
                     SumDTO sum=new SumDTO();
                     sum.setUid(s.getUid());
+                    sum.setCid(cid);
                     sum.setName(s.getUser().getTeacher().getName());
                     int[] a={s.getWeek()};
                     sum.setSpareweek(a);
@@ -211,7 +212,7 @@ public class SparetimeController {
 
                 @Override
                 public List<SumDTO> getContent() {
-                    return sumDTOList.subList(getNumber()*getSize(),getNumber()*getSize()+getNumberOfElements()-1);
+                    return sumDTOList.subList(getNumber()*getSize(),getNumber()*getSize()+getNumberOfElements());
                 }
 
                 @Override

@@ -7,6 +7,7 @@ import java.util.Arrays;
  */
 public class SumDTO {
     private Long uid;
+    private Long cid;
     private int[] spareweek;
     private  String name;
 
@@ -34,6 +35,14 @@ public class SumDTO {
         this.name = name;
     }
 
+    public Long getCid() {
+        return cid;
+    }
+
+    public void setCid(Long cid) {
+        this.cid = cid;
+    }
+
     public SumDTO() {
     }
 
@@ -41,6 +50,7 @@ public class SumDTO {
     public String toString() {
         return "SumDTO{" +
                 "uid=" + uid +
+                ", cid=" + cid +
                 ", spareweek=" + Arrays.toString(spareweek) +
                 ", name='" + name + '\'' +
                 '}';
