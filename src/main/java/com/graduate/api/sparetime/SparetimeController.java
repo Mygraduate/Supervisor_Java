@@ -8,6 +8,7 @@ import com.graduate.system.course.service.CourseService;import com.graduate.syst
 import com.graduate.system.sparetime.service.SparetimeService;
 import com.graduate.system.user.model.User;
 import com.graduate.system.user.service.UserService;
+import com.graduate.utils.DateUtil;
 import com.graduate.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,7 +16,11 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,16 +61,16 @@ public class SparetimeController {
     @ApiOperation(value="获取用户空闲列表", notes="")
     @RequestMapping(value={"/list"}, method=RequestMethod.POST)
     public BaseJsonData getusersparetime(
-            @ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
-            @ApiParam(value = "页长")@RequestParam(value = "pageSize") Integer pageSize,
-            @ApiParam(value = "用户id")@RequestParam(value = "uid") Long uid
+            @ApiParam(value = "用户id")@RequestParam(value = "uid") Long uid,
+            @ApiParam(value = "week")@RequestParam(value = "week") Integer week
     ){
         try{
             HashMap<String,Object> searchVals = new HashMap<>();
             searchVals.put("uid",uid);
+            searchVals.put("week",week);
             HashMap<String,String> orderVals = new HashMap<>();
             orderVals.put("week","ASC");
-            Page<SpareTime> page = sparetimeService.findAll(pageNo,pageSize,orderVals,searchVals);
+            List<SpareTime> page = sparetimeService.findAll(searchVals,orderVals);
             return BaseJsonData.ok(JSON.toJSON(page));
         }catch (Exception e){
             e.printStackTrace();
@@ -121,7 +126,9 @@ public class SparetimeController {
 
     @ApiOperation(value="获取督导员已填写空闲时间", notes="")
     @RequestMapping(value={"/getsparetime"}, method=RequestMethod.POST)
-    public BaseJsonData getusersparetime(
+    public BaseJsonData getsparetime(
+            @ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
+            @ApiParam(value = "页长")@RequestParam(value = "pageSize") Integer pageSize,
             @ApiParam(value = "学院id")@RequestParam(value = "cid") Long cid
     ){
         try{
@@ -132,20 +139,136 @@ public class SparetimeController {
                     SumDTO sum=new SumDTO();
                     sum.setUid(s.getUid());
                     sum.setName(s.getUser().getTeacher().getName());
-                    sum.setSpareweek(String.valueOf(s.getWeek()));
+                    int[] a={s.getWeek()};
+                    sum.setSpareweek(a);
                     list.put(String.valueOf(s.getUid()),sum);
                 }
                 else{
                     SumDTO weeks = list.get(String.valueOf(s.getUid()));
+                    int[] intArray = weeks.getSpareweek();
+                    String result = "";
+                    for (int i = 0; i < intArray.length; i++)
+                    {
+                        if (result!="")
+                            result += "," + intArray[i];
+                        else
+                            result = String.valueOf(intArray[i]);
+                    }
                     List sp = new ArrayList();
-                    sp = Arrays.asList(weeks.getSpareweek().split(","));
+                    sp = Arrays.asList(result.split(","));
                     if(!sp.contains(String.valueOf(s.getWeek()))){
-                        weeks.setSpareweek(weeks.getSpareweek()+","+String.valueOf(s.getWeek()));
+                        String str=result+","+String.valueOf(s.getWeek());
+                        String strr[] = str.split(",");
+                        int array[] = new int[strr.length];
+                        for(int i=0;i<strr.length;i++) {
+                            array[i] = Integer.parseInt(strr[i]);
+                        }
+                        weeks.setSpareweek(array);
                     }
                 }
             }
-            return BaseJsonData.ok(list);
 
+            List<SumDTO> sumDTOList =new ArrayList<>();
+            for (SumDTO in : list.values()) {
+                sumDTOList.add(in);
+            }
+            Page<SumDTO> sumDTOPage = new Page<SumDTO>() {
+                @Override
+                public int getTotalPages() {
+                    return (int)Math.ceil((double)sumDTOList.size()/pageSize);
+                }
+
+                @Override
+                public long getTotalElements() {
+                    return sumDTOList.size();
+                }
+
+                @Override
+                public <S> Page<S> map(Converter<? super SumDTO, ? extends S> converter) {
+                    return null;
+                }
+
+                @Override
+                public int getNumber() {
+                    return pageNo-1;
+                }
+
+                @Override
+                public int getSize() {
+                    return pageSize;
+                }
+
+                @Override
+                public int getNumberOfElements() {
+                    if(isFirst()){
+                        return (int)getTotalElements();
+                    }
+                    if(isLast()){
+                        return (int)getTotalElements()-getNumber()*getSize();
+                    }
+                    return 0;
+                }
+
+                @Override
+                public List<SumDTO> getContent() {
+                    return sumDTOList.subList(getNumber()*getSize(),getNumber()*getSize()+getNumberOfElements()-1);
+                }
+
+                @Override
+                public boolean hasContent() {
+                    if(sumDTOList==null){
+                        return false;
+                    }
+                    return true;
+                }
+
+                @Override
+                public Sort getSort() {
+                    return null;
+                }
+
+                @Override
+                public boolean isFirst() {
+                    if(getNumber()==0){
+                        return true;
+                    }
+                    return false;
+                }
+
+                @Override
+                public boolean isLast() {
+                    if(getNumber()==getTotalPages()-1){
+                        return true;
+                    }
+                    return false;
+                }
+
+                @Override
+                public boolean hasNext() {
+                    return false;
+                }
+
+                @Override
+                public boolean hasPrevious() {
+                    return false;
+                }
+
+                @Override
+                public Pageable nextPageable() {
+                    return null;
+                }
+
+                @Override
+                public Pageable previousPageable() {
+                    return null;
+                }
+
+                @Override
+                public Iterator<SumDTO> iterator() {
+                    return sumDTOList.iterator();
+                }
+            };
+            return BaseJsonData.ok(sumDTOPage);
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(),e);

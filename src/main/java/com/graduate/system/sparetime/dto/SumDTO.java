@@ -7,7 +7,7 @@ import java.util.Arrays;
  */
 public class SumDTO {
     private Long uid;
-    private String spareweek;
+    private int[] spareweek;
     private  String name;
 
     public Long getUid() {
@@ -18,11 +18,11 @@ public class SumDTO {
         this.uid = uid;
     }
 
-    public String getSpareweek() {
+    public int[] getSpareweek() {
         return spareweek;
     }
 
-    public void setSpareweek(String spareweek) {
+    public void setSpareweek(int[] spareweek) {
         this.spareweek = spareweek;
     }
 
@@ -41,7 +41,7 @@ public class SumDTO {
     public String toString() {
         return "SumDTO{" +
                 "uid=" + uid +
-                ", spareweek='" + spareweek + '\'' +
+                ", spareweek=" + Arrays.toString(spareweek) +
                 ", name='" + name + '\'' +
                 '}';
     }
