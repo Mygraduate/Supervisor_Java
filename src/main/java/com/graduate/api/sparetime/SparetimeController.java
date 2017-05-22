@@ -1,9 +1,10 @@
 package com.graduate.api.sparetime;
 
+import com.alibaba.fastjson.JSON;
 import com.graduate.common.BaseJsonData;
-import com.graduate.system.course.model.Course;
-import com.graduate.system.course.service.CourseService;
-import com.graduate.system.sparetime.model.SpareTime;
+
+import com.graduate.system.sparetime.dto.SumDTO;import com.graduate.system.course.model.Course;
+import com.graduate.system.course.service.CourseService;import com.graduate.system.sparetime.model.SpareTime;
 import com.graduate.system.sparetime.service.SparetimeService;
 import com.graduate.system.user.model.User;
 import com.graduate.system.user.service.UserService;
@@ -18,9 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Administrator on 2017/5/19.
@@ -67,8 +66,7 @@ public class SparetimeController {
             HashMap<String,String> orderVals = new HashMap<>();
             orderVals.put("week","ASC");
             Page<SpareTime> page = sparetimeService.findAll(pageNo,pageSize,orderVals,searchVals);
-            return BaseJsonData.ok(page);
-
+            return BaseJsonData.ok(JSON.toJSON(page));
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(),e);
@@ -121,6 +119,41 @@ public class SparetimeController {
         }
     }
 
+    @ApiOperation(value="获取督导员已填写空闲时间", notes="")
+    @RequestMapping(value={"/getsparetime"}, method=RequestMethod.POST)
+    public BaseJsonData getusersparetime(
+            @ApiParam(value = "学院id")@RequestParam(value = "cid") Long cid
+    ){
+        try{
+            List<SpareTime> spareTimeList=sparetimeService.findSpareTimeBycid(cid);
+            HashMap<String,SumDTO> list=new HashMap<>();
+            for (SpareTime s: spareTimeList) {
+                if(!list.containsKey(String.valueOf(s.getUid()))){
+                    SumDTO sum=new SumDTO();
+                    sum.setUid(s.getUid());
+                    sum.setName(s.getUser().getTeacher().getName());
+                    sum.setSpareweek(String.valueOf(s.getWeek()));
+                    list.put(String.valueOf(s.getUid()),sum);
+                }
+                else{
+                    SumDTO weeks = list.get(String.valueOf(s.getUid()));
+                    List sp = new ArrayList();
+                    sp = Arrays.asList(weeks.getSpareweek().split(","));
+                    if(!sp.contains(String.valueOf(s.getWeek()))){
+                        weeks.setSpareweek(weeks.getSpareweek()+","+String.valueOf(s.getWeek()));
+                    }
+                }
+            }
+            return BaseJsonData.ok(list);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return BaseJsonData.fail(e.getMessage());
+        }
+    }
+
+
     @ApiOperation(value="自动填补空闲时间", notes="")
     @RequestMapping(value={"/auto/create"}, method=RequestMethod.POST)
     public BaseJsonData autoCreateUserSparetime(
@@ -155,5 +188,4 @@ public class SparetimeController {
             return data.fail(e.getMessage());
         }
     }
-
 }

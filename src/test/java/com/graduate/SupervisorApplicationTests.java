@@ -102,7 +102,7 @@ public class SupervisorApplicationTests {
             HashMap<String,String> orderVals = new HashMap<>();
             orderVals.put("week","ASC");
             List<Course> courses = courseService.findAll(searchVals,orderVals);
-            List<SpareTime> spareTimes = sparetimeService.findSpareTimeBytid(1l);
+            List<SpareTime> spareTimes = sparetimeService.findSpareTimeBycid(1l);
             ArrageConfig config = new ArrageConfig();
             config.setApercent(100);
             config.setDayListen(1);

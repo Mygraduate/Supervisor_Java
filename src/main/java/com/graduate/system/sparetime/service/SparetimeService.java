@@ -25,7 +25,9 @@ public class SparetimeService<T> extends BaseService<T> {
 
     public List<SpareTime> findSpareTimeByuid(Long uid){return mapper.findSpareTimeByuid(uid);}
 
-    public List<SpareTime> findSpareTimeBytid(Long cid){return mapper.findSpareTimeBycid(cid);}
+    public List<SpareTime> findSpareTimeBycid(Long cid){return mapper.findSpareTimeBycid(cid);}
+
+
 
     public List<SpareTime> autoCreateSpareTime(List<Course> courses, Long cid, Long uid, int startWeek, int endWeek){
         List<SpareTime> times = new ArrayList<>();
@@ -41,6 +43,4 @@ public class SparetimeService<T> extends BaseService<T> {
             }
         }
         return times;
-    }
-
-}
+    }}

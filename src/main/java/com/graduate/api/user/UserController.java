@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.graduate.api.course.CourseController;
 import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
+import com.graduate.system.user.model.Role;
 import com.graduate.system.user.model.User;
 import com.graduate.system.user.model.UserAndRole;
+import com.graduate.system.user.service.RoleService;
 import com.graduate.system.user.service.UserAndRoleService;
 import com.graduate.system.user.service.UserService;
 import io.swagger.annotations.*;
@@ -36,6 +38,9 @@ public class UserController extends BaseController {
 
     @Autowired
     private UserService<User> userService;
+
+    @Autowired
+    private RoleService<Role> roleService;
 
 
     @ApiOperation(value="获取用户列表", notes="")
@@ -124,4 +129,20 @@ public class UserController extends BaseController {
             return data.fail(e.getMessage());
         }
     }
+
+    @ApiOperation(value="角色列表", notes="")
+    @RequestMapping(value={"/role"}, method=RequestMethod.POST)
+    public BaseJsonData getRoleList() {
+        BaseJsonData data = new BaseJsonData();
+        try{
+            List<Role> r=roleService.findAll();
+            return data.ok(r);
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return data.fail(e.getMessage());
+        }
+    }
+
+
 }

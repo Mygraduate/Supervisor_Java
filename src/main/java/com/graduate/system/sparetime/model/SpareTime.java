@@ -1,5 +1,7 @@
 package com.graduate.system.sparetime.model;
 
+import com.graduate.system.user.model.User;
+
 import javax.persistence.*;
 
 /**
@@ -15,6 +17,11 @@ public class SpareTime {
 
     @Column(nullable=false,name = "uid")
     private Long uid;//用户id
+
+    @ManyToOne(cascade = CascadeType.PERSIST  )
+    @JoinColumn(name="uid",referencedColumnName = "id",insertable = false,updatable = false)
+    private User user;
+
     @Column(nullable=false,name = "cid")
     private Long  cid;//学院id
 
@@ -86,6 +93,14 @@ public class SpareTime {
         this.cid = cid;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public SpareTime() {
     }
 
@@ -94,6 +109,7 @@ public class SpareTime {
         return "SpareTime{" +
                 "id=" + id +
                 ", uid=" + uid +
+                ", user=" + user +
                 ", cid=" + cid +
                 ", week=" + week +
                 ", day=" + day +
