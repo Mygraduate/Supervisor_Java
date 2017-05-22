@@ -49,7 +49,6 @@ public class CollegeController extends BaseController {
     }
 
     @ApiOperation(value="获取学院列表", notes="")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value={"/list"}, method=RequestMethod.POST)
     public BaseJsonData getCollegeList(
             @ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
@@ -102,19 +101,16 @@ public class CollegeController extends BaseController {
         }
     }
 
-//    @ApiOperation(value="根据学院id获取学院信息", notes="")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @RequestMapping(value={"/collegeinfoByid"}, method=RequestMethod.POST)
-//    public BaseJsonData getcollegeInfoByid(@RequestParam("id") Long id) {
-//        BaseJsonData data = new BaseJsonData();
-//        try{
-//            College collegeInfo = collegeService.findCollegeByid(id);
-//            return data.ok(collegeInfo);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            logger.error(e.getMessage(),e);
-//            return data.fail(e.getMessage());
-//        }
-//    }
-//
+    @ApiOperation(value="获取学院列表", notes="")
+    @RequestMapping(value={"/list/all"}, method=RequestMethod.POST)
+    public BaseJsonData getCollegeList() {
+        try{
+            List<College> collegelist=collegeService.findAll();
+            return BaseJsonData.ok(JSON.toJSON(collegelist));
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return BaseJsonData.fail(e.getMessage());
+        }
+    }
 }
