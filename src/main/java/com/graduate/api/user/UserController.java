@@ -28,7 +28,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("api/account")     // 通过这里配置使下面的映射都在/users下，可去除
-@Api(value = "api/account", description = "用户登录公用接口")
+@Api(value = "api/account", description = "用户接口")
 public class UserController extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);

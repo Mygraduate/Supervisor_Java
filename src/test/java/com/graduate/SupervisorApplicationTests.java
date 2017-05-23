@@ -7,11 +7,14 @@ import com.graduate.common.TimeService;
 import com.graduate.system.arrage.dto.ArrageConfig;
 import com.graduate.system.arrage.model.Arrage;
 import com.graduate.system.college.model.College;
+import com.graduate.system.college.service.CollegeService;
 import com.graduate.system.course.model.Course;
 import com.graduate.system.course.service.CourseService;
 import com.graduate.system.sparetime.model.SpareTime;
 import com.graduate.system.sparetime.service.SparetimeService;
 import com.graduate.system.teacher.model.Teacher;
+import com.graduate.system.user.model.Role;
+import com.graduate.system.user.service.RoleService;
 import com.graduate.timer.MessageTask;
 import com.graduate.utils.ArrageUtil;
 import com.graduate.utils.excel.exception.FormatException;
@@ -59,6 +62,12 @@ public class SupervisorApplicationTests {
 
     @Autowired
     private SparetimeService<SpareTime> sparetimeService;
+
+    @Autowired
+    private CollegeService<College> collegeService;
+
+    @Autowired
+    private RoleService<Role> roleService;
 	@Test
 	public void contextLoads() {
 		//System.out.println(timeService.calTimeByWeekAndDay(1,1));
@@ -96,31 +105,43 @@ public class SupervisorApplicationTests {
 //        }catch (Exception e){
 //            e.printStackTrace();
 //        }
+//        try {
+//            HashMap<String,Object> searchVals = new HashMap<>();
+//            searchVals.put("cid",1l);
+//            HashMap<String,String> orderVals = new HashMap<>();
+//            orderVals.put("week","ASC");
+//            List<Course> courses = courseService.findAll(searchVals,orderVals);
+//            List<SpareTime> spareTimes = sparetimeService.findSpareTimeBycid(1l);
+//            ArrageConfig config = new ArrageConfig();
+//            config.setApercent(100);
+//            config.setDayListen(1);
+//            config.setWeekListen(2);
+//            config.setMaxPeople(3);
+//            config.setMinPeople(1);
+//            config.setTotal(20);
+//            config.setStartDay(1);
+//            config.setStartWeek(1);
+//            config.setEndWeek(20);
+//            List<Arrage> arrages = new ArrayList<>();
+//
+//            System.out.println("安排的总体情况："+JSON.toJSON(ArrageUtil.autoCreateArrage(arrages,courses,spareTimes,config)));
+//            System.out.println("已经安排的空闲时间："+JSON.toJSON(spareTimes));
+//            System.out.println("所有的听课安排："+JSON.toJSON(arrages));
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
         try {
-            HashMap<String,Object> searchVals = new HashMap<>();
-            searchVals.put("cid",1l);
-            HashMap<String,String> orderVals = new HashMap<>();
-            orderVals.put("week","ASC");
-            List<Course> courses = courseService.findAll(searchVals,orderVals);
-            List<SpareTime> spareTimes = sparetimeService.findSpareTimeBycid(1l);
-            ArrageConfig config = new ArrageConfig();
-            config.setApercent(100);
-            config.setDayListen(1);
-            config.setWeekListen(2);
-            config.setMaxPeople(3);
-            config.setMinPeople(1);
-            config.setTotal(20);
-            config.setStartDay(1);
-            config.setStartWeek(1);
-            config.setEndWeek(20);
-            List<Arrage> arrages = new ArrayList<>();
-            System.out.println(JSON.toJSONString(ArrageUtil.autoCreateArrage(arrages,courses,spareTimes,config)));
-            System.out.println(JSON.toJSONString(arrages));
+            List<College> colleges = collegeService.findAll();
+            List<Role> roles = roleService.findAll();
+
+            for(College college:colleges){
+                college.setDes("修改");
+            }
+            roleService.save(roles);
         }catch (Exception e){
             e.printStackTrace();
         }
-
-	}
+    }
 
 	//分页
 	public Pageable buildPageRequest(HttpServletRequest request){

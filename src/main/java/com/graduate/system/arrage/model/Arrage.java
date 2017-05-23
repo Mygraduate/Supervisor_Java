@@ -24,20 +24,21 @@ public class Arrage {
 
     @Column(nullable=false,name = "course_id")
     private Long courseId;//课程id
-    @OneToOne(cascade = {CascadeType.PERSIST} )
+    @OneToOne(cascade = {CascadeType.REFRESH} )
     @JoinColumn(name="course_id",referencedColumnName = "id",insertable = false,updatable = false)
     private Course course;
 
 
     @Column(nullable=false,name = "college_id")
     private Long  collegeId;//学院id
-    @OneToOne(cascade = {CascadeType.PERSIST} )
+
+    @OneToOne(cascade = {CascadeType.REFRESH} )
     @JoinColumn(name="college_id",referencedColumnName = "id",insertable = false,updatable = false)
     private College college;
 
     @Column(nullable=false,name = "tid")
     private Long tid;//教师id
-    @OneToOne(cascade = {CascadeType.PERSIST} )
+    @OneToOne(cascade = {CascadeType.REFRESH} )
     @JoinColumn(name="tid",referencedColumnName = "id",insertable = false,updatable = false)
     private Teacher teacher;
 

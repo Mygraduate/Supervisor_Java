@@ -34,14 +34,19 @@ public class CourseService<T> extends BaseService<T> {
         return mapper;
     }
 
-    @Transactional
-    public void deleteByTid(Long tid){
-        mapper.deleteByTid(tid);
-    }
 
     public List<Course> findAllByTid(Long tid){
         return mapper.findAllByTid(tid);
     }
 
+    public void updateStautsById(Integer status ,Long id){
+        Course course = mapper.findOne(id);
+        course.setIsArrange(status);
+        mapper.save(course);
+    }
+
+    public Course findCourseById(Long id){
+        return mapper.findOne(id);
+    }
 
 }

@@ -38,4 +38,17 @@ public class UserService<T> extends BaseService<T> {
         return mapper.findUserByUsername(username);
     }
 
+    public String findAllUserNameByIds(String [] ids){
+        String name = "";
+        for(int i = 0; i<ids.length;i++){
+            User user = mapper.findOne(Long.valueOf(ids[i]));
+            if(user.getTid() != null && user.getTeacher() != null){
+                name = name +","+user.getTeacher().getName();
+            }else{
+                name = name +","+user.getUsername();
+            }
+        }
+        return  name.substring(1);
+    }
+
 }

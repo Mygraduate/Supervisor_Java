@@ -18,5 +18,7 @@ public interface SpareTimeDao extends BaseDao<SpareTime> {
 
     List<SpareTime> findSpareTimeBycid(Long cid);//查询整个学院的督导员空闲时间}
 
+    List<SpareTime> findSpareTimeByCidAndWeekAndDay(Long cid,Integer week,Integer day);//根据周次和天数查询空闲时间列表
+
 
 }

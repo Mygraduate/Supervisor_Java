@@ -3,11 +3,15 @@ package com.graduate.system.arrage.service;
 import com.graduate.common.BaseDao;
 import com.graduate.common.BaseService;
 import com.graduate.system.arrage.dao.ArrageDao;
+import com.graduate.system.arrage.dto.ArrageConfig;
+import com.graduate.system.arrage.dto.SpareTimeConfig;
 import com.graduate.system.arrage.model.Arrage;
 import com.graduate.system.college.dao.CollegeDao;
 import com.graduate.system.college.model.College;
 import com.graduate.system.course.model.Course;
+import com.graduate.system.sparetime.model.SpareTime;
 import com.graduate.system.user.model.User;
+import com.graduate.utils.ArrageUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.formula.functions.T;
@@ -21,6 +25,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by konglinghai on 2017/5/20.
@@ -49,11 +54,6 @@ public class ArrageService<T>  extends BaseService<T>{
                     );
                 }
 
-                if (vals.get("supervisor") != null && StringUtils.isNoneBlank(vals.get("supervisor").toString())) {
-                    predicate.getExpressions().add(
-                            criteriaBuilder.equal(root.<String>get("supervisor"),vals.get("supervisor"))
-                    );
-                }
 
                 if (vals.get("week") != null && NumberUtils.isNumber(vals.get("week").toString())) {
                     predicate.getExpressions().add(
@@ -77,4 +77,11 @@ public class ArrageService<T>  extends BaseService<T>{
         },buildPage(pageNo,pageSize,orderVals));
     }
 
+    public List<SpareTimeConfig> autoCreateArrage(List<Arrage> arrages, List<Course> courses, List<SpareTime> times, ArrageConfig config){
+        return ArrageUtil.autoCreateArrage(arrages,courses,times,config);
+    }
+
+    public List<Arrage> findAllByCidAndStatus(Long cid,Integer status){
+        return mapper.findAllByCidAndStatus(cid,status);
+    }
 }

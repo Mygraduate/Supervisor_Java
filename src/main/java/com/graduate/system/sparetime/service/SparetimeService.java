@@ -43,4 +43,19 @@ public class SparetimeService<T> extends BaseService<T> {
             }
         }
         return times;
-    }}
+    }
+
+    public void updateByUidAndTime(String [] uids,Long cid,Integer week,Integer day,Integer status){
+        List<SpareTime> spareTimes = mapper.findSpareTimeByCidAndWeekAndDay(cid,week,day);
+        List<SpareTime> updateList = new ArrayList<>();
+        for(SpareTime time : spareTimes){
+            for(String uid : uids){
+                if(time.getUid().equals(Long.valueOf(uid))){
+                    time.setIsArrange(status);
+                    updateList.add(time);
+                }
+            }
+        }
+        mapper.save(updateList);
+    }
+}

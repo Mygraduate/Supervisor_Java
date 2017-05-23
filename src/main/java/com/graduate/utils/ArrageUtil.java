@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import static org.apache.coyote.http11.Constants.a;
+
 
 /**
  * Created by konglinghai on 2017/5/20.
@@ -112,6 +114,7 @@ public class ArrageUtil {
     private static void createArrage(List<Arrage> arrages,String group,Course course,List<SpareTimeConfig> configs){
         course.setIsArrange(1);
         Arrage arrage = new Arrage();
+        arrage.setCourse(course);
         arrage.setStatus(0);
         arrage.setCollegeId(course.getCid());
         arrage.setCourseId(course.getId());
@@ -175,6 +178,7 @@ public class ArrageUtil {
         }
         return classtype;
     }
+
     //根据天数寻找未安排听课的课程
     private static List<Course> findListByDay(List<Course> courses,int day){
         List<Course> results = new ArrayList<>();
@@ -186,6 +190,7 @@ public class ArrageUtil {
         return results;
     }
 
+    //判断该用户日听课次数和周听课次数是否满足
     private static boolean isAppease(SpareTime time,List<SpareTimeConfig> spareTimeConfigs,ArrageConfig config){
         for(SpareTimeConfig spareTimeConfig : spareTimeConfigs){
             if(time.getUid().equals(spareTimeConfig.getUid())){
@@ -197,16 +202,34 @@ public class ArrageUtil {
         return false;
     }
 
+    //周听课次数归零
     private static void restSpareTimeConfigWeek(List<SpareTimeConfig> spareTimeConfigs){
         for(SpareTimeConfig config : spareTimeConfigs){
             config.restWeek();
         }
     }
 
+    //日听课次数归零
     private static void restSpareTimeConfigDay(List<SpareTimeConfig> spareTimeConfigs){
         for(SpareTimeConfig config : spareTimeConfigs){
             config.restDay();
         }
+    }
+
+    //根据最终的课程表更新已安排的空闲时间
+    private static  void updateSpareTimeByArrage(List<Arrage> arrages,List<SpareTime> spareTimes){
+        List<SpareTime> arrageSpareTimes = new ArrayList<>();
+        for(Arrage arrage : arrages){
+            Course course = arrage.getCourse();
+            for(SpareTime spareTime : spareTimes){
+                if(course.getWeek().equals(spareTime.getWeek())&&course.getDay().equals(spareTime.getDay())){
+                    spareTime.setIsArrange(1);
+                    arrageSpareTimes.add(spareTime);
+                }
+            }
+        }
+        spareTimes.clear();
+        BeanMapper.copy(arrageSpareTimes,spareTimes);
     }
 
 }
