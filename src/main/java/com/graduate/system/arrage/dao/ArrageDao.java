@@ -13,5 +13,5 @@ import java.util.List;
  */
 @Repository
 public interface ArrageDao extends BaseDao<Arrage> {
-    List<Arrage> findAllByCidAndStatus(Long cid, Integer status);
+    List<Arrage> findAllByCollegeIdAndStatus(Long cid, Integer status);
 }

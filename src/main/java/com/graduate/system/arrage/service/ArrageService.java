@@ -82,6 +82,6 @@ public class ArrageService<T>  extends BaseService<T>{
     }
 
     public List<Arrage> findAllByCidAndStatus(Long cid,Integer status){
-        return mapper.findAllByCidAndStatus(cid,status);
+        return mapper.findAllByCollegeIdAndStatus(cid,status);
     }
 }
