@@ -6,6 +6,9 @@ import com.graduate.api.auth.service.AuthService;
 import com.graduate.common.BaseJsonData;
 import com.graduate.config.secruity.JwtAuthenticationRequest;
 import com.graduate.config.secruity.JwtAuthenticationResponse;
+import com.graduate.system.user.model.User;
+import com.graduate.system.user.model.UserAndRole;
+import com.graduate.system.user.service.UserAndRoleService;
 import com.graduate.system.user.service.UserService;
 import com.graduate.timer.MessageTask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,9 @@ public class AuthController {
     private UserService userService;
 
     @Autowired
+    private UserAndRoleService userAndRoleService;
+
+    @Autowired
     private MessageTask task;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -48,7 +54,9 @@ public class AuthController {
             data.setCode(1);
             data.setMsg("登陆成功");
             map.put("token",tokenHead+" "+token);
-            map.put("user",userService.findUserByname(authenticationRequest.getUsername()));
+            User user =userService.findUserByname(authenticationRequest.getUsername());
+            UserAndRole userAndRole=userAndRoleService.findRoleByUid(user.getId());
+            map.put("user",userAndRole);
             data.setData(map);
         }catch (UsernameNotFoundException userNoFoundEex){
            data.setMsg(userNoFoundEex.getMessage());
