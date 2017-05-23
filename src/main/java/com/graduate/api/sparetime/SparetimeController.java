@@ -8,11 +8,13 @@ import com.graduate.system.course.service.CourseService;import com.graduate.syst
 import com.graduate.system.sparetime.service.SparetimeService;
 import com.graduate.system.user.model.User;
 import com.graduate.system.user.service.UserService;
+import com.graduate.utils.CourseUtil;
 import com.graduate.utils.DateUtil;
 import com.graduate.utils.UserUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+
+import static com.graduate.utils.CourseUtil.buildScope;
 
 /**
  * Created by Administrator on 2017/5/19.
@@ -312,4 +316,30 @@ public class SparetimeController {
             return data.fail(e.getMessage());
         }
     }
+
+    @ApiOperation(value="根据周天节次获取最优督导员列表")
+    @RequestMapping(value={"/page/optimal"}, method=RequestMethod.POST)
+    public BaseJsonData getOptimalSupervisorPage(
+            @ApiParam(value = "cid")@RequestParam(value = "cid") Long cid,
+            @ApiParam(value = "周数")@RequestParam(value = "week") Integer week,
+            @ApiParam(value = "天数")@RequestParam(value = "day") Integer day,
+            @ApiParam(value = "节次")@RequestParam(value = "scope") String scope
+    ) {
+        BaseJsonData data = new BaseJsonData();
+        try{
+            List<SpareTime> list = new ArrayList<>();
+            String scopes = CourseUtil.buildScope(scope);//将1-3，转成1,2,3
+            for(SpareTime time : sparetimeService.findSpareTimeByCidAndWeekAndDay(cid,week,day)){
+                if(StringUtils.contains(time.getScope(),scopes)){
+                   list.add(time);
+                }
+            }
+            return data.ok(list);
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return data.fail(e.getMessage());
+        }
+    }
+
 }

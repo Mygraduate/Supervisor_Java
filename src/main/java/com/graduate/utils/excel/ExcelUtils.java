@@ -1,5 +1,6 @@
 package com.graduate.utils.excel;
 
+import com.graduate.system.arrage.model.Arrage;
 import com.graduate.system.course.model.Course;
 import com.graduate.system.course.service.CourseService;
 import com.graduate.utils.BeanMapper;
@@ -11,11 +12,10 @@ import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.formula.functions.T;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.dozer.DozerBeanMapper;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecgframework.poi.excel.annotation.ExcelEntity;
@@ -239,6 +239,34 @@ public class ExcelUtils {
     }
 
 
+    public static String startExport(List<Arrage> arrages,String title){
+        String savePath ="";
+        // 声明一个工作薄
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        // 生成一个表格
+        HSSFSheet sheet = workbook.createSheet(title);
+
+        //绘制表头
+        HSSFRow row = sheet.createRow(0);
+        row.setHeight((short) 25);
+        HSSFCell cell=row.createCell(0);
+        cell.setCellValue(title);
+        CellStyle titleStyle=workbook.createCellStyle();
+        titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+        HSSFFont titleFont = workbook.createFont();
+        titleFont.setFontHeightInPoints((short) 20);
+        titleFont.setBoldweight((short) 800);
+        titleStyle.setFont(titleFont);
+        cell.setCellStyle(titleStyle);
+        sheet.addMergedRegion(new CellRangeAddress(0,0,0,3));
+
+        int index = 0;
+        for(Arrage arrage : arrages){
+
+        }
+        return savePath;
+
+    }
 
 
 }

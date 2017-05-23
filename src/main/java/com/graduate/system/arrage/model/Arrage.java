@@ -2,6 +2,7 @@ package com.graduate.system.arrage.model;
 
 import com.graduate.system.college.model.College;
 import com.graduate.system.course.model.Course;
+import com.graduate.system.evaluate.model.Evaluate;
 import com.graduate.system.teacher.model.Teacher;
 import com.graduate.system.user.model.User;
 
@@ -10,6 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
 import javax.persistence.*;
+
+import static com.sun.tools.doclint.Entity.ne;
+
 /**
  * Created by konglinghai on 2017/3/19.
  * 督导听课安排表
@@ -48,6 +52,8 @@ public class Arrage {
 
     @Column(nullable=false,name = "status")
     private Integer status;//0：未确定，1：代表是已确定，2：代表是待执行，3：代表已执行
+
+
 
     public Long getId() {
         return id;
@@ -121,4 +127,6 @@ public class Arrage {
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
     }
+
+
 }

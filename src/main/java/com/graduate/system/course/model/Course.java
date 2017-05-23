@@ -59,6 +59,16 @@ public class Course {
     @Column(name = "is_arrange")
     private Integer isArrange = 0;//是否被安排 0：代表未安排 1：代表被安排,默认是0
 
+    private int memberCount = 0;//督导成员数量
+
+    public int getMemberCount() {
+        return memberCount;
+    }
+
+    public void setMemberCount(int memberCount) {
+        this.memberCount = memberCount;
+    }
+
     public Long getCid() {
         return cid;
     }

@@ -6,6 +6,7 @@ import com.graduate.system.course.model.Course;
 import com.graduate.system.sparetime.dao.SpareTimeDao;
 import com.graduate.system.sparetime.model.SpareTime;
 import com.graduate.utils.CourseUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,4 +59,22 @@ public class SparetimeService<T> extends BaseService<T> {
         }
         mapper.save(updateList);
     }
+
+    public  int calCountByWeekAndDay(Long cid, Integer week, Integer day,String scopes){
+        int count = 0;
+        List<SpareTime> spareTimes = mapper.findSpareTimeByCidAndWeekAndDay(cid,week,day);
+        String scope = CourseUtil.buildScope(scopes);//将1-3，转成1,2,3
+        for(SpareTime time : spareTimes){
+            if(StringUtils.contains(time.getScope(),scope)){
+                count++;
+            }
+        }
+        return count;
+
+    }
+
+    public List<SpareTime> findSpareTimeByCidAndWeekAndDay(Long cid, Integer week, Integer day){
+        return mapper.findSpareTimeByCidAndWeekAndDay(cid,week,day);
+    }
+
 }

@@ -5,6 +5,9 @@ import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
 import com.graduate.system.course.model.Course;
 import com.graduate.system.course.service.CourseService;
+import com.graduate.system.sparetime.model.SpareTime;
+import com.graduate.system.sparetime.service.SparetimeService;
+import com.graduate.utils.BeanMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -37,6 +40,9 @@ public class CourseController extends BaseController {
 
     @Autowired
     CourseService<Course> courseService;
+
+    @Autowired
+    SparetimeService<SpareTime> sparetimeService;
 
     @ApiOperation(value="获取课程列表", notes="")
     @RequestMapping(value={"/page"}, method= RequestMethod.POST)
@@ -96,5 +102,39 @@ public class CourseController extends BaseController {
             return BaseJsonData.fail(e.getMessage());
         }
     }
+
+    @ApiOperation(value="获取排课参考列表", notes="")
+    @RequestMapping(value={"/consult"}, method= RequestMethod.POST)
+    public BaseJsonData getConsultPage(
+            @ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
+            @ApiParam(value = "页长")@RequestParam(value = "pageSize") int pageSize,
+            @ApiParam(value = "学院id")@RequestParam(value = "cid") Long cid,
+            @ApiParam(value = "周数")@RequestParam(value = "week",required = false) Integer week,
+            @ApiParam(value = "天数")@RequestParam(value = "day",required = false) Integer day
+           ){
+        try {
+            HashMap<String,Object> searchVals = new HashMap<>();
+            searchVals.put("cid",cid);
+            searchVals.put("week",week);
+            searchVals.put("day",day);
+            HashMap<String,String> orderVals = new HashMap<>();
+            orderVals.put("week","ASC");
+            Page<Course> page =  courseService.findAll(pageNo,pageSize,orderVals,searchVals);
+            for(Course course : page.getContent()){
+                long _cid = course.getCid();
+                int _week = course.getWeek();
+                int _day  = course.getDay();
+                String _scope = course.getScope();
+                int count = sparetimeService.calCountByWeekAndDay(_cid,_week,_day,_scope);
+                course.setMemberCount(count);
+            }
+            return BaseJsonData.ok(page);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return BaseJsonData.fail(e.getMessage());
+        }
+    }
+
 
 }

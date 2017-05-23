@@ -1,5 +1,7 @@
 package com.graduate.system.evaluate.model;
 
+import com.graduate.system.arrage.model.Arrage;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -14,11 +16,16 @@ public class Evaluate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable=false,name = "tid")
-    private Long tid;//教师id
 
     @Column(nullable=false,name = "creator")
     private Long creator;//创建人id
+
+    @Column(name = "arrage_id")
+    private Long arrageId;
+
+    @OneToOne(cascade = {CascadeType.PERSIST} )
+    @JoinColumn(name="arrage_id",referencedColumnName = "id",insertable = false,updatable = false)
+    private Arrage arrage;
 
     @Column(name = "grade")
     private Integer grade = 0;//分数
@@ -35,14 +42,6 @@ public class Evaluate {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getTid() {
-        return tid;
-    }
-
-    public void setTid(Long tid) {
-        this.tid = tid;
     }
 
     public Long getCreator() {
@@ -75,5 +74,21 @@ public class Evaluate {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Long getArrageId() {
+        return arrageId;
+    }
+
+    public void setArrageId(Long arrageId) {
+        this.arrageId = arrageId;
+    }
+
+    public Arrage getArrage() {
+        return arrage;
+    }
+
+    public void setArrage(Arrage arrage) {
+        this.arrage = arrage;
     }
 }

@@ -144,7 +144,7 @@ public class ArrageController extends BaseController {
     @RequestMapping(value="/auto/create", method=RequestMethod.POST)
     public BaseJsonData autoCreateArrage(
             @ApiParam(value = "学院id")@RequestParam(value = "cid") Long cid,
-            @ApiParam(value = "mode create:第一次排课 replace：非第一次排课")@RequestParam(value = "mode") String mode,
+            @ApiParam(value = "mode create:在现有追加 replace：重新生成")@RequestParam(value = "mode") String mode,
             @RequestBody ArrageConfig config
             ) {
         BaseJsonData data = new BaseJsonData();
