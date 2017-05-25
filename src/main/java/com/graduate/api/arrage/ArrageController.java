@@ -70,6 +70,8 @@ public class ArrageController extends BaseController {
     @Autowired
     private WecatService wecatService;
 
+
+
     @ApiOperation(value="获取听课安排列表", notes="")
     @PreAuthorize("hasRole('ROLE_MASTER')")
     @RequestMapping(value={"/list"}, method= RequestMethod.POST)
@@ -216,23 +218,29 @@ public class ArrageController extends BaseController {
     public BaseJsonData sentArragewx(@RequestBody List<Long> ids) {
         BaseJsonData data = new BaseJsonData();
         try{
-            List<Arrage> arrages = new ArrayList<>();
             for(Long id : ids){
                 Arrage arrage = arrageService.findOne(id);
-                arrage.setStatus(1);
                 String [] wxlist=arrage.getGroups().split(",");
+                int index = 0;
                 for (String wx: wxlist) {
                     WxCpMessage.WxArticle article1 = new WxCpMessage.WxArticle();
                     article1.setTitle(arrage.getTeacher().getName()+"听课安排");
                     article1.setPicUrl("http://www.gdmu.edu.cn/images/01.jpg");
-                    article1.setUrl("www.baidu.com");
+                    String url = "";
+                    if(index == 0){
+                        url = wecatService.getUrl()+"/chief?id="+arrage.getId()+"&"+"userId="+wx;
+                    }else{
+                        url = wecatService.getUrl()+"/normal?id="+arrage.getId()+"&"+"userId="+wx;
+                    }
+                    article1.setUrl(url);
                     article1.setDescription(arrage.getCourse().getTime()+"  "+arrage.getCourse().getAddress()+"  "+arrage.getCourse().getName());
                     WxCpMessage message  = WxCpMessage.NEWS()
                             .toUser(wx)
-                            .agentId(1)
+                            .agentId(Integer.valueOf(wecatService.getEvaluateAppId()))
                             .addArticle(article1)
                             .build();
                     wecatService.sendMessage(message);
+                    index ++;
                 }
             }
             return data.ok();

@@ -1,7 +1,6 @@
 package com.graduate.api.college;
 
 import com.alibaba.fastjson.JSON;
-import com.graduate.api.course.CourseController;
 import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
 import com.graduate.system.college.model.College;
@@ -48,7 +47,7 @@ public class CollegeController extends BaseController {
             WxCpDepart wxCpDepart=new WxCpDepart();
             wxCpDepart.setName(college.getName());
             wxCpDepart.setParentId(2);
-            int wxid=wecatService.CreateCollege(wxCpDepart);
+            int wxid=wecatService.createCollege(wxCpDepart);
 
             college.setWecatid(String.valueOf(wxid));
             collegeService.save(college);
@@ -92,7 +91,7 @@ public class CollegeController extends BaseController {
             for (College c: college) {
                 College fc=collegeService.findCollegeByid(c.getId());
                 collegeService.delete(fc);
-                wecatService.DeleteCollege(Integer.parseInt(fc.getWecatid()));
+                wecatService.deleteCollege(Integer.parseInt(fc.getWecatid()));
             }
             return data.ok();
         }catch (Exception e){

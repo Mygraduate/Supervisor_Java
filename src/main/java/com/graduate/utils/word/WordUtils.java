@@ -226,12 +226,11 @@ public class WordUtils {
         cell.setText(replaceText);
 
     }
-    public static void fillChief(HashMap<String,String> data,String saveName)throws Exception{
-        fillTemplate(data,TEMPLATE_CHIEF_PATH,saveName);
+    public static String fillChief(HashMap<String,String> data,String saveName)throws Exception{
+        return fillTemplate(data,TEMPLATE_CHIEF_PATH,saveName);
     }
 
-    public static void fillNormal(HashMap<String,String> data,String saveName)throws Exception{
-        fillTemplate(data,TEMPLATE_NORMAL_PATH,saveName);
-
+    public static String fillNormal(HashMap<String,String> data,String saveName)throws Exception{
+        return fillTemplate(data,TEMPLATE_NORMAL_PATH,saveName);
     }
 }

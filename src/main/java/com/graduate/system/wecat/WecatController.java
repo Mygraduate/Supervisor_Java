@@ -5,10 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.graduate.api.arrage.ArrageController;
 import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
+import com.graduate.common.WordService;
 import com.graduate.system.arrage.model.Arrage;
 import com.graduate.system.arrage.service.ArrageService;
 import com.graduate.system.evaluate.model.Evaluate;
 import com.graduate.system.evaluate.service.EvaluateService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,8 @@ public class WecatController extends BaseController {
     @Autowired
     private EvaluateService<Evaluate> evaluateService;
 
+    @Autowired
+    private WordService wordService;
 
 
     @RequestMapping("/arrage/detail")
@@ -79,17 +83,37 @@ public class WecatController extends BaseController {
             int normal4 = Integer.parseInt(object.getString("normal4"));
             int normal5 = Integer.parseInt(object.getString("normal5"));
             int normal6 = Integer.parseInt(object.getString("normal6"));
-            String summar = object.getString("normal7");
-            int grade = normal0+normal1+normal2+normal3+normal4+normal5+normal6;
+            int normal7 = Integer.parseInt(object.getString("normal7"));
+            int grade = normal0+normal1+normal2+normal3+normal4+normal5+normal6+normal7;
+
+
+            List<Evaluate> evaluates = evaluateService.findEvaluateByArrageId(id);
+            Evaluate evaluate = null;
+            for(Evaluate e :evaluates){
+                if (e.getCreator().equals(userId)) {
+                    evaluate = e;
+                    break;
+                }
+            }
+
             //生成word文档
-            String path = "";
+            String savePath = "";
+            String saveName = "";
+            if(evaluate == null){
+                saveName = String.valueOf(new Date().getTime());
+                evaluate = new Evaluate();
+            }else{
+                saveName = StringUtils.substringBefore(StringUtils.substringAfterLast(evaluate.getPath(),"\\"),".");
+            }
+
             Arrage arrage = arrageService.findOne(id);
-            Evaluate evaluate = new Evaluate();
+            savePath = wordService.fillNormalSuparvisorFile(arrage,object,saveName,String.valueOf(userId),grade);
+
             evaluate.setCreateTime(new Date());
             evaluate.setCreator(userId);
             evaluate.setArrageId(id);
             evaluate.setContent(body);
-            evaluate.setPath(path);
+            evaluate.setPath(savePath);
             evaluate.setGrade(grade);
             evaluateService.save(evaluate);
             return data.ok();
@@ -107,19 +131,35 @@ public class WecatController extends BaseController {
         try{
             JSONObject object = JSON.parseObject(body);
             int chief0 = Integer.parseInt(object.getString("chief0"));
-            String summar = object.getString("chief1");
-            int grade = chief0;
+
+            List<Evaluate> evaluates = evaluateService.findEvaluateByArrageId(id);
+            Evaluate evaluate = null;
+            for(Evaluate e :evaluates){
+                if (e.getCreator().equals(userId)) {
+                    evaluate = e;
+                    break;
+                }
+            }
+            String savePath = "";
             //生成word文档
-            String path = "";
+            String saveName = "";
+            if(evaluate == null){
+                saveName = String.valueOf(new Date().getTime());
+                evaluate = new Evaluate();
+            }else{
+                saveName = StringUtils.substringBefore(StringUtils.substringAfterLast(evaluate.getPath(),"\\"),".");
+            }
             Arrage arrage = arrageService.findOne(id);
-            Evaluate evaluate = new Evaluate();
+            savePath = wordService.fillChiefSuparvisorFile(arrage,object,saveName);
+
             evaluate.setCreateTime(new Date());
             evaluate.setCreator(userId);
             evaluate.setArrageId(id);
             evaluate.setContent(body);
-            evaluate.setPath(path);
-            evaluate.setGrade(grade);
+            evaluate.setPath(savePath);
+            evaluate.setGrade(chief0);
             evaluateService.save(evaluate);
+
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();

@@ -25,6 +25,12 @@ public class WecatService {
     @Value("${wecat.corpSecret}")
     private String corpSecret;
 
+    @Value("${wecat.server}")
+    private String url;
+
+    @Value("${wecat.evaluate.appId}")
+    private String evaluateAppId;
+
     private  static  WxCpService wxCpService;
 
     public  void init(){
@@ -38,16 +44,21 @@ public class WecatService {
 
     }
 
+    public String getUrl(){
+        return this.url;
+    }
 
-
+    public String getEvaluateAppId(){
+        return this.evaluateAppId;
+    }
     //创建一个学院
-    public  Integer CreateCollege(WxCpDepart wxCpDepart) throws Exception{
+    public  Integer createCollege(WxCpDepart wxCpDepart) throws Exception{
         init();
         return wxCpService.departCreate(wxCpDepart);
     }
 
     //删除一个学院，wecatId
-    public  void DeleteCollege(Integer id)throws Exception{
+    public  void deleteCollege(Integer id)throws Exception{
         init();
         wxCpService.departDelete(id);
     }

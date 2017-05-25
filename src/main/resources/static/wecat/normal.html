@@ -206,12 +206,37 @@
       </select>
     </div>
   </div>
+
+    <p class="space">
+  <span class="blue">
+    &nbsp;&nbsp;8.&nbsp;
+  </span>
+        教案/讲稿规范、完整，根据教案安排完成教学内容
+    </p>
+    <div class="weui_cell weui_cell_select">
+        <div class="weui_cell_bd weui_cell_primary textalign">
+            <select class="weui_select" id="normal7" name="normal7">
+                <option selected="" value="0">请选择分数</option>
+                <option value="1">1分</option>
+                <option value="2">2分</option>
+                <option value="3">3分</option>
+                <option value="4">4分</option>
+                <option value="5">5分</option>
+                <option value="6">6分</option>
+                <option value="7">7分</option>
+                <option value="8">8分</option>
+                <option value="9">9分</option>
+                <option value="10">10分</option>
+            </select>
+        </div>
+    </div>
+
  
   <div class="weui_cells weui_cells_form"> 
    <div class="weui_cell">
     <div class="weui_cell_bd weui_cell_primary ">
      <div class="weui_cells_title detail1 "><p class="blue">综合意见:</p></div>
-      <textarea class="weui_textarea" placeholder="请输入评论" rows="3" id="normal7" name="normal7"></textarea>
+      <textarea class="weui_textarea" placeholder="请输入评论" rows="3" id="normal8" name="normal8"></textarea>
       <div class="weui_textarea_counter"><span>0</span>/200</div>
     </div>
   </div>
@@ -259,6 +284,7 @@
                         var normal5 = evaluate.normal5;
                         var normal6 = evaluate.normal6;
                         var normal7 = evaluate.normal7;
+                        var normal8 = evaluate.normal8;
 
                         $("#normal0").find("option[value="+normal0+"]").attr("selected",true);
                         $("#normal1").find("option[value="+normal1+"]").attr("selected",true);
@@ -267,7 +293,8 @@
                         $("#normal4").find("option[value="+normal4+"]").attr("selected",true);
                         $("#normal5").find("option[value="+normal5+"]").attr("selected",true);
                         $("#normal6").find("option[value="+normal6+"]").attr("selected",true);
-                        $("#normal7").val(normal7);
+                        $("#normal7").find("option[value="+normal7+"]").attr("selected",true);
+                        $("#normal8").val(normal8);
                     }
                 }
 
@@ -283,7 +310,8 @@
                 normal4:$("#normal4").val(),
                 normal5:$("#normal5").val(),
                 normal6:$("#normal6").val(),
-                normal7:$("#normal7").val()
+                normal7:$("#normal7").val(),
+                normal8:$("#normal8").val()
             }
             $.ajax({
                 type: 'POST',
