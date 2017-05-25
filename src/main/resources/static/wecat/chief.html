@@ -24,34 +24,22 @@
 
 <div class="weui_cells weui_cells_form">
   <p class="detail blue">评分:</p>
-  <div class="weui_cell weui_cell_select">
-    <div class="weui_cell_bd weui_cell_primary textalign">
-      <select class="weui_select " name="select1">
-         <option selected="" value="0">请选择分数</option>
-       <option value="1">1分</option>
-       <option value="2">2分</option>
-       <option value="3">3分</option>
-       <option value="4">4分</option>
-       <option value="5">5分</option>
-       <option value="6">6分</option>
-       <option value="7">7分</option>
-       <option value="8">8分</option>
-       <option value="9">9分</option>
-       <option value="10">10分</option>
-      </select>
-    </div>
+  <div class="weui_cell">
+      <div class="weui_cells_title detail1 ">
+        <input class="weui_textarea" placeholder="综合得分"  type = "text" name= "number" id = "chief0"/>
+      </div>
   </div>
     <div class="weui_cells weui_cells_form"> 
    <div class="weui_cell">
     <div class="weui_cell_bd weui_cell_primary ">
      <div class="weui_cells_title detail1 "><p class="blue">综合意见:</p></div>
-      <textarea class="weui_textarea" placeholder="请输入评论" rows="3"></textarea>
+      <textarea id="chief1"class="weui_textarea" placeholder="请输入评论" rows="3"></textarea>
       <div class="weui_textarea_counter"><span>0</span>/200</div>
     </div>
   </div>
 </div>
 </div>
-<a href="javascript:;" class="weui_btn weui_btn_primary">提交</a>
+<a href="javascript:;" id="submit" class="weui_btn weui_btn_primary">提交</a>
     <script src="../js/jquery-2.1.4.js"></script>
     <script src="../js/jquery-weui.js"></script>
     <script src="../js/jquery-ui.js"></script>
@@ -65,21 +53,53 @@
                 type: "GET",
                 url: host+"/sas/wecat/arrage/detail",
                 data:{
-                    id:id
+                    id:id,
+                    userId:userId
                 },
                 contentType:"application/json",
-                success : function(json){
-                    //教师姓名，年级，时间，地点，课程名称，内容
-                    var teacher = "教师姓名："+json.data.course.teacher;
-                    var className = json.data.course.grade;
-                    var time = "时间："+json.data.course.time;
-                    var address = "地址："+json.data.course.address;
-                    var content = "授课内容："+json.data.course.content;
-                    var name = json.data.course.name;
-                    var html = "<p class='space' style='padding: 5px'>"+teacher+"</p><p class='space' style='padding: 5px'>"+className+"</p><p class='space' style='padding: 5px'>"+time+"</p><p class='space' style='padding: 5px'>"+address+"</p><p class='space' style='padding: 5px'>"+content+"</p><p class='space' style='padding: 5px'>"+name+"</p>";
-                    $("#detail").append(html);
+                success : function(json) {
+                    if (json.code == 1) {
+
+                        //教师姓名，年级，时间，地点，课程名称，内容
+                        var teacher = "教师姓名：" + json.data.arrage.course.teacher;
+                        var className = json.data.arrage.course.grade;
+                        var time = "时间：" + json.data.arrage.course.time;
+                        var address = "地址：" + json.data.arrage.course.address;
+                        var content = "授课内容：" + json.data.arrage.course.content;
+                        var name = json.data.arrage.course.name;
+                        var html = "<p class='space' style='padding: 5px'>" + teacher + "</p><p class='space' style='padding: 5px'>" + className + "</p><p class='space' style='padding: 5px'>" + time + "</p><p class='space' style='padding: 5px'>" + address + "</p><p class='space' style='padding: 5px'>" + content + "</p><p class='space' style='padding: 5px'>" + name + "</p>";
+                        $("#detail").append(html);
+                        var evaluateStr = json.data.evaluate;
+
+
+                        if (evaluateStr != "") {
+                            var evaluate = $.parseJSON(evaluateStr);
+                            var chief0 = evaluate.chief0;
+                            var chief1 = evaluate.chief1;
+
+                            $("#chief0").val(chief0);
+                            $("#chief1").val(chief1);
+                        }
+                    }
                 }
             });
+
+            $("#submit").click(function () {
+                var data ={
+                    chief0:$("#chief0").val(),
+                    chief1:$("#chief1").val()
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: host+"/sas/wecat/evaluate/chief?id="+id+"&"+"userId="+userId,
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    success: function (json) {
+                        console.log(json);
+                    }
+                });
+            });
+
         });
 
         //获取url中的参数

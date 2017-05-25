@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.graduate.api.course.CourseController;
 import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
+import com.graduate.system.college.model.College;
+import com.graduate.system.college.service.CollegeService;
 import com.graduate.system.user.model.Role;
 import com.graduate.system.user.model.User;
 import com.graduate.system.user.model.UserAndRole;
@@ -43,6 +45,12 @@ public class UserController extends BaseController {
 
     @Autowired
     private RoleService<Role> roleService;
+
+    @Autowired
+    private  WecatService wecatService;
+
+    @Autowired
+    private CollegeService<College> collegeService;
 
 
     @ApiOperation(value="获取用户列表", notes="")
@@ -92,11 +100,12 @@ public class UserController extends BaseController {
             wxCpUseruser.setName(user.getUsername());
             wxCpUseruser.setUserId(user.getId().toString());
             wxCpUseruser.setWeiXinId(user.getWecat());
-            Integer [] departIds = new Integer[]{Integer.parseInt(user.getCollege().getWecatId())};
+            College college=collegeService.findCollegeByid(user.getCid());
+            Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
             wxCpUseruser.setDepartIds(departIds);
             wxCpUseruser.setEmail(user.getEmail());
             wxCpUseruser.setMobile(user.getPhone());
-            WecatService.addUser(wxCpUseruser);
+            wecatService.addUser(wxCpUseruser);
 
             return data.ok();
         }catch (Exception e){
@@ -115,7 +124,7 @@ public class UserController extends BaseController {
         try{
             List<UserAndRole> list=new ArrayList<UserAndRole>();
             for (User u: users) {
-                WecatService.deleteUser(u.getId().toString());
+                wecatService.deleteUser(u.getId().toString());
                 UserAndRole userAndRole=userAndRoleService.findRoleByUid(u.getId());
                 list.add(userAndRole);
             }

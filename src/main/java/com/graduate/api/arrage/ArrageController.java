@@ -67,6 +67,9 @@ public class ArrageController extends BaseController {
     @Autowired
     private UserService<User> userService;
 
+    @Autowired
+    private WecatService wecatService;
+
     @ApiOperation(value="获取听课安排列表", notes="")
     @PreAuthorize("hasRole('ROLE_MASTER')")
     @RequestMapping(value={"/list"}, method= RequestMethod.POST)
@@ -223,12 +226,13 @@ public class ArrageController extends BaseController {
                     article1.setTitle(arrage.getTeacher().getName()+"听课安排");
                     article1.setPicUrl("http://www.gdmu.edu.cn/images/01.jpg");
                     article1.setUrl("www.baidu.com");
+                    article1.setDescription(arrage.getCourse().getTime()+"  "+arrage.getCourse().getAddress()+"  "+arrage.getCourse().getName());
                     WxCpMessage message  = WxCpMessage.NEWS()
                             .toUser(wx)
                             .agentId(1)
                             .addArticle(article1)
                             .build();
-                    WecatService.sendMessage(message);
+                    wecatService.sendMessage(message);
                 }
             }
             return data.ok();

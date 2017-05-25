@@ -33,7 +33,7 @@
 </p>
   <div class="weui_cell weui_cell_select">
     <div class="weui_cell_bd weui_cell_primary textalign">
-      <select class="weui_select " name="select1">
+      <select class="weui_select " id="normal0" name="normal0">
        <option selected="" value="0">请选择分数</option>
        <option value="1">1分</option>
        <option value="2">2分</option>
@@ -56,7 +56,7 @@
   </p>
   <div class="weui_cell weui_cell_select">
     <div class="weui_cell_bd weui_cell_primary textalign">
-      <select class="weui_select" name="select1">
+      <select class="weui_select" id="normal1" name="normal1">
         <option selected="" value="0">请选择分数</option>
        <option value="1">1分</option>
        <option value="2">2分</option>
@@ -89,7 +89,7 @@
 </p>
   <div class="weui_cell weui_cell_select">
     <div class="weui_cell_bd weui_cell_primary textalign">
-      <select class="weui_select" name="select1">
+      <select class="weui_select" id="normal2" name="normal2">
         <option selected="" value="0">请选择分数</option>
        <option value="1">1分</option>
        <option value="2">2分</option>
@@ -122,7 +122,7 @@
 </p>
   <div class="weui_cell weui_cell_select">
     <div class="weui_cell_bd weui_cell_primary textalign">
-      <select class="weui_select" name="select1">
+      <select class="weui_select" id="normal3" name="normal3">
         <option selected="" value="0">请选择分数</option>
        <option value="1">1分</option>
        <option value="2">2分</option>
@@ -145,7 +145,7 @@
 </p>
   <div class="weui_cell weui_cell_select">
     <div class="weui_cell_bd weui_cell_primary textalign">
-      <select class="weui_select" name="select1">
+      <select class="weui_select" id="normal4" name="normal4">
         <option selected="" value="0">请选择分数</option>
        <option value="1">1分</option>
        <option value="2">2分</option>
@@ -168,7 +168,7 @@
 </p>
   <div class="weui_cell weui_cell_select">
     <div class="weui_cell_bd weui_cell_primary textalign">
-      <select class="weui_select" name="select1">
+      <select class="weui_select" id="normal5" name="normal5">
        <option selected="" value="0">请选择分数</option>
        <option value="1">1分</option>
        <option value="2">2分</option>
@@ -191,7 +191,7 @@
 </p>
   <div class="weui_cell weui_cell_select">
     <div class="weui_cell_bd weui_cell_primary textalign">
-      <select class="weui_select" name="select1">
+      <select class="weui_select" id="normal6" name="normal6">
         <option selected="" value="0">请选择分数</option>
        <option value="1">1分</option>
        <option value="2">2分</option>
@@ -211,13 +211,13 @@
    <div class="weui_cell">
     <div class="weui_cell_bd weui_cell_primary ">
      <div class="weui_cells_title detail1 "><p class="blue">综合意见:</p></div>
-      <textarea class="weui_textarea" placeholder="请输入评论" rows="3"></textarea>
+      <textarea class="weui_textarea" placeholder="请输入评论" rows="3" id="normal7" name="normal7"></textarea>
       <div class="weui_textarea_counter"><span>0</span>/200</div>
     </div>
   </div>
 </div>
 </div>
-<a href="javascript:;" class="weui_btn weui_btn_primary">提交</a>
+<a href="javascript:;" id="submit" class="weui_btn weui_btn_primary">提交</a>
 <script src="../js/jquery-2.1.4.js"></script>
 <script src="../js/jquery-weui.js"></script>
 <script src="../js/jquery-ui.js"></script>
@@ -231,20 +231,69 @@
             type: "GET",
             url: host+"/sas/wecat/arrage/detail",
             data:{
-                id:id
+                id:id,
+                userId:userId
             },
             contentType:"application/json",
             success : function(json){
-                //教师姓名，年级，时间，地点，课程名称，内容
-                var teacher = "教师姓名："+json.data.course.teacher;
-                var className = json.data.course.grade;
-                var time = "时间："+json.data.course.time;
-                var address = "地址："+json.data.course.address;
-                var content = "授课内容："+json.data.course.content;
-                var name = json.data.course.name;
-                var html = "<p class='space' style='padding: 5px'>"+teacher+"</p><p class='space' style='padding: 5px'>"+className+"</p><p class='space' style='padding: 5px'>"+time+"</p><p class='space' style='padding: 5px'>"+address+"</p><p class='space' style='padding: 5px'>"+content+"</p><p class='space' style='padding: 5px'>"+name+"</p>";
-                $("#detail").append(html);
+                if(json.code == 1){
+                    //教师姓名，年级，时间，地点，课程名称，内容
+                    var teacher = "教师姓名："+json.data.arrage.course.teacher;
+                    var className = json.data.arrage.course.grade;
+                    var time = "时间："+json.data.arrage.course.time;
+                    var address = "地址："+json.data.arrage.course.address;
+                    var content = "授课内容："+json.data.arrage.course.content;
+                    var name = json.data.arrage.course.name;
+                    var html = "<p class='space' style='padding: 5px'>"+teacher+"</p><p class='space' style='padding: 5px'>"+className+"</p><p class='space' style='padding: 5px'>"+time+"</p><p class='space' style='padding: 5px'>"+address+"</p><p class='space' style='padding: 5px'>"+content+"</p><p class='space' style='padding: 5px'>"+name+"</p>";
+                    $("#detail").append(html);
+                    var evaluateStr = json.data.evaluate;
+
+
+                    if(evaluateStr!=""){
+                        var evaluate = $.parseJSON(evaluateStr);
+                        var normal0 = evaluate.normal0;
+                        var normal1 = evaluate.normal1;
+                        var normal2 = evaluate.normal2;
+                        var normal3 = evaluate.normal3;
+                        var normal4 = evaluate.normal4;
+                        var normal5 = evaluate.normal5;
+                        var normal6 = evaluate.normal6;
+                        var normal7 = evaluate.normal7;
+
+                        $("#normal0").find("option[value="+normal0+"]").attr("selected",true);
+                        $("#normal1").find("option[value="+normal1+"]").attr("selected",true);
+                        $("#normal2").find("option[value="+normal2+"]").attr("selected",true);
+                        $("#normal3").find("option[value="+normal3+"]").attr("selected",true);
+                        $("#normal4").find("option[value="+normal4+"]").attr("selected",true);
+                        $("#normal5").find("option[value="+normal5+"]").attr("selected",true);
+                        $("#normal6").find("option[value="+normal6+"]").attr("selected",true);
+                        $("#normal7").val(normal7);
+                    }
+                }
+
             }
+        });
+
+        $("#submit").click(function () {
+            var data ={
+                normal0:$("#normal0").val(),
+                normal1:$("#normal1").val(),
+                normal2:$("#normal2").val(),
+                normal3:$("#normal3").val(),
+                normal4:$("#normal4").val(),
+                normal5:$("#normal5").val(),
+                normal6:$("#normal6").val(),
+                normal7:$("#normal7").val()
+            }
+            $.ajax({
+                type: 'POST',
+                url: host+"/sas/wecat/evaluate/normal?id="+id+"&"+"userId="+userId,
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function (json) {
+                    console.log(json);
+                }
+            });
         });
     });
 

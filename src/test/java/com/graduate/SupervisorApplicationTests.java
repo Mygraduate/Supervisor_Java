@@ -10,6 +10,8 @@ import com.graduate.system.college.model.College;
 import com.graduate.system.college.service.CollegeService;
 import com.graduate.system.course.model.Course;
 import com.graduate.system.course.service.CourseService;
+import com.graduate.system.evaluate.model.Evaluate;
+import com.graduate.system.evaluate.service.EvaluateService;
 import com.graduate.system.sparetime.model.SpareTime;
 import com.graduate.system.sparetime.service.SparetimeService;
 import com.graduate.system.teacher.model.Teacher;
@@ -18,6 +20,8 @@ import com.graduate.system.user.service.RoleService;
 import com.graduate.timer.MessageTask;
 import com.graduate.utils.ArrageUtil;
 import com.graduate.utils.excel.exception.FormatException;
+import com.graduate.utils.wecat.WecatService;
+import me.chanjar.weixin.cp.bean.WxCpMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.Test;
@@ -42,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.apache.coyote.http11.Constants.LC_OFFSET;
 import static org.apache.coyote.http11.Constants.a;
 
 @RunWith(SpringRunner.class)
@@ -68,6 +73,12 @@ public class SupervisorApplicationTests {
 
     @Autowired
     private RoleService<Role> roleService;
+
+    @Autowired
+    private EvaluateService<Evaluate> evaluateService;
+
+    @Autowired
+    private WecatService wecatService;
 	@Test
 	public void contextLoads() {
 		//System.out.println(timeService.calTimeByWeekAndDay(1,1));
@@ -130,14 +141,26 @@ public class SupervisorApplicationTests {
 //        }catch (Exception e){
 //            e.printStackTrace();
 //        }
-        try {
-            List<College> colleges = collegeService.findAll();
-            List<Role> roles = roleService.findAll();
+//
 
-            for(College college:colleges){
-                college.setDes("修改");
-            }
-            roleService.save(roles);
+//        try {
+//            List<Evaluate> list = evaluateService.findEvaluateByArrageId(36l);
+//            System.out.println(JSON.toJSON(list));
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+
+        try{
+            WxCpMessage.WxArticle article1 = new WxCpMessage.WxArticle();
+            article1.setTitle("xxxx听课安排");
+            article1.setPicUrl("http://www.gdmu.edu.cn/images/01.jpg");
+            article1.setUrl("www.baidu.com");
+            WxCpMessage message  = WxCpMessage.NEWS()
+                    .toUser("1")
+                    .agentId(1)
+                    .addArticle(article1)
+                    .build();
+            wecatService.sendMessage(message);
         }catch (Exception e){
             e.printStackTrace();
         }

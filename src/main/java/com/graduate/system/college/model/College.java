@@ -21,11 +21,21 @@ public class College {
     @Column(name = "des")
     private String des;//描述
 
-    @Column(name = "wecat_id")
-    private String wecatId;//微信对用的部门id
+    @Column(name ="wecat_id")
+    private  String wecatid;//微信部门
+
 
 
     public College() {
+    }
+
+
+    public String getWecatid() {
+        return wecatid;
+    }
+
+    public void setWecatid(String wecatid) {
+        this.wecatid = wecatid;
     }
 
     public Long getId() {
@@ -52,11 +62,4 @@ public class College {
         this.des = des;
     }
 
-    public String getWecatId() {
-        return wecatId;
-    }
-
-    public void setWecatId(String wecatId) {
-        this.wecatId = wecatId;
-    }
 }

@@ -35,6 +35,9 @@ public class CollegeController extends BaseController {
     @Autowired
     private CollegeService<College> collegeService;
 
+    @Autowired
+    private WecatService wecatService;
+
     @ApiOperation(value="新增学院", notes="")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value={"/create"}, method= RequestMethod.POST)
@@ -45,9 +48,9 @@ public class CollegeController extends BaseController {
             WxCpDepart wxCpDepart=new WxCpDepart();
             wxCpDepart.setName(college.getName());
             wxCpDepart.setParentId(2);
-            int wxid=WecatService.CreateCollege(wxCpDepart);
+            int wxid=wecatService.CreateCollege(wxCpDepart);
 
-            college.setWecatId(String.valueOf(wxid));
+            college.setWecatid(String.valueOf(wxid));
             collegeService.save(college);
             return data.ok();
         }catch (Exception e){
@@ -87,10 +90,10 @@ public class CollegeController extends BaseController {
         BaseJsonData data = new BaseJsonData();
         try{
             for (College c: college) {
-                collegeService.delete(c);
-                WecatService.DeleteCollege(Integer.parseInt(c.getWecatId()));
+                College fc=collegeService.findCollegeByid(c.getId());
+                collegeService.delete(fc);
+                wecatService.DeleteCollege(Integer.parseInt(fc.getWecatid()));
             }
-            collegeService.delete(college);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
