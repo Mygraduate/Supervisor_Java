@@ -19,7 +19,6 @@ import java.util.Date;
 public class SupervisorApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(SupervisorApplication.class, args);
 	}
 

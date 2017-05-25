@@ -16,7 +16,6 @@ public class Evaluate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-
     @Column(nullable=false,name = "creator")
     private Long creator;//创建人id
 
