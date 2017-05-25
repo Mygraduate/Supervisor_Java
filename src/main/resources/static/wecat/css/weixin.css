@@ -1,0 +1,44 @@
+/*css*/
+body{
+	overflow-x:hidden; 
+}
+.header {
+	height:70px;
+	width:100%;
+	background-color: rgb(3,75,145);
+}
+.header label{
+	font-size: 20px;
+	padding: 30px;
+	color: #fff;
+
+}
+.detail {
+	width: 100%;
+	font-size: 16px;
+	padding: 6px 6px 6px 22px;
+	margin-top: 6px;
+}
+.detail1 {
+	width: 100%;
+	font-size: 16px;
+	padding: 6px 6px 6px 0px;
+	margin-top: 6px;
+}
+.blue {
+	color: #2d5f8f;
+	font-weight: bold;
+}
+
+.container {
+	padding: 10px;
+	width: 90%;
+	margin-left: 5%;
+}
+.space{
+  padding: 22px;
+}
+.textalign{
+	margin-left: 35px;
+} 
+

@@ -36,6 +36,9 @@ public class Evaluate {
     @Column(nullable=false,name = "create_time")
     private Date createTime;//创建时间
 
+    @Column(name = "content" ,columnDefinition = "TEXT")
+    private String  content ;
+
     public Long getId() {
         return id;
     }
@@ -90,5 +93,13 @@ public class Evaluate {
 
     public void setArrage(Arrage arrage) {
         this.arrage = arrage;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>教学质量评估系统-首席督导员意见反馈</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="description" content="教学质量评估系统&lt;p&gt;首席督导表&lt;/p&gt;">
+  <link rel="stylesheet" href="../css/weui.css">
+  <link rel="stylesheet" href="../css/jquery-weui.css">
+  <link rel="stylesheet" href="../css/weixin.css">
+  <link rel="stylesheet" href="../css/jquery-ui.css">
+</head>
+<body>
+ <div class="header ">
+  <label>教学&nbsp;|&nbsp;质量评估</label><br>
+  <label style="font-size:16px;">首席督导员意见反馈</label>
+</div>
+<div class="container">
+<p class="detail blue">上课老师信息:</p>
+    <div id = "detail" class="detail">
+
+
+    </div>
+
+<div class="weui_cells weui_cells_form">
+  <p class="detail blue">评分:</p>
+  <div class="weui_cell weui_cell_select">
+    <div class="weui_cell_bd weui_cell_primary textalign">
+      <select class="weui_select " name="select1">
+         <option selected="" value="0">请选择分数</option>
+       <option value="1">1分</option>
+       <option value="2">2分</option>
+       <option value="3">3分</option>
+       <option value="4">4分</option>
+       <option value="5">5分</option>
+       <option value="6">6分</option>
+       <option value="7">7分</option>
+       <option value="8">8分</option>
+       <option value="9">9分</option>
+       <option value="10">10分</option>
+      </select>
+    </div>
+  </div>
+    <div class="weui_cells weui_cells_form"> 
+   <div class="weui_cell">
+    <div class="weui_cell_bd weui_cell_primary ">
+     <div class="weui_cells_title detail1 "><p class="blue">综合意见:</p></div>
+      <textarea class="weui_textarea" placeholder="请输入评论" rows="3"></textarea>
+      <div class="weui_textarea_counter"><span>0</span>/200</div>
+    </div>
+  </div>
+</div>
+</div>
+<a href="javascript:;" class="weui_btn weui_btn_primary">提交</a>
+    <script src="../js/jquery-2.1.4.js"></script>
+    <script src="../js/jquery-weui.js"></script>
+    <script src="../js/jquery-ui.js"></script>
+    <script>
+
+        $(function () {
+            var  id = getUrlParam("id");
+            var userId= getUrlParam("userId");
+            var host = getUrlHost();
+            $.ajax({
+                type: "GET",
+                url: host+"/sas/wecat/arrage/detail",
+                data:{
+                    id:id
+                },
+                contentType:"application/json",
+                success : function(json){
+                    //教师姓名，年级，时间，地点，课程名称，内容
+                    var teacher = "教师姓名："+json.data.course.teacher;
+                    var className = json.data.course.grade;
+                    var time = "时间："+json.data.course.time;
+                    var address = "地址："+json.data.course.address;
+                    var content = "授课内容："+json.data.course.content;
+                    var name = json.data.course.name;
+                    var html = "<p class='space' style='padding: 5px'>"+teacher+"</p><p class='space' style='padding: 5px'>"+className+"</p><p class='space' style='padding: 5px'>"+time+"</p><p class='space' style='padding: 5px'>"+address+"</p><p class='space' style='padding: 5px'>"+content+"</p><p class='space' style='padding: 5px'>"+name+"</p>";
+                    $("#detail").append(html);
+                }
+            });
+        });
+
+        //获取url中的参数
+        function getUrlParam(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+            if (r != null) return unescape(r[2]); return null; //返回参数值
+        }
+
+        function getUrlHost() {
+            return window.location.protocol+"//"+window.location.host;
+        }
+    </script>
+</body>
+</html>

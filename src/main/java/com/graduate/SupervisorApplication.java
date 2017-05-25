@@ -5,7 +5,9 @@ import com.graduate.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -14,11 +16,17 @@ import java.util.Date;
 
 @SpringBootApplication
 @EnableScheduling
-public class SupervisorApplication {
+public class SupervisorApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 
 		SpringApplication.run(SupervisorApplication.class, args);
+	}
+
+	@Override
+	protected SpringApplicationBuilder configure(
+			SpringApplicationBuilder application) {
+		return application.sources(SupervisorApplication.class);
 	}
 
 

@@ -28,11 +28,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 
-//    @Autowired
-//    private JwtAuthenticationEntryPoint unauthorizedHandler;
-
-
-
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -61,6 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/*")
                 .antMatchers("/fonts/*")
                 .antMatchers("/img/*")
+                .antMatchers("/wecat/*")
                 .antMatchers("/swagger-ui.html");
 
     }
@@ -103,12 +99,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webjars/**",
                         "/swagger-resources",
                         "/v2/api-docs",
-                        "/login"
+                        "/login",
+                        "/wecat/**",
+                        "/index/indeHome",
+                        "/index/progressPage",
+                        "/index/autobuildPage",
+                        "/index/permissionPage",
+                        "/index/referCoursePage",
+                        "/index/settingPage",
+                        "/index/supervisorPage",
+                        "/index/teacherInfoPage",
+                        "/index/userPage",
+                        "/index"
                 ).permitAll()
                 // 对于获取token的rest api要允许匿名访问
                 .antMatchers("/auth/**")
                 .permitAll()
                 .antMatchers("/api/word/**")
+                .permitAll()
+                .antMatchers("/wecat/**")
                 .permitAll()
                 .anyRequest()
                 .fullyAuthenticated()

@@ -73,7 +73,7 @@ public class ArrageController extends BaseController {
                                     @ApiParam(value = "状态0：未确定，1：代表是已确定，2：代表是待执行，3：代表已执行")@RequestParam(value = "status") Integer status,
                                     @ApiParam(value = "周数")@RequestParam(value = "week",required = false) Integer week,
                                     @ApiParam(value = "天数")@RequestParam(value = "day",required = false) Integer day,
-                                    @ApiParam(value = "教师")@RequestParam(value = "teac,her",required = false) String teacher
+                                    @ApiParam(value = "教师")@RequestParam(value = "teacher",required = false) String teacher
     ) {
         try{
             HashMap<String,Object> searchVals = new HashMap<>();
