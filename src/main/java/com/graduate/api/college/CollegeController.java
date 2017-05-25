@@ -6,9 +6,11 @@ import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
 import com.graduate.system.college.model.College;
 import com.graduate.system.college.service.CollegeService;
+import com.graduate.utils.wecat.WecatService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import me.chanjar.weixin.cp.bean.WxCpDepart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,13 @@ public class CollegeController extends BaseController {
     public BaseJsonData createCollege(@RequestBody College college) {
         BaseJsonData data = new BaseJsonData();
         try {
+
+            WxCpDepart wxCpDepart=new WxCpDepart();
+            wxCpDepart.setName(college.getName());
+            wxCpDepart.setParentId(2);
+            int wxid=WecatService.CreateCollege(wxCpDepart);
+
+            college.setWecatId(String.valueOf(wxid));
             collegeService.save(college);
             return data.ok();
         }catch (Exception e){
@@ -77,6 +86,10 @@ public class CollegeController extends BaseController {
     public BaseJsonData deleteCollegeList(@RequestBody List<College> college) {
         BaseJsonData data = new BaseJsonData();
         try{
+            for (College c: college) {
+                collegeService.delete(c);
+                WecatService.DeleteCollege(Integer.parseInt(c.getWecatId()));
+            }
             collegeService.delete(college);
             return data.ok();
         }catch (Exception e){

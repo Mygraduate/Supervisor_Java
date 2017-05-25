@@ -17,9 +17,11 @@ import com.graduate.system.user.model.User;
 import com.graduate.system.user.model.UserAndRole;
 import com.graduate.system.user.service.UserService;
 import com.graduate.utils.BeanMapper;
+import com.graduate.utils.wecat.WecatService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import me.chanjar.weixin.cp.bean.WxCpMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -195,6 +197,39 @@ public class ArrageController extends BaseController {
                     course = courseService.findCourseById(arrage.getCourseId());
                 }
                 sparetimeService.updateByUidAndTime(arrage.getGroups().split(","),arrage.getCollegeId(),course.getWeek(),course.getDay(),arrage.getStatus());
+            }
+            return data.ok();
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return data.fail(e.getMessage());
+        }
+    }
+
+
+    @ApiOperation(value="发送安排到微信", notes="")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
+    @RequestMapping(value="/sent", method=RequestMethod.POST)
+    public BaseJsonData sentArragewx(@RequestBody List<Long> ids) {
+        BaseJsonData data = new BaseJsonData();
+        try{
+            List<Arrage> arrages = new ArrayList<>();
+            for(Long id : ids){
+                Arrage arrage = arrageService.findOne(id);
+                arrage.setStatus(1);
+                String [] wxlist=arrage.getGroups().split(",");
+                for (String wx: wxlist) {
+                    WxCpMessage.WxArticle article1 = new WxCpMessage.WxArticle();
+                    article1.setTitle(arrage.getTeacher().getName()+"听课安排");
+                    article1.setPicUrl("http://www.gdmu.edu.cn/images/01.jpg");
+                    article1.setUrl("www.baidu.com");
+                    WxCpMessage message  = WxCpMessage.NEWS()
+                            .toUser(wx)
+                            .agentId(1)
+                            .addArticle(article1)
+                            .build();
+                    WecatService.sendMessage(message);
+                }
             }
             return data.ok();
         }catch (Exception e){

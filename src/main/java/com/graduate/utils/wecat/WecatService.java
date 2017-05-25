@@ -46,16 +46,16 @@ public class WecatService {
 //            user.setMobile("13650421544");
 //            addUser(user);
 
-            WxCpMessage.WxArticle article1 = new WxCpMessage.WxArticle();
-            article1.setTitle("xxxx听课安排");
-            article1.setPicUrl("http://www.gdmu.edu.cn/images/01.jpg");
-            article1.setUrl("www.baidu.com");
-            WxCpMessage message  = WxCpMessage.NEWS()
-                    .toUser("1")
-                    .agentId(1)
-                    .addArticle(article1)
-                    .build();
-            sendMessage(message);
+//            WxCpMessage.WxArticle article1 = new WxCpMessage.WxArticle();
+//            article1.setTitle("xxxx听课安排");
+//            article1.setPicUrl("http://www.gdmu.edu.cn/images/01.jpg");
+//            article1.setUrl("www.baidu.com");
+//            WxCpMessage message  = WxCpMessage.NEWS()
+//                    .toUser("1")
+//                    .agentId(1)
+//                    .addArticle(article1)
+//                    .build();
+//            sendMessage(message);
         }catch (Exception e){
             e.printStackTrace();
         }

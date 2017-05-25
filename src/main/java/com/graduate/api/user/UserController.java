@@ -10,7 +10,9 @@ import com.graduate.system.user.model.UserAndRole;
 import com.graduate.system.user.service.RoleService;
 import com.graduate.system.user.service.UserAndRoleService;
 import com.graduate.system.user.service.UserService;
+import com.graduate.utils.wecat.WecatService;
 import io.swagger.annotations.*;
+import me.chanjar.weixin.cp.bean.WxCpUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +87,17 @@ public class UserController extends BaseController {
             userAndRole.setUid(user.getId());
             userAndRole.setRoleId(roleId);
             userAndRoleService.save(userAndRole);
+
+            WxCpUser wxCpUseruser = new WxCpUser();
+            wxCpUseruser.setName(user.getUsername());
+            wxCpUseruser.setUserId(user.getId().toString());
+            wxCpUseruser.setWeiXinId(user.getWecat());
+            Integer [] departIds = new Integer[]{Integer.parseInt(user.getCollege().getWecatId())};
+            wxCpUseruser.setDepartIds(departIds);
+            wxCpUseruser.setEmail(user.getEmail());
+            wxCpUseruser.setMobile(user.getPhone());
+            WecatService.addUser(wxCpUseruser);
+
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
@@ -102,6 +115,7 @@ public class UserController extends BaseController {
         try{
             List<UserAndRole> list=new ArrayList<UserAndRole>();
             for (User u: users) {
+                WecatService.deleteUser(u.getId().toString());
                 UserAndRole userAndRole=userAndRoleService.findRoleByUid(u.getId());
                 list.add(userAndRole);
             }
@@ -141,6 +155,33 @@ public class UserController extends BaseController {
             e.printStackTrace();
             logger.error(e.getMessage(),e);
             return data.fail(e.getMessage());
+        }
+    }
+
+    @ApiOperation(value="获取用户(不分页)", notes="")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MASTER')")
+    @RequestMapping(value={"/list/all"}, method=RequestMethod.POST)
+    public BaseJsonData getUserList(@ApiParam(value = "用户id")@RequestParam(value = "uid",required = false) Long uid,
+                                    @ApiParam(value = "角色id")@RequestParam(value = "roleId",required = false) Long roleId,
+                                    @ApiParam(value = "学院id")@RequestParam(value = "cid",required = false) Long cid,
+                                    @ApiParam(value = "用户账号")@RequestParam(value = "username",required = false) String username,
+                                    @ApiParam(value = "老师姓名")@RequestParam(value = "name",required = false) String name,
+                                    @ApiParam(value = "老师职称")@RequestParam(value = "title",required = false) String title
+    ) {
+        try{
+            HashMap<String,Object> searchVals = new HashMap<>();
+            searchVals.put("uid",uid);
+            searchVals.put("roleId",roleId);
+            searchVals.put("cid",cid);
+            searchVals.put("username",username);
+            searchVals.put("name",name);
+            searchVals.put("title",title);
+            List<UserAndRole> userList = userAndRoleService.findAllByField(searchVals);
+            return BaseJsonData.ok(JSON.toJSON(userList));
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return BaseJsonData.fail(e.getMessage());
         }
     }
 

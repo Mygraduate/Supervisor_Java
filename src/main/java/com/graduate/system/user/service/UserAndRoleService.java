@@ -45,6 +45,11 @@ public class UserAndRoleService<T> extends BaseService<T> {
         return mapper.findAll(specification,buildPage(pageNo,pageSize,orderVals));
     }
 
+    public List<UserAndRole> findAllByField(HashMap<String,Object> searchVals){
+        Specification specification = buildSearchByField(searchVals);
+        return mapper.findAll(specification);
+    }
+
     public Specification buildSearchByField(HashMap<String,Object> vals){
         return new Specification() {
             @Override
