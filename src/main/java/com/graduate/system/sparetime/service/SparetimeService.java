@@ -28,6 +28,8 @@ public class SparetimeService<T> extends BaseService<T> {
 
     public List<SpareTime> findSpareTimeBycid(Long cid){return mapper.findSpareTimeBycid(cid);}
 
+    public List<SpareTime> findSpareTimeByCidAndUid(Long cid,Long uid){return mapper.findSpareTimeByCidAndUid(cid,uid);}
+
 
 
     public List<SpareTime> autoCreateSpareTime(List<Course> courses, Long cid, Long uid, int startWeek, int endWeek){

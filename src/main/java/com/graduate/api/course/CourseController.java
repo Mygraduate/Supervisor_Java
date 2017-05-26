@@ -48,7 +48,7 @@ public class CourseController extends BaseController {
     @RequestMapping(value={"/page"}, method= RequestMethod.POST)
     public BaseJsonData getPage(
             @ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
-            @ApiParam(value = "页长")@RequestParam(value = "pageSize") int pageSize,
+            @ApiParam(value = "页长")@RequestParam(value = "pageSize") Integer pageSize,
             @ApiParam(value = "学院id")@RequestParam(value = "cid",required = false) Long cid,
             @ApiParam(value = "周数")@RequestParam(value = "week",required = false) Integer week,
             @ApiParam(value = "天数")@RequestParam(value = "day",required = false) Long day,

@@ -7,6 +7,8 @@ import com.graduate.system.sparetime.dto.SumDTO;import com.graduate.system.cours
 import com.graduate.system.course.service.CourseService;import com.graduate.system.sparetime.model.SpareTime;
 import com.graduate.system.sparetime.service.SparetimeService;
 import com.graduate.system.user.model.User;
+import com.graduate.system.user.model.UserAndRole;
+import com.graduate.system.user.service.UserAndRoleService;
 import com.graduate.system.user.service.UserService;
 import com.graduate.utils.CourseUtil;
 import com.graduate.utils.DateUtil;
@@ -44,6 +46,9 @@ public class SparetimeController {
 
     @Autowired
     private UserService<User> userService;
+
+    @Autowired
+    private UserAndRoleService<UserAndRole> userAndRoleService;
 
     @Autowired
     private CourseService<Course> courseService;
@@ -128,7 +133,7 @@ public class SparetimeController {
         }
     }
 
-    @ApiOperation(value="获取督导员已填写空闲时间", notes="")
+    @ApiOperation(value="获取学院督导员已填写空闲时间", notes="")
     @RequestMapping(value={"/getsparetime"}, method=RequestMethod.POST)
     public BaseJsonData getsparetime(
             @ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
@@ -136,39 +141,55 @@ public class SparetimeController {
             @ApiParam(value = "学院id")@RequestParam(value = "cid") Long cid
     ){
         try{
-            List<SpareTime> spareTimeList=sparetimeService.findSpareTimeBycid(cid);
+            HashMap<String,Object> searchVals = new HashMap<>();
+            searchVals.put("roleId",3);
+            searchVals.put("cid",cid);
+            List<UserAndRole> userAndRoleList=userAndRoleService.findAllByField(searchVals);
             HashMap<String,SumDTO> list=new HashMap<>();
-            for (SpareTime s: spareTimeList) {
-                if(!list.containsKey(String.valueOf(s.getUid()))){
+            for (UserAndRole ur:userAndRoleList) {
+                List<SpareTime> spareTimeList=sparetimeService.findSpareTimeByCidAndUid(cid,ur.getUid());
+                if (spareTimeList.size()==0){//督导员没有填写空闲时间
                     SumDTO sum=new SumDTO();
-                    sum.setUid(s.getUid());
+                    sum.setUid(ur.getUid());
                     sum.setCid(cid);
-                    sum.setName(s.getUser().getTeacher().getName());
-                    int[] a={s.getWeek()};
+                    sum.setName(ur.getUser().getTeacher().getName());
+                    int[] a={};
                     sum.setSpareweek(a);
-                    list.put(String.valueOf(s.getUid()),sum);
-                }
-                else{
-                    SumDTO weeks = list.get(String.valueOf(s.getUid()));
-                    int[] intArray = weeks.getSpareweek();
-                    String result = "";
-                    for (int i = 0; i < intArray.length; i++)
-                    {
-                        if (result!="")
-                            result += "," + intArray[i];
-                        else
-                            result = String.valueOf(intArray[i]);
-                    }
-                    List sp = new ArrayList();
-                    sp = Arrays.asList(result.split(","));
-                    if(!sp.contains(String.valueOf(s.getWeek()))){
-                        String str=result+","+String.valueOf(s.getWeek());
-                        String strr[] = str.split(",");
-                        int array[] = new int[strr.length];
-                        for(int i=0;i<strr.length;i++) {
-                            array[i] = Integer.parseInt(strr[i]);
+                    list.put(String.valueOf(ur.getUid()),sum);
+                }else{//已填写空闲时间的督导员
+                    for (SpareTime s: spareTimeList) {
+                        if(!list.containsKey(String.valueOf(s.getUid()))){
+                            SumDTO sum=new SumDTO();
+                            sum.setUid(s.getUid());
+                            sum.setCid(cid);
+                            sum.setName(s.getUser().getTeacher().getName());
+                            int[] a={s.getWeek()};
+                            sum.setSpareweek(a);
+                            list.put(String.valueOf(s.getUid()),sum);
                         }
-                        weeks.setSpareweek(array);
+                        else{
+                            SumDTO weeks = list.get(String.valueOf(s.getUid()));
+                            int[] intArray = weeks.getSpareweek();
+                            String result = "";
+                            for (int i = 0; i < intArray.length; i++)
+                            {
+                                if (result!="")
+                                    result += "," + intArray[i];
+                                else
+                                    result = String.valueOf(intArray[i]);
+                            }
+                            List sp = new ArrayList();
+                            sp = Arrays.asList(result.split(","));
+                            if(!sp.contains(String.valueOf(s.getWeek()))){
+                                String str=result+","+String.valueOf(s.getWeek());
+                                String strr[] = str.split(",");
+                                int array[] = new int[strr.length];
+                                for(int i=0;i<strr.length;i++) {
+                                    array[i] = Integer.parseInt(strr[i]);
+                                }
+                                weeks.setSpareweek(array);
+                            }
+                        }
                     }
                 }
             }

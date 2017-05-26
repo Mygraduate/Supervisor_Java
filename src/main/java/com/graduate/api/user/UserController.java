@@ -84,6 +84,7 @@ public class UserController extends BaseController {
         }
     }
 
+
     @ApiOperation(value="创建用户", notes="根据User对象创建用户")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MASTER')")
     @RequestMapping(value="/create", method=RequestMethod.POST)
@@ -145,6 +146,18 @@ public class UserController extends BaseController {
         BaseJsonData data = new BaseJsonData();
         try{
             userAndRoleService.save(userAndRole);
+            User user=userService.findOne(userAndRole.getUid());
+
+            WxCpUser wxCpUseruser = new WxCpUser();
+            wxCpUseruser.setName(user.getUsername());
+            wxCpUseruser.setUserId(user.getId().toString());
+            wxCpUseruser.setWeiXinId(user.getWecat());
+            College college=collegeService.findCollegeByid(user.getCid());
+            Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
+            wxCpUseruser.setDepartIds(departIds);
+            wxCpUseruser.setEmail(user.getEmail());
+            wxCpUseruser.setMobile(user.getPhone());
+            wecatService.updateUser(wxCpUseruser);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
@@ -159,6 +172,7 @@ public class UserController extends BaseController {
         BaseJsonData data = new BaseJsonData();
         try{
             List<Role> r=roleService.findAll();
+            r.remove(0);
             return data.ok(r);
         }catch (Exception e){
             e.printStackTrace();
@@ -166,6 +180,7 @@ public class UserController extends BaseController {
             return data.fail(e.getMessage());
         }
     }
+
 
     @ApiOperation(value="获取用户(不分页)", notes="")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MASTER')")

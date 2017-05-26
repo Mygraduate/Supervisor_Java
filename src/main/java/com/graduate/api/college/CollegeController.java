@@ -121,6 +121,7 @@ public class CollegeController extends BaseController {
     public BaseJsonData getCollegeList() {
         try{
             List<College> collegelist=collegeService.findAll();
+            collegelist.remove(0);
             return BaseJsonData.ok(JSON.toJSON(collegelist));
         }catch (Exception e){
             e.printStackTrace();

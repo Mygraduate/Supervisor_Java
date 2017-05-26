@@ -75,6 +75,12 @@ public class WecatService {
         wxCpService.userDelete(userId);
     }
 
+    //修改用户
+    public  void updateUser(WxCpUser user)throws Exception{
+        init();
+        wxCpService.userUpdate(user);
+    }
+
     public  List<WxCpUser> getUserList(Integer departId) throws Exception{
         init();
         return wxCpService.userList(departId,true,0);

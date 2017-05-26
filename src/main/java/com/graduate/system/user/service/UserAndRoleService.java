@@ -73,7 +73,7 @@ public class UserAndRoleService<T> extends BaseService<T> {
                 }
                 if(vals.get("username")!=null&& StringUtils.isNotBlank(vals.get("username").toString())){
                     predicate.getExpressions().add(
-                            criteriaBuilder.like(root.<User>get("user").get("username"),"%"+vals.get("cid").toString()+"%")
+                            criteriaBuilder.like(root.<User>get("user").get("username"),"%"+vals.get("username").toString()+"%")
                     );
                 }
                 if(vals.get("name")!=null&&StringUtils.isNotBlank(vals.get("name").toString())){
