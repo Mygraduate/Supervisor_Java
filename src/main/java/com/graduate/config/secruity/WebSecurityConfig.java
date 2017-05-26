@@ -118,6 +118,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/api/word/**")
                 .permitAll()
+                .antMatchers("/api/evaluate/download")
+                .permitAll()
                 .antMatchers("/wecat/**")
                 .permitAll()
                 .anyRequest()

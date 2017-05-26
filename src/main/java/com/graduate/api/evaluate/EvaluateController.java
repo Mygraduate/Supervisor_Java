@@ -86,7 +86,7 @@ public class EvaluateController extends BaseController {
         try{
             List<Evaluate> evaluates = evaluateService.findEvaluateByArrageId(arrageId);
             Evaluate eval = evaluates.get(0);
-            String saveName = eval.getArrage().getTeacher()+"-"+eval.getArrage().getCourse().getTime();
+            String saveName = eval.getArrage().getTeacher().getName()+"-"+eval.getArrage().getCourse().getTime();
             List<String> fileNames = new ArrayList<>();
             for(Evaluate evaluate:evaluates){
                 fileNames.add(evaluate.getPath());

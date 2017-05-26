@@ -152,7 +152,11 @@ public class SparetimeController {
                     SumDTO sum=new SumDTO();
                     sum.setUid(ur.getUid());
                     sum.setCid(cid);
-                    sum.setName(ur.getUser().getTeacher().getName());
+                    if(ur.getUser().getTeacher()==null){
+                        sum.setName(ur.getUser().getUsername());
+                    }else{
+                        sum.setName(ur.getUser().getTeacher().getName());
+                    }
                     int[] a={};
                     sum.setSpareweek(a);
                     list.put(String.valueOf(ur.getUid()),sum);
