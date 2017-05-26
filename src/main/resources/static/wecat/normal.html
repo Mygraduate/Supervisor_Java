@@ -319,7 +319,11 @@
                 data: JSON.stringify(data),
                 contentType: "application/json",
                 success: function (json) {
-                    console.log(json);
+                    if(json.code == 1){
+                        window.location.href = host +"/sas/wecat/success.html";
+                    }else{
+                        window.location.href= host +"/sas/wecat/fail.html";
+                    }
                 }
             });
         });
@@ -335,6 +339,8 @@
     function getUrlHost() {
         return window.location.protocol+"//"+window.location.host;
     }
+
+
 </script>
 
 </body>
