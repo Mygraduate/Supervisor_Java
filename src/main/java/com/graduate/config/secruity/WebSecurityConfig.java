@@ -110,6 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/index/supervisorPage",
                         "/index/teacherInfoPage",
                         "/index/userPage",
+                        "/index/feedbackPage",
                         "/index"
                 ).permitAll()
                 // 对于获取token的rest api要允许匿名访问

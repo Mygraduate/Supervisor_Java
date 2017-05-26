@@ -21,6 +21,8 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static com.graduate.utils.CourseUtil.findListByDay;
 import static com.graduate.utils.CourseUtil.findListByWeek;
@@ -44,10 +46,13 @@ public class WordUtils {
 
     private static  String ARRAGE_EVALUATE_SAVE_PATH = "doc\\feedback";
 
+    private static String  ARRAGE_EVALUATE_ZIP_SAVE_PATH = "doc\\zip";
+
     private static final String WORD_SUFFIX_DOCX =".docx";
 
     private static final String WORD_SUFFIX_DOC =".doc";
 
+    private static final String ZIP_SUFFIX =".zip";
 
     public static void main(String[] args) {
 
@@ -73,26 +78,31 @@ public class WordUtils {
 //            data.put("groups","小王，小明，小红");
 //            data.put("summar","很好，非常好");
 //            fillChief(data,"小静");
-            HashMap<String,String> data = new HashMap<>();
-            data.put("teacher","小静");
-            data.put("time","2017-05-02");
-            data.put("address","A(2-1)");
-            data.put("class","2013级");
-            data.put("name","离散数学");
-            data.put("content","定积分");
-            data.put("{0}","6");
-            data.put("{1}","15");
-            data.put("{2}","5");
-            data.put("{3}","20");
-            data.put("{4}","8");
-            data.put("{5}","9");
-            data.put("{6}","10");
-            data.put("{7}","20");
-            data.put("supervisor","小王");
-            data.put("total","80");
-            data.put("summar","很好，非常好");
-            fillNormal(data, String.valueOf(new Date().getTime()));
-
+//            HashMap<String,String> data = new HashMap<>();
+//            data.put("teacher","小静");
+//            data.put("time","2017-05-02");
+//            data.put("address","A(2-1)");
+//            data.put("class","2013级");
+//            data.put("name","离散数学");
+//            data.put("content","定积分");
+//            data.put("{0}","6");
+//            data.put("{1}","15");
+//            data.put("{2}","5");
+//            data.put("{3}","20");
+//            data.put("{4}","8");
+//            data.put("{5}","9");
+//            data.put("{6}","10");
+//            data.put("{7}","20");
+//            data.put("supervisor","小王");
+//            data.put("total","80");
+//            data.put("summar","很好，非常好");
+//            fillNormal(data, String.valueOf(new Date().getTime()));
+            File file1 = new File("C:\\Users\\Administrator\\Desktop\\demo4.xls");
+            File file2 = new File("C:\\Users\\Administrator\\Desktop\\demo3.xls");
+            List<File> files = new ArrayList<>();
+            files.add(file1);
+            files.add(file2);
+            makeZipFile("demo",files);
         }catch (Exception e){
             e.printStackTrace();
 
@@ -232,5 +242,51 @@ public class WordUtils {
 
     public static String fillNormal(HashMap<String,String> data,String saveName)throws Exception{
         return fillTemplate(data,TEMPLATE_NORMAL_PATH,saveName);
+    }
+
+    public static  void makeZipFile(String saveName,List<File> files) throws Exception{
+
+
+        String classPath = URLDecoder.decode(String.valueOf(Thread.currentThread().getContextClassLoader().getResource("").getPath()),"UTF-8");
+        String savedir = classPath+"\\"+ARRAGE_EVALUATE_ZIP_SAVE_PATH;
+        String savePath = savedir+"\\"+saveName+ZIP_SUFFIX;
+
+
+        File fileDir = new File(savedir);
+        if(!fileDir.exists()){
+            fileDir.mkdirs();
+        }
+
+
+        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(savePath));
+
+
+
+        for(int i=0;i<files.size();i++) {
+
+            FileInputStream fis = new FileInputStream(files.get(i));
+
+            out.putNextEntry(new ZipEntry(files.get(i).getName()));
+
+            int len;
+
+            //读入需要下载的文件的内容，打包到zip文件
+            byte[] buffer = new byte[1024];
+            while((len = fis.read(buffer))>0) {
+
+                out.write(buffer,0,len);
+
+            }
+
+            out.closeEntry();
+
+            fis.close();
+
+        }
+
+        out.close();
+
+        System.out.println("生成Demo.zip成功");
+
     }
 }

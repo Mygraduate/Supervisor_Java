@@ -41,6 +41,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         //如果是ajax请求
         if (WebUtil.isAjax(request)) {
             BaseJsonData<HashMap<String,Object>> data = new BaseJsonData<>();
+            data.setCode(-2);
             data.setMsg("非法访问，请登录");
             String contentType = "application/json; charset=utf-8";
             response.setContentType(contentType);

@@ -7,10 +7,12 @@ import com.graduate.system.user.model.User;
 import com.graduate.system.user.service.UserService;
 import com.graduate.timer.MessageTask;
 import com.graduate.utils.UserUtil;
+import com.graduate.utils.excel.exception.FormatException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +53,11 @@ public class ExcelController extends BaseController {
     @RequestMapping(value = "/import",method = RequestMethod.POST)
     @ResponseBody
     public BaseJsonData importCourse(@RequestParam("file") MultipartFile file ) {
-//      Long cid = userService.findUserByname( UserUtil.getUserName()).getCid();
         Long cid = userService.findUserByname( UserUtil.getUserName()).getCollege().getId();
         try {
+            if(StringUtils.substringAfter(file.getName(),".") == "xlsx"){
+                throw new FormatException("请将xlsx文件转换为xls");
+            }
             excelService.importCourseByExcel(cid,file.getInputStream());
         } catch (Exception e) {
            e.printStackTrace();
