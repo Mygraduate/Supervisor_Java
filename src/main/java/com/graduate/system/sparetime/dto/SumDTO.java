@@ -10,6 +10,7 @@ public class SumDTO {
     private Long cid;
     private int[] spareweek;
     private  String name;
+    private Long tid;
 
     public Long getUid() {
         return uid;
@@ -43,6 +44,14 @@ public class SumDTO {
         this.cid = cid;
     }
 
+    public Long getTid() {
+        return tid;
+    }
+
+    public void setTid(Long tid) {
+        this.tid = tid;
+    }
+
     public SumDTO() {
     }
 
@@ -53,6 +62,7 @@ public class SumDTO {
                 ", cid=" + cid +
                 ", spareweek=" + Arrays.toString(spareweek) +
                 ", name='" + name + '\'' +
+                ", tid=" + tid +
                 '}';
     }
 }
