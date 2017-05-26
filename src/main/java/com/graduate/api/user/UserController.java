@@ -181,8 +181,14 @@ public class UserController extends BaseController {
     public BaseJsonData getRoleList() {
         BaseJsonData data = new BaseJsonData();
         try{
-            List<Role> r=roleService.findAll();
-            r.remove(0);
+            User user=userService.findUserByname(UserUtil.getUserName());
+            List<Role> r;
+            if(user.getUsername().equals("admin")){
+                r=roleService.findAll();
+            }else {
+                r=roleService.findAll();
+                r.remove(0);
+            }
             return data.ok(r);
         }catch (Exception e){
             e.printStackTrace();
