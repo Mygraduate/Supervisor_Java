@@ -244,7 +244,7 @@ public class WordUtils {
         return fillTemplate(data,TEMPLATE_NORMAL_PATH,saveName);
     }
 
-    public static  void makeZipFile(String saveName,List<File> files) throws Exception{
+    public static  String makeZipFile(String saveName,List<File> files) throws Exception{
 
 
         String classPath = URLDecoder.decode(String.valueOf(Thread.currentThread().getContextClassLoader().getResource("").getPath()),"UTF-8");
@@ -287,6 +287,6 @@ public class WordUtils {
         out.close();
 
         System.out.println("生成Demo.zip成功");
-
+        return savePath;
     }
 }

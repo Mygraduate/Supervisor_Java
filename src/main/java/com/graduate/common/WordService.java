@@ -11,6 +11,8 @@ import com.graduate.utils.word.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,14 @@ public class WordService {
         return wordFile;
     }
 
+    public String makeZip(String saveName,List<String> paths)throws Exception{
+        List<File> files = new ArrayList<>();
+        for(String fileName : paths){
+            File file = new File(fileName);
+            files.add(file);
+        }
+        return WordUtils.makeZipFile(saveName,files);
+    }
     public String fillChiefSuparvisorFile(Arrage arrage, JSONObject object,String saveName) throws Exception{
         HashMap<String,String> data = new HashMap<>();
             data.put("teacher",arrage.getTeacher().getName());
