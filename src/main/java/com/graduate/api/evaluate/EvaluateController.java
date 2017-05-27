@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,8 +66,16 @@ public class EvaluateController extends BaseController {
         HashMap<String,Object> searchVals = new HashMap<>();
         searchVals.put("teacher",teacher);
         searchVals.put("creator",creator);
-        searchVals.put("startime",startime);
-        searchVals.put("endtime",endtime);
+        SimpleDateFormat formatter;
+        formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+        if(startime!=null){
+            searchVals.put("startime",formatter.format(startime));
+        }
+         if(endtime!=null){
+            searchVals.put("endtime",formatter.format(endtime));
+        }
+
+
         HashMap<String,String> orderVals = new HashMap<>();
         orderVals.put("id","ASC");
         Page<Evaluate> evaluatePage=evaluateService.findByField(searchVals,pageNo,pageSize,orderVals);

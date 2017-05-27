@@ -20,6 +20,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,16 +66,31 @@ public class EvaluateService<T> extends BaseService<T> {
                     );
                 }
                 if(vals.get("startime")!=null){
-                    Date star=(Date) vals.get("startime");
-                    predicate.getExpressions().add(
-                            criteriaBuilder.greaterThanOrEqualTo(root.<String>get("createTime"),star)
-                    );
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date star = null;
+                    try {
+                        star = sdf.parse(vals.get("startime").toString());
+                        predicate.getExpressions().add(
+                                criteriaBuilder.greaterThanOrEqualTo(root.<String>get("createTime"),star)
+                        );
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+//                    Date star=(Date) vals.get("startime");
+
                 }
                 if(vals.get("endtime")!=null){
-                    Date end =(Date) vals.get("endtime");
-                    predicate.getExpressions().add(
+//                    Date end =(Date) vals.get("endtime");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date end = null;
+                    try {
+                        end = sdf.parse(vals.get("endtime").toString());
+                        predicate.getExpressions().add(
                             criteriaBuilder.lessThanOrEqualTo(root.<String>get("createTime"),end)
-                    );
+                        );
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 return predicate;
