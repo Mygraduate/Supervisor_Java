@@ -8,6 +8,7 @@ import com.graduate.system.course.model.Course;
 import com.graduate.system.evaluate.dao.EvaluateDao;
 import com.graduate.system.evaluate.model.Evaluate;
 import com.graduate.system.teacher.model.Teacher;
+import com.graduate.utils.DateUtil;
 import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -66,31 +67,18 @@ public class EvaluateService<T> extends BaseService<T> {
                     );
                 }
                 if(vals.get("startime")!=null){
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     Date star = null;
-                    try {
-                        star = sdf.parse(vals.get("startime").toString());
+                        star=DateUtil.getDateByString(vals.get("startime").toString());
                         predicate.getExpressions().add(
                                 criteriaBuilder.greaterThanOrEqualTo(root.<String>get("createTime"),star)
                         );
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-//                    Date star=(Date) vals.get("startime");
-
                 }
                 if(vals.get("endtime")!=null){
-//                    Date end =(Date) vals.get("endtime");
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     Date end = null;
-                    try {
-                        end = sdf.parse(vals.get("endtime").toString());
+                        end = DateUtil.getDateByString(vals.get("endtime").toString());
                         predicate.getExpressions().add(
                             criteriaBuilder.lessThanOrEqualTo(root.<String>get("createTime"),end)
                         );
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
                 }
 
                 return predicate;

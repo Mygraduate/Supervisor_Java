@@ -59,20 +59,21 @@ public class EvaluateController extends BaseController {
             @ApiParam(value = "页长")@RequestParam(value = "pageSize") Integer pageSize,
             @ApiParam(value = "授课老师姓名")@RequestParam(value = "teacher",required = false) String teacher,
             @ApiParam(value = "督导员id")@RequestParam(value = "creator",required = false) Long creator,
-            @ApiParam(value = "起始时间")@RequestParam(value = "startime",required = false) Date startime,
-            @ApiParam(value = "结束时间")@RequestParam(value = "endtime",required = false) Date endtime
+                @ApiParam(value = "起始时间")@RequestParam(value = "startime",required = false) String startime,
+            @ApiParam(value = "结束时间")@RequestParam(value = "endtime",required = false) String endtime
     ) {
         try {
         HashMap<String,Object> searchVals = new HashMap<>();
         searchVals.put("teacher",teacher);
         searchVals.put("creator",creator);
-        SimpleDateFormat formatter;
-        formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-        if(startime!=null){
-            searchVals.put("startime",formatter.format(startime));
+//        SimpleDateFormat formatter;
+//        formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+        if(startime!=null&&startime.trim().length()>0){
+            searchVals.put("startime",startime);
         }
-         if(endtime!=null){
-            searchVals.put("endtime",formatter.format(endtime));
+         if(endtime!=null&&endtime.trim().length()>0){
+//            searchVals.put("endtime",formatter.format(endtime));
+             searchVals.put("endtime",endtime);
         }
 
 
