@@ -15,6 +15,7 @@ import com.graduate.system.sparetime.model.SpareTime;
 import com.graduate.system.sparetime.service.SparetimeService;
 import com.graduate.system.user.model.User;
 import com.graduate.system.user.model.UserAndRole;
+import com.graduate.system.user.service.UserAndRoleService;
 import com.graduate.system.user.service.UserService;
 import com.graduate.utils.BeanMapper;
 import com.graduate.utils.wecat.WecatService;
@@ -70,7 +71,8 @@ public class ArrageController extends BaseController {
     @Autowired
     private WecatService wecatService;
 
-
+    @Autowired
+    private UserAndRoleService<UserAndRole> userAndRoleService;
 
     @ApiOperation(value="获取听课安排列表", notes="")
     @PreAuthorize("hasRole('ROLE_MASTER')")
@@ -218,10 +220,17 @@ public class ArrageController extends BaseController {
     public BaseJsonData sentArragewx(@RequestBody List<Long> ids) {
         BaseJsonData data = new BaseJsonData();
         try{
+            List<UserAndRole> master = new ArrayList<>();
             for(Long id : ids){
                 Arrage arrage = arrageService.findOne(id);
                 String [] wxlist=arrage.getGroups().split(",");
                 int index = 0;
+                if(index == 0){
+                    HashMap<String,Object> map = new HashMap<>();
+                    map.put("roleId",2);
+                    map.put("cid",arrage.getCollegeId());
+                    master = userAndRoleService.findAllByField(map);
+                }
                 for (String wx: wxlist) {
                     WxCpMessage.WxArticle article1 = new WxCpMessage.WxArticle();
                     article1.setTitle(arrage.getTeacher().getName()+"听课安排");
@@ -240,6 +249,7 @@ public class ArrageController extends BaseController {
                             .addArticle(article1)
                             .build();
                     wecatService.sendMessage(message);
+                    sendMessageToMaster(arrage,master);
                     index ++;
                 }
             }
@@ -251,6 +261,23 @@ public class ArrageController extends BaseController {
         }
     }
 
-
+    private void sendMessageToMaster(Arrage arrage,List<UserAndRole> masters){
+        try{
+            String masterIds = "";
+            for(UserAndRole userAndRole : masters){
+                masterIds = masterIds+"|"+userAndRole.getUser().getId();
+            }
+            String content = arrage.getTeacher().getName()+"的课程安排"+"已经发送";
+                WxCpMessage message  = WxCpMessage.TEXT()
+                        .toUser(masterIds.substring(1))
+                        .agentId(Integer.valueOf(wecatService.getEvaluateAppId()))
+                        .content(content)
+                        .build();
+                wecatService.sendMessage(message);
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+        }
+    }
 
 }

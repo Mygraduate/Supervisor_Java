@@ -84,4 +84,20 @@ public class ArrageService<T>  extends BaseService<T>{
     public List<Arrage> findAllByCidAndStatus(Long cid,Integer status){
         return mapper.findAllByCollegeIdAndStatus(cid,status);
     }
+
+    public List<Arrage> findAllByTime(String time){
+        return mapper.findAll(new Specification<Arrage>() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Predicate predicate = criteriaBuilder.conjunction();
+                predicate.getExpressions().add(
+                        criteriaBuilder.equal(root.<Course>get("course").get("time"),time)
+                );
+                predicate.getExpressions().add(
+                        criteriaBuilder.equal(root.<Integer>get("status"),1)
+                );
+                return predicate;
+            }
+        });
+    }
 }
