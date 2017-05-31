@@ -45,7 +45,7 @@ public class ExcelUtils {
 
     private final static String EXPORT_EXCEL_SUFFIX = ".xls";
 
-    private final static String EXPROT_TITLE = "教学督导听课安排表";
+
     public static void main(String[] args) {
 ////        String path = "C:\\Users\\Administrator\\Desktop\\demo3.xls";
 //        List<String> paths = new ArrayList<>();
@@ -68,13 +68,13 @@ public class ExcelUtils {
 //        }
 //        Date end = new Date();
 //        System.out.println(end.getTime() - start.getTime());
-        try{
-            List<Arrage> arrages = new ArrayList<>();
-            String [] header = new String[]{"序号", "课程", "授课内容", "授课方式", "专业", "教室", "教师", "周次", "听课时间", "听课人员安排"};
-            startExport(String.valueOf(new Date().getTime()),arrages,header);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        try{
+//            List<Arrage> arrages = new ArrayList<>();
+//            String [] header = new String[]{"序号", "课程", "授课内容", "授课方式", "专业", "教室", "教师", "周次", "听课时间", "听课人员安排"};
+//            startExport(String.valueOf(new Date().getTime()),arrages,header);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
     //初始化导入配置
@@ -257,7 +257,7 @@ public class ExcelUtils {
     }
 
 
-    public static String startExport(String saveName,List<Arrage> arrages, String[] header)throws Exception {
+    public static String startExport(String saveName,List<Arrage> arrages,String title, String[] header,List<Double> grade)throws Exception {
         String classPath = URLDecoder.decode(String.valueOf(Thread.currentThread().getContextClassLoader().getResource("").getPath()),"UTF-8");
         String savedir = classPath+"\\"+ARRAGE_SAVE_PATH;
         String savePath = savedir+"\\"+saveName+EXPORT_EXCEL_SUFFIX;
@@ -265,12 +265,12 @@ public class ExcelUtils {
         // 声明一个工作薄
         HSSFWorkbook workbook = new HSSFWorkbook();
         // 生成一个表格
-        HSSFSheet sheet = workbook.createSheet(EXPROT_TITLE);
+        HSSFSheet sheet = workbook.createSheet(title);
 
         //绘制表头
         HSSFRow row = sheet.createRow(0);
         HSSFCell cell = row.createCell(0);
-        cell.setCellValue(EXPROT_TITLE);
+        cell.setCellValue(title);
         CellStyle titleStyle = workbook.createCellStyle();
         titleStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
         HSSFFont titleFont = workbook.createFont();
@@ -337,6 +337,15 @@ public class ExcelUtils {
                         //听课人员安排
                         dataRow.createCell(i).setCellValue(arrage.getGroups());
                         break;
+                    case 10:
+                        //听课人员安排
+                        String strGrade ="";
+                        if(grade.get(count)>0){
+                            strGrade = grade.get(count).toString();
+                        }
+                        dataRow.createCell(i).setCellValue(strGrade);
+                        break;
+
                 }
             }
             index ++;

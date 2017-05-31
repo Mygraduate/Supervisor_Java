@@ -5,6 +5,8 @@ import com.graduate.system.arrage.service.ArrageService;
 import com.graduate.system.course.dto.ImportDTO;
 import com.graduate.system.course.model.Course;
 import com.graduate.system.course.service.CourseService;
+import com.graduate.system.evaluate.model.Evaluate;
+import com.graduate.system.evaluate.service.EvaluateService;
 import com.graduate.system.teacher.model.Teacher;
 import com.graduate.system.teacher.service.TeacherService;
 import com.graduate.system.user.model.User;
@@ -47,6 +49,12 @@ public class ExcelService {
     @Autowired
     TimeService timeService;
 
+    @Autowired
+    EvaluateService<Evaluate> evaluateService;
+
+    private final static String EXPROT_ARRAGE_TITLE = "教学督导听课安排表";
+
+    private final static String EXPROT_EVALUATE_TITLE = "教学督导听课反馈表";
 
     //导入时将覆盖更新原来导入的课程表,返回插入的记录数
     public int importCourseByExcel(Long collegeId, InputStream inputStream) throws Exception {
@@ -103,10 +111,23 @@ public class ExcelService {
 
     public String exportArrage(Long cid,String saveName)throws Exception{
         List<Arrage> arrages = arrageService.findAllByCidAndStatus(cid,1);
+        List<Double> garde = new ArrayList<>();
         for(Arrage arrage : arrages){
             arrage.setGroups(userService.findAllUserNameByIds(arrage.getGroups().split(",")));
+            garde.add(0.0);
         }
-        String [] header = new String[]{"序号", "课程", "授课内容", "授课方式", "专业", "教室", "教师", "周次", "听课时间", "听课人员安排"};
-        return ExcelUtils.startExport(saveName,arrages,header);
+        String [] header = new String[]{"序号", "课程", "授课内容", "授课方式", "专业", "教室", "教师", "周次", "听课时间", "听课人员安排","分数"};
+        return ExcelUtils.startExport(saveName,arrages,EXPROT_ARRAGE_TITLE,header,garde);
+    }
+
+    public String exportEvaluate(Long cid,String saveName)throws Exception{
+        List<Arrage> arrages = arrageService.findAllByCidAndStatus(cid,1);
+        List<Double> garde = new ArrayList<>();
+        for(Arrage arrage : arrages){
+            arrage.setGroups(userService.findAllUserNameByIds(arrage.getGroups().split(",")));
+            garde.add(evaluateService.calArrageGrade(arrage.getId()));
+        }
+        String [] header = new String[]{"序号", "课程", "授课内容", "授课方式", "专业", "教室", "教师", "周次", "听课时间", "听课人员安排","分数"};
+        return ExcelUtils.startExport(saveName,arrages,EXPROT_EVALUATE_TITLE,header,garde);
     }
 }

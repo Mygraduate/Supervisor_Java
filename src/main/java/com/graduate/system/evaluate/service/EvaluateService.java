@@ -10,6 +10,7 @@ import com.graduate.system.evaluate.model.Evaluate;
 import com.graduate.system.teacher.model.Teacher;
 import com.graduate.utils.DateUtil;
 import com.sun.org.apache.regexp.internal.RE;
+import com.sun.org.apache.xerces.internal.impl.dv.xs.DoubleDV;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,18 @@ public class EvaluateService<T> extends BaseService<T> {
     public Page<Evaluate> findByField(HashMap<String,Object> searchVals, int pageNo, int pageSize, HashMap<String,String> orderVals){
         Specification specification = buildSearchByField(searchVals);
         return mapper.findAll(specification,buildPage(pageNo,pageSize,orderVals));
+    }
+
+    public Double calArrageGrade(Long arrageId){
+        List<Evaluate> evaluates = mapper.findEvaluateByArrageId(arrageId);
+        Double grade = 0.0;
+        if(evaluates.size()>0){
+            for(Evaluate evaluate : evaluates){
+                grade = grade + evaluate.getGrade();
+            }
+            grade = grade/evaluates.size();
+        }
+        return grade;
     }
 
     public Specification buildSearchByField(HashMap<String,Object> vals){

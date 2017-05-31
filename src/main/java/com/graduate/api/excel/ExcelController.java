@@ -104,6 +104,37 @@ public class ExcelController extends BaseController {
         }
     }
 
+    @ApiOperation(value="导出学期听课反馈", notes="")
+    @RequestMapping(value = "/export/evaluate",method = RequestMethod.GET)
+    public void exportEvaluate(@RequestParam("cid")Long cid,HttpServletRequest request,HttpServletResponse response) {
+        FileInputStream in = null;
+        OutputStream out = null;
+        try {
+            String saveName = String.valueOf(new Date().getTime());
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("application/msexcel");
+            response.setHeader("Content-Disposition", "attachment;filename=" + convertFileName(request, saveName) + ".xls");
+
+            String savePath = excelService.exportEvaluate(cid, saveName);
+            in = (new FileInputStream(savePath));
+            out = response.getOutputStream();
+
+            byte[] buffer = new byte[2048];
+            int n = -1;
+            while ((n = in.read(buffer)) > 0) {
+                out.write(buffer, 0, n);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) in.close();
+                if (out != null) out.close();
+            } catch (IOException ignore) {
+
+            }
+        }
+    }
 
     private static String convertFileName(HttpServletRequest request, String fileName) throws Exception {
         String agent = request.getHeader("User-Agent");
