@@ -1,10 +1,14 @@
 package com.graduate.common;
 
+import com.graduate.system.arrage.model.Arrage;
+import com.graduate.system.arrage.service.ArrageService;
 import com.graduate.system.course.dto.ImportDTO;
 import com.graduate.system.course.model.Course;
 import com.graduate.system.course.service.CourseService;
 import com.graduate.system.teacher.model.Teacher;
 import com.graduate.system.teacher.service.TeacherService;
+import com.graduate.system.user.model.User;
+import com.graduate.system.user.service.UserService;
 import com.graduate.utils.BeanMapper;
 import com.graduate.utils.DateUtil;
 import com.graduate.utils.excel.ExcelUtils;
@@ -13,6 +17,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -34,10 +39,17 @@ public class ExcelService {
     TeacherService<Teacher> teacherService;
 
     @Autowired
+    ArrageService<Arrage> arrageService;
+
+    @Autowired
+    UserService<User> userService;
+
+    @Autowired
     TimeService timeService;
 
-    //导入时将覆盖更新原来导入的课程表
-    public void importCourseByExcel(Long collegeId, InputStream inputStream) throws Exception {
+
+    //导入时将覆盖更新原来导入的课程表,返回插入的记录数
+    public int importCourseByExcel(Long collegeId, InputStream inputStream) throws Exception {
         List<ImportDTO> data = ExcelUtils.startImport(inputStream, ImportDTO.class);
         HashMap<String,Long> teacherMap = new HashMap<>();
         List<Course> original = new ArrayList<>();
@@ -69,11 +81,11 @@ public class ExcelService {
             course.setCid(collegeId);
             course.setTime(timeService.calTimeByWeekAndDay(course.getWeek(),course.getDay()));
         }
-        courseService.save(merge(original,courses));
+        List<Course> mergeList = merge(original,courses);
+        courseService.save(mergeList);
+        return mergeList.size();
     }
-
-
-
+    //合并集合
     private List<Course> merge(List<Course> originals,List<Course> sources){
         for(Course source : sources ){
             for(Course original : originals ){
@@ -87,5 +99,14 @@ public class ExcelService {
             }
         }
        return  (List<Course>) CollectionUtils.union(originals,sources);
+    }
+
+    public String exportArrage(Long cid,String saveName)throws Exception{
+        List<Arrage> arrages = arrageService.findAllByCidAndStatus(cid,1);
+        for(Arrage arrage : arrages){
+            arrage.setGroups(userService.findAllUserNameByIds(arrage.getGroups().split(",")));
+        }
+        String [] header = new String[]{"序号", "课程", "授课内容", "授课方式", "专业", "教室", "教师", "周次", "听课时间", "听课人员安排"};
+        return ExcelUtils.startExport(saveName,arrages,header);
     }
 }

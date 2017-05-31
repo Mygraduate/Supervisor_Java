@@ -120,6 +120,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/api/evaluate/download")
                 .permitAll()
+                .antMatchers("/api/excel/export/arrage")
+                .permitAll()
                 .antMatchers("/wecat/**")
                 .permitAll()
                 .anyRequest()
