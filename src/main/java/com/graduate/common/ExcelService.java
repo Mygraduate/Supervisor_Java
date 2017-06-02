@@ -102,6 +102,9 @@ public class ExcelService {
                         && source.getScope().equals(original.getScope())
                         && source.getAddress().equals(original.getAddress())){
                     source.setId(original.getId());
+                    if (original.getIsArrange()==1){
+                        source.setIsArrange(1);
+                    }
                     BeanMapper.copy(source,original);
                 }
             }

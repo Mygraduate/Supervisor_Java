@@ -39,6 +39,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -172,6 +173,12 @@ public class ArrageController extends BaseController {
             BeanMapper.copy(courseService.findAll(searchVals,orderVals),courses);
             BeanMapper.copy(sparetimeService.findSpareTimeBycid(cid),spareTimes);
             List<SpareTimeConfig> spareTimeConfigs = arrageService.autoCreateArrage(arrages,courses,spareTimes,config);
+            arrages.sort(new Comparator<Arrage>() {
+                @Override
+                public int compare(Arrage o1, Arrage o2) {
+                    return o1.getCourse().getWeek()-o2.getCourse().getWeek();
+                }
+            });
             arrageService.save(arrages);
             return data.ok(spareTimeConfigs);
         }catch (Exception e){

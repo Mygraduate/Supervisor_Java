@@ -117,6 +117,7 @@ public class CourseController extends BaseController {
             searchVals.put("cid",cid);
             searchVals.put("week",week);
             searchVals.put("day",day);
+            searchVals.put("isArrange",0);
             HashMap<String,String> orderVals = new HashMap<>();
             orderVals.put("week","ASC");
             Page<Course> page =  courseService.findAll(pageNo,pageSize,orderVals,searchVals);

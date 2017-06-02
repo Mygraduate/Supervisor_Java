@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -101,23 +102,29 @@ public class UserController extends BaseController {
     public BaseJsonData createUser(@RequestBody User user, @ApiParam(value = "角色id")@RequestParam(value = "roleId") Long roleId) {
         BaseJsonData data = new BaseJsonData();
         try {
+            user.setLastPasswordResetDate(new Date());
             userService.save(user);
             UserAndRole userAndRole=new UserAndRole();
             userAndRole.setUid(user.getId());
             userAndRole.setRoleId(roleId);
             userAndRoleService.save(userAndRole);
-
-            WxCpUser wxCpUseruser = new WxCpUser();
-            wxCpUseruser.setName(user.getUsername());
-            wxCpUseruser.setUserId(user.getId().toString());
-            wxCpUseruser.setWeiXinId(user.getWecat());
-            College college=collegeService.findCollegeByid(user.getCid());
-            Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
-            wxCpUseruser.setDepartIds(departIds);
-            wxCpUseruser.setEmail(user.getEmail());
-            wxCpUseruser.setMobile(user.getPhone());
-            wecatService.addUser(wxCpUseruser);
-
+            try{
+                WxCpUser wxCpUseruser = new WxCpUser();
+                wxCpUseruser.setName(user.getUsername());
+                wxCpUseruser.setUserId(user.getId().toString());
+                wxCpUseruser.setWeiXinId(user.getWecat());
+                College college=collegeService.findCollegeByid(user.getCid());
+                Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
+                wxCpUseruser.setDepartIds(departIds);
+                wxCpUseruser.setEmail(user.getEmail());
+                wxCpUseruser.setMobile(user.getPhone());
+                wecatService.addUser(wxCpUseruser);
+                user.setIsSynchro(1);//同步完成
+                userService.save(user);
+            }catch (Exception e){
+                e.printStackTrace();
+                logger.error(e.getMessage(),e);
+            }
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
@@ -135,7 +142,12 @@ public class UserController extends BaseController {
         try{
             List<UserAndRole> list=new ArrayList<UserAndRole>();
             for (User u: users) {
-                wecatService.deleteUser(u.getId().toString());
+                try {
+                    wecatService.deleteUser(u.getId().toString());
+                }catch (Exception e){
+                    e.printStackTrace();
+                    logger.error(e.getMessage(),e);
+                }
                 UserAndRole userAndRole=userAndRoleService.findRoleByUid(u.getId());
                 list.add(userAndRole);
             }
@@ -155,19 +167,27 @@ public class UserController extends BaseController {
     public BaseJsonData updateUsereList(@RequestBody UserAndRole userAndRole) {
         BaseJsonData data = new BaseJsonData();
         try{
+            userAndRole.getUser().setLastPasswordResetDate(new Date());
             userAndRoleService.save(userAndRole);
             User user=userService.findOne(userAndRole.getUid());
+            try {
+                WxCpUser wxCpUseruser = new WxCpUser();
+                wxCpUseruser.setName(user.getUsername());
+                wxCpUseruser.setUserId(user.getId().toString());
+                wxCpUseruser.setWeiXinId(user.getWecat());
+                College college=collegeService.findCollegeByid(user.getCid());
+                Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
+                wxCpUseruser.setDepartIds(departIds);
+                wxCpUseruser.setEmail(user.getEmail());
+                wxCpUseruser.setMobile(user.getPhone());
+                wecatService.updateUser(wxCpUseruser);
 
-            WxCpUser wxCpUseruser = new WxCpUser();
-            wxCpUseruser.setName(user.getUsername());
-            wxCpUseruser.setUserId(user.getId().toString());
-            wxCpUseruser.setWeiXinId(user.getWecat());
-            College college=collegeService.findCollegeByid(user.getCid());
-            Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
-            wxCpUseruser.setDepartIds(departIds);
-            wxCpUseruser.setEmail(user.getEmail());
-            wxCpUseruser.setMobile(user.getPhone());
-            wecatService.updateUser(wxCpUseruser);
+                userAndRole.getUser().setIsSynchro(1);
+                userAndRoleService.save(userAndRole);
+            }catch (Exception e){
+                e.printStackTrace();
+                logger.error(e.getMessage(),e);
+            }
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();

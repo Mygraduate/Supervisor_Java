@@ -112,19 +112,14 @@ public class SparetimeController {
         try{
             Long uid=spareTimeListnew.get(0).getUid();
             List<SpareTime> spareTimeListold=sparetimeService.findSpareTimeByuid(uid);
-            for (Iterator<SpareTime> o = spareTimeListold.iterator(); o.hasNext();) {
-                SpareTime os=o.next();
-                for (Iterator<SpareTime> n = spareTimeListnew.iterator(); n.hasNext();) {
-                    SpareTime ns=n.next();
-                    if(os.getWeek()==ns.getWeek()&&os.getDay()==ns.getDay()){
-                        ns.setId(os.getId());
-                        o.remove();
-                        break;
+            for(SpareTime oldList : spareTimeListold){
+                for(SpareTime newList : spareTimeListnew ){
+                    if(newList.getWeek().equals(oldList.getWeek())&&newList.getDay().equals(oldList.getDay())){
+                        oldList.setScope(newList.getScope());
                     }
                 }
             }
-            sparetimeService.delete(spareTimeListold);
-            sparetimeService.save(spareTimeListnew);
+            sparetimeService.save(spareTimeListold);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
@@ -199,6 +194,7 @@ public class SparetimeController {
                                 for(int i=0;i<strr.length;i++) {
                                     array[i] = Integer.parseInt(strr[i]);
                                 }
+
                                 weeks.setSpareweek(array);
                             }
                         }

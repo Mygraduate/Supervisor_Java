@@ -61,6 +61,10 @@ public class User{
     @ApiModelProperty(notes = "上次密码重置时间")
     private Date lastPasswordResetDate;//上次密码重置时间
 
+    @Column(name = "is_synchro")
+    @ApiModelProperty(notes = "是否与微信同步")
+    private Integer isSynchro = 0;//0是没同步，1是同步
+
     public Long getId() {
         return id;
     }
@@ -152,20 +156,11 @@ public class User{
         this.lastPasswordResetDate = lastPasswordResetDate;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", tid=" + tid +
-                ", teacher=" + teacher +
-                ", cid=" + cid +
-                ", college=" + college +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", wecat='" + wecat + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", lastPasswordResetDate=" + lastPasswordResetDate +
-                '}';
+    public Integer getIsSynchro() {
+        return isSynchro;
+    }
+
+    public void setIsSynchro(Integer isSynchro) {
+        this.isSynchro = isSynchro;
     }
 }

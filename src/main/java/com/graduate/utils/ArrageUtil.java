@@ -22,6 +22,8 @@ import static org.apache.coyote.http11.Constants.a;
  */
 public class ArrageUtil {
 
+    private static Random random = new Random();
+
     //自动排课
     public static List<SpareTimeConfig>  autoCreateArrage(List<Arrage> arrages,List<Course> courses, List<SpareTime> times,ArrageConfig config){
         List<SpareTimeConfig> spareTimeConfigs = new ArrayList<>();
@@ -165,8 +167,8 @@ public class ArrageUtil {
 
     //控制理论课和实验课的比例
     private static String ContorlProportion(ArrageConfig config){
-        Random rd = new Random();
-        int i = rd.nextInt(100);
+
+        int i = random.nextInt(100);
         String classtype = "";
         if (i > 0 && i <=config.getApercent())
         {
