@@ -6,6 +6,7 @@ import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
 import com.graduate.system.arrage.dto.ArrageConfig;
 import com.graduate.system.arrage.dto.ArrageStatus;
+import com.graduate.system.arrage.dto.ArrageSummary;
 import com.graduate.system.arrage.dto.SpareTimeConfig;
 import com.graduate.system.arrage.model.Arrage;
 import com.graduate.system.arrage.service.ArrageService;
@@ -284,6 +285,61 @@ public class ArrageController extends BaseController {
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(),e);
+        }
+    }
+
+    @ApiOperation(value="获取听课安排人员听课统计信息", notes="")
+    @RequestMapping(value="/summary", method=RequestMethod.GET)
+    public BaseJsonData getArrageSummary(
+            @ApiParam(value = "学院id")@RequestParam(value = "cid") Long cid,
+            @ApiParam(value = "状态stauts")@RequestParam(value = "status") Integer status){
+        List<Arrage> arrages = arrageService.findAllByCidAndStatus(cid,status);
+        HashMap<String,Object> searchVals = new HashMap<>();
+        searchVals.put("roleId",3);
+        searchVals.put("cid",cid);
+        List<UserAndRole> userAndRoleList=userAndRoleService.findAllByField(searchVals);//该学院的全部督导员
+        HashMap<String,ArrageSummary> map = new HashMap<>();
+        for(UserAndRole role: userAndRoleList){
+            for(Arrage arrage : arrages){
+                String uid = role.getUid().toString();
+                String [] groups = arrage.getGroups().split(",");
+                for(int i=0;i<groups.length;i++){
+                    if(uid.equals(groups[i])){
+                        ArrageSummary summary = null;
+                        if(map.keySet().contains(uid)){
+                            summary = map.get(uid);
+
+                        }else{
+                            summary = new ArrageSummary();
+                            summary.setUser(role.getUser());
+                            map.put(uid,summary);
+                        }
+                        summary.addWeekNum(arrage.getCourse().getWeek());
+                        summary.addTotal();
+                    }
+                }
+            }
+        }
+        return BaseJsonData.ok(map.values());
+    }
+
+    @ApiOperation(value="修改听课安排人员", notes="")
+    @RequestMapping(value="/edit/groups", method=RequestMethod.POST)
+    public BaseJsonData editArrageGroups(
+            @ApiParam(value = "听课安排id")@RequestParam(value = "id") Long id,
+            @RequestBody String groups){
+        try {
+            String supervisors = JSON.parseObject(groups).getString("groups");
+            Arrage arrage = arrageService.findOne(id);
+            sparetimeService.updateByUidAndTime(arrage.getGroups().split(","),arrage.getCollegeId(),arrage.getCourse().getWeek(),arrage.getCourse().getDay(),0);
+            sparetimeService.updateByUidAndTime(supervisors.split(","),arrage.getCollegeId(),arrage.getCourse().getWeek(),arrage.getCourse().getDay(),1);
+            arrage.setGroups(supervisors);
+            arrageService.save(arrage);
+            return BaseJsonData.ok();
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return BaseJsonData.fail(e);
         }
     }
 
