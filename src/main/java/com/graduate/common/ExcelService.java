@@ -65,7 +65,7 @@ public class ExcelService {
             teacherMap.put(dto.getTeacher(),null);
         }
         for(String name : teacherMap.keySet()){
-            Teacher exists = teacherService.findTeacherByname(StringUtils.substringBefore(name,"("));
+            Teacher exists = teacherService.findTeacherByname(StringUtils.substringBefore(name,"("),collegeId);
             if(exists != null ){
                 teacherMap.put(name,exists.getId());
                 original = courseService.findAllByTid(exists.getId());

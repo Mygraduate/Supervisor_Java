@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Repository
 public interface TeacherDao extends BaseDao<Teacher> {
-    Teacher findTeacherByname(String name);//根据姓名查找教师信息
+    Teacher findTeacherByNameAndCid(String name,Long cid);//根据姓名查找教师信息
     Teacher findTeacherByid(Long id);//根据姓名查找教师信息
     List<Teacher> findTeacherBycid(Long cid);//根据学院查找教师信息
 }
