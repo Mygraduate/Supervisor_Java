@@ -54,6 +54,12 @@ public class ArrageService<T>  extends BaseService<T>{
                     );
                 }
 
+                if (vals.get("college_id") != null && NumberUtils.isNumber(vals.get("college_id").toString())) {
+                    predicate.getExpressions().add(
+                            criteriaBuilder.equal(root.<Long>get("collegeId"),vals.get("college_id"))
+                    );
+                }
+
 
                 if (vals.get("week") != null && NumberUtils.isNumber(vals.get("week").toString())) {
                     predicate.getExpressions().add(

@@ -82,6 +82,7 @@ public class ArrageController extends BaseController {
     public BaseJsonData getArrageList(@ApiParam(value = "页数")@RequestParam(value = "pageNo") Integer pageNo,
                                     @ApiParam(value = "页长")@RequestParam(value = "pageSize") Integer pageSize,
                                     @ApiParam(value = "状态0：未确定，1：代表是已确定，2：代表是待执行，3：代表已执行")@RequestParam(value = "status") Integer status,
+                                    @ApiParam(value = "学院")@RequestParam(value = "college_id",required = false) Long college_id,
                                     @ApiParam(value = "周数")@RequestParam(value = "week",required = false) Integer week,
                                     @ApiParam(value = "天数")@RequestParam(value = "day",required = false) Integer day,
                                     @ApiParam(value = "教师")@RequestParam(value = "teacher",required = false) String teacher
@@ -89,6 +90,7 @@ public class ArrageController extends BaseController {
         try{
             HashMap<String,Object> searchVals = new HashMap<>();
             searchVals.put("status",status);
+            searchVals.put("college_id",college_id);
             searchVals.put("week",week);
             searchVals.put("day",day);
             searchVals.put("teacher",teacher);
