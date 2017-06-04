@@ -291,7 +291,7 @@ public class ArrageController extends BaseController {
     }
 
     @ApiOperation(value="获取听课安排人员听课统计信息", notes="")
-    @RequestMapping(value="/summary", method=RequestMethod.GET)
+    @RequestMapping(value="/summary", method=RequestMethod.POST)
     public BaseJsonData getArrageSummary(
             @ApiParam(value = "学院id")@RequestParam(value = "cid") Long cid,
             @ApiParam(value = "状态stauts")@RequestParam(value = "status") Integer status){

@@ -25,8 +25,8 @@ public class TeacherService<T> extends BaseService<T> {
         return mapper;
     }
 
-    public Teacher findTeacherByname(String name){
-        return mapper.findTeacherByname(name);
+    public Teacher findTeacherByname(String name,Long cid){
+        return mapper.findTeacherByNameAndCid(name,cid);
     }
 
     public Teacher findTeacherByid(Long id){
