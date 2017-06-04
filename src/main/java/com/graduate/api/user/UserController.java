@@ -1,6 +1,7 @@
 package com.graduate.api.user;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.graduate.api.course.CourseController;
 import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
@@ -120,10 +121,19 @@ public class UserController extends BaseController {
                 wxCpUseruser.setMobile(user.getPhone());
                 wecatService.addUser(wxCpUseruser);
                 user.setIsSynchro(1);//同步完成
+                user.setWecatid(user.getId());
                 userService.save(user);
             }catch (Exception e){
                 e.printStackTrace();
                 logger.error(e.getMessage(),e);
+                JSONObject j=JSON.parseObject(e.getMessage());
+                if(j.get("errcode").toString().trim().equals("60108")){
+                    user.setIsSynchro(1);//同步完成
+                    String wecatmsg=j.get("errmsg").toString().trim();
+                    String wecatid=wecatmsg.substring(wecatmsg.indexOf(":"));
+                    user.setWecatid(Long.getLong(wecatid));
+                    userService.save(user);
+                }
             }
             return data.ok();
         }catch (Exception e){
@@ -142,14 +152,20 @@ public class UserController extends BaseController {
         try{
             List<UserAndRole> list=new ArrayList<UserAndRole>();
             for (User u: users) {
-                try {
-                    wecatService.deleteUser(u.getId().toString());
-                }catch (Exception e){
-                    e.printStackTrace();
-                    logger.error(e.getMessage(),e);
+                if(u.getWecatid()==u.getId()){
+                    try {
+                        wecatService.deleteUser(u.getId().toString());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        logger.error(e.getMessage(),e);
+                    }
+                    UserAndRole userAndRole=userAndRoleService.findRoleByUid(u.getId());
+                    list.add(userAndRole);
+                }else{
+                    UserAndRole userAndRole=userAndRoleService.findRoleByUid(u.getId());
+                    list.add(userAndRole);
                 }
-                UserAndRole userAndRole=userAndRoleService.findRoleByUid(u.getId());
-                list.add(userAndRole);
+
             }
             userAndRoleService.delete(list);
             return data.ok();
@@ -170,24 +186,54 @@ public class UserController extends BaseController {
             userAndRole.getUser().setLastPasswordResetDate(new Date());
             userAndRoleService.save(userAndRole);
             User user=userService.findOne(userAndRole.getUid());
-            try {
-                WxCpUser wxCpUseruser = new WxCpUser();
-                wxCpUseruser.setName(user.getUsername());
-                wxCpUseruser.setUserId(user.getId().toString());
-                wxCpUseruser.setWeiXinId(user.getWecat());
-                College college=collegeService.findCollegeByid(user.getCid());
-                Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
-                wxCpUseruser.setDepartIds(departIds);
-                wxCpUseruser.setEmail(user.getEmail());
-                wxCpUseruser.setMobile(user.getPhone());
-                wecatService.updateUser(wxCpUseruser);
+            if(user.getWecat().trim()==userAndRole.getUser().getWecat().trim()){
+                try {
+                    WxCpUser wxCpUseruser = new WxCpUser();
+                    wxCpUseruser.setName(user.getUsername());
+                    wxCpUseruser.setUserId(user.getWecatid().toString());
+                    wxCpUseruser.setWeiXinId(user.getWecat());
+                    College college=collegeService.findCollegeByid(user.getCid());
+                    Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
+                    wxCpUseruser.setDepartIds(departIds);
+                    wxCpUseruser.setEmail(user.getEmail());
+                    wxCpUseruser.setMobile(user.getPhone());
+                    wecatService.updateUser(wxCpUseruser);
 
-                userAndRole.getUser().setIsSynchro(1);
-                userAndRoleService.save(userAndRole);
-            }catch (Exception e){
-                e.printStackTrace();
-                logger.error(e.getMessage(),e);
+                    userAndRole.getUser().setIsSynchro(1);
+                    userAndRoleService.save(userAndRole);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    logger.error(e.getMessage(),e);
+                }
+            }else{
+                try {
+                     WxCpUser wxCpUseruser = new WxCpUser();
+                     wxCpUseruser.setName(user.getUsername());
+                     wxCpUseruser.setUserId(user.getWecatid().toString());
+                     wxCpUseruser.setWeiXinId(user.getWecat());
+                     College college=collegeService.findCollegeByid(user.getCid());
+                     Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
+                     wxCpUseruser.setDepartIds(departIds);
+                     wxCpUseruser.setEmail(user.getEmail());
+                     wxCpUseruser.setMobile(user.getPhone());
+                     wecatService.addUser(wxCpUseruser);
+
+                     userAndRole.getUser().setIsSynchro(1);
+                     userAndRoleService.save(userAndRole);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    logger.error(e.getMessage(),e);
+                    JSONObject j=JSON.parseObject(e.getMessage());
+                    if(j.get("errcode").toString().trim().equals("60108")){
+                        user.setIsSynchro(1);//同步完成
+                        String wecatmsg=j.get("errmsg").toString().trim();
+                        String wecatid=wecatmsg.substring(wecatmsg.indexOf(":"));
+                        user.setWecatid(Long.getLong(wecatid));
+                        userService.save(user);
+                    }
+                }
             }
+
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();

@@ -65,6 +65,10 @@ public class User{
     @ApiModelProperty(notes = "是否与微信同步")
     private Integer isSynchro = 0;//0是没同步，1是同步
 
+    @Column(name = "wecatid")
+    @ApiModelProperty(notes = "微信名")
+    private Long wecatid ;
+
     public Long getId() {
         return id;
     }
@@ -143,6 +147,14 @@ public class User{
 
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
+    }
+
+    public Long getWecatid() {
+        return wecatid;
+    }
+
+    public void setWecatid(Long wecatid) {
+        this.wecatid = wecatid;
     }
 
     public User() {
