@@ -130,8 +130,8 @@ public class UserController extends BaseController {
                 if(j.get("errcode").toString().trim().equals("60108")){
                     user.setIsSynchro(1);//同步完成
                     String wecatmsg=j.get("errmsg").toString().trim();
-                    String wecatid=wecatmsg.substring(wecatmsg.indexOf(":"));
-                    user.setWecatid(Long.getLong(wecatid));
+                    String wecatid=wecatmsg.substring(wecatmsg.indexOf(":")+1).trim();
+                    user.setWecatid(Long.valueOf(wecatid));
                     userService.save(user);
                 }
             }
@@ -184,7 +184,6 @@ public class UserController extends BaseController {
         BaseJsonData data = new BaseJsonData();
         try{
             userAndRole.getUser().setLastPasswordResetDate(new Date());
-            userAndRoleService.save(userAndRole);
             User user=userService.findOne(userAndRole.getUid());
             if(user.getWecat().trim()==userAndRole.getUser().getWecat().trim()){
                 try {
@@ -198,8 +197,8 @@ public class UserController extends BaseController {
                     wxCpUseruser.setEmail(user.getEmail());
                     wxCpUseruser.setMobile(user.getPhone());
                     wecatService.updateUser(wxCpUseruser);
-
                     userAndRole.getUser().setIsSynchro(1);
+                    userAndRole.getUser().setWecatid(user.getId());
                     userAndRoleService.save(userAndRole);
                 }catch (Exception e){
                     e.printStackTrace();
@@ -209,16 +208,16 @@ public class UserController extends BaseController {
                 try {
                      WxCpUser wxCpUseruser = new WxCpUser();
                      wxCpUseruser.setName(user.getUsername());
-                     wxCpUseruser.setUserId(user.getWecatid().toString());
-                     wxCpUseruser.setWeiXinId(user.getWecat());
+                     wxCpUseruser.setUserId(user.getId().toString());
+                     wxCpUseruser.setWeiXinId(userAndRole.getUser().getWecat().trim());
                      College college=collegeService.findCollegeByid(user.getCid());
                      Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
                      wxCpUseruser.setDepartIds(departIds);
                      wxCpUseruser.setEmail(user.getEmail());
                      wxCpUseruser.setMobile(user.getPhone());
-                     wecatService.addUser(wxCpUseruser);
-
+                     wecatService.updateUser(wxCpUseruser);
                      userAndRole.getUser().setIsSynchro(1);
+                     userAndRole.getUser().setWecatid(user.getId());
                      userAndRoleService.save(userAndRole);
                 }catch (Exception e){
                     e.printStackTrace();
@@ -227,8 +226,9 @@ public class UserController extends BaseController {
                     if(j.get("errcode").toString().trim().equals("60108")){
                         user.setIsSynchro(1);//同步完成
                         String wecatmsg=j.get("errmsg").toString().trim();
-                        String wecatid=wecatmsg.substring(wecatmsg.indexOf(":"));
-                        user.setWecatid(Long.getLong(wecatid));
+                        String wecatid=wecatmsg.substring(wecatmsg.indexOf(":")+1).trim();
+                        user.setWecatid(Long.valueOf(wecatid));
+                        user.setWecat(userAndRole.getUser().getWecat().trim());
                         userService.save(user);
                     }
                 }

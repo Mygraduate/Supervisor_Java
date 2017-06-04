@@ -239,6 +239,7 @@ public class ArrageController extends BaseController {
                     master = userAndRoleService.findAllByField(map);
                 }
                 for (String wx: wxlist) {
+                    User user = userService.findOne(Long.valueOf(wx));
                     WxCpMessage.WxArticle article1 = new WxCpMessage.WxArticle();
                     article1.setTitle(arrage.getTeacher().getName()+"听课安排");
                     article1.setPicUrl("http://www.gdmu.edu.cn/images/01.jpg");
@@ -251,7 +252,7 @@ public class ArrageController extends BaseController {
                     article1.setUrl(url);
                     article1.setDescription(arrage.getCourse().getTime()+"  "+arrage.getCourse().getAddress()+"  "+arrage.getCourse().getName());
                     WxCpMessage message  = WxCpMessage.NEWS()
-                            .toUser(wx)
+                            .toUser(user.getWecatid().toString())
                             .agentId(Integer.valueOf(wecatService.getEvaluateAppId()))
                             .addArticle(article1)
                             .build();
@@ -272,7 +273,7 @@ public class ArrageController extends BaseController {
         try{
             String masterIds = "";
             for(UserAndRole userAndRole : masters){
-                masterIds = masterIds+"|"+userAndRole.getUser().getId();
+                masterIds = masterIds+"|"+userAndRole.getUser().getWecatid();
             }
             String content = arrage.getTeacher().getName()+"的课程安排"+"已经发送";
                 WxCpMessage message  = WxCpMessage.TEXT()

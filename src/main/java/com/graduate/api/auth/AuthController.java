@@ -47,7 +47,7 @@ public class AuthController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public BaseJsonData createAuthenticationToken(
             @RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException{
-        BaseJsonData<HashMap<String,Object>> data = new BaseJsonData<>();
+        BaseJsonData data = new BaseJsonData<>();
         HashMap<String,Object> map = new HashMap<>();
         try {
             final String token = authService.login(authenticationRequest.getUsername(), authenticationRequest.getPassword());
@@ -59,10 +59,12 @@ public class AuthController {
             map.put("user",userAndRole);
             data.setData(map);
         }catch (UsernameNotFoundException userNoFoundEex){
-           data.setMsg(userNoFoundEex.getMessage());
+           data.setData(userNoFoundEex.getMessage());
+            return data;
 
         }catch (AuthErrorEex authErrorEex){
-            data.setMsg("密码错误！");
+            data.setData("密码错误！");
+            return data;
         }
         data.setData(map);
 

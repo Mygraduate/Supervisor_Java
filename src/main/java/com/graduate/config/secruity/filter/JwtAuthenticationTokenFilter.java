@@ -70,8 +70,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 }catch (UsernameNotFoundException e){
                     e.printStackTrace();
                     logger.error(e.getMessage(),e);
-                    BaseJsonData<HashMap<String,Object>> data = new BaseJsonData<>();
-                    data.setMsg("用户名没找到");
+                    BaseJsonData data = new BaseJsonData<>();
+                    data.setData("用户名没找到");
                     String contentType = "application/json; charset=utf-8";
                     response.setContentType(contentType);
                     PrintWriter out = response.getWriter();
