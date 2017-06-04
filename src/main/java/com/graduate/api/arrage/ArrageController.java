@@ -299,41 +299,49 @@ public class ArrageController extends BaseController {
         searchVals.put("cid",cid);
         List<UserAndRole> userAndRoleList=userAndRoleService.findAllByField(searchVals);//该学院的全部督导员
         HashMap<String,ArrageSummary> map = new HashMap<>();
+        //初始化统计信息
+        for(UserAndRole role : userAndRoleList){
+            ArrageSummary summary = new ArrageSummary();
+            summary.setUser(role.getUser());
+            summary.setWeekSummaries(new ArrayList<>());
+            summary.setTotal(0);
+            map.put(role.getUid().toString(),summary);
+        }
+
         for(UserAndRole role: userAndRoleList){
             for(Arrage arrage : arrages){
                 String uid = role.getUid().toString();
                 String [] groups = arrage.getGroups().split(",");
                 for(int i=0;i<groups.length;i++){
                     if(uid.equals(groups[i])){
-                        ArrageSummary summary = null;
-                        if(map.keySet().contains(uid)){
-                            summary = map.get(uid);
-
-                        }else{
-                            summary = new ArrageSummary();
-                            summary.setUser(role.getUser());
-                            map.put(uid,summary);
-                        }
+                        ArrageSummary summary =  map.get(uid);;
                         summary.addWeekNum(arrage.getCourse().getWeek());
                         summary.addTotal();
                     }
                 }
             }
         }
-        return BaseJsonData.ok(map.values());
+        return BaseJsonData.ok(JSON.toJSON(map.values()));
     }
 
     @ApiOperation(value="修改听课安排人员", notes="")
     @RequestMapping(value="/edit/groups", method=RequestMethod.POST)
     public BaseJsonData editArrageGroups(
             @ApiParam(value = "听课安排id")@RequestParam(value = "id") Long id,
-            @RequestBody String groups){
+            @RequestBody List<Long> ids){
         try {
-            String supervisors = JSON.parseObject(groups).getString("groups");
+            if(ids.size()==0){
+                return BaseJsonData.fail("请传入督导员用户id");
+            }
+            String groups = "";
+            for(Long uid : ids){
+                groups = groups +","+uid.toString();
+            }
+            groups = groups.substring(1);
             Arrage arrage = arrageService.findOne(id);
             sparetimeService.updateByUidAndTime(arrage.getGroups().split(","),arrage.getCollegeId(),arrage.getCourse().getWeek(),arrage.getCourse().getDay(),0);
-            sparetimeService.updateByUidAndTime(supervisors.split(","),arrage.getCollegeId(),arrage.getCourse().getWeek(),arrage.getCourse().getDay(),1);
-            arrage.setGroups(supervisors);
+            sparetimeService.updateByUidAndTime(groups.split(","),arrage.getCollegeId(),arrage.getCourse().getWeek(),arrage.getCourse().getDay(),1);
+            arrage.setGroups(groups);
             arrageService.save(arrage);
             return BaseJsonData.ok();
         }catch (Exception e){

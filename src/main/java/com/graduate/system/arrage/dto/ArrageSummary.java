@@ -64,11 +64,11 @@ public class ArrageSummary {
         private int num = 0;
         private int week;
 
-        public int getnum() {
+        public int getNum() {
             return num;
         }
 
-        public void setnum(int num) {
+        public void setNum(int num) {
             this.num = num;
         }
 
