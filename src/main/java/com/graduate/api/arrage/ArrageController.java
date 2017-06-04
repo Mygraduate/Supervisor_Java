@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.graduate.api.teacher.TeacherController;
 import com.graduate.common.BaseController;
 import com.graduate.common.BaseJsonData;
-import com.graduate.system.arrage.dto.ArrageConfig;
-import com.graduate.system.arrage.dto.ArrageStatus;
-import com.graduate.system.arrage.dto.ArrageSummary;
-import com.graduate.system.arrage.dto.SpareTimeConfig;
+import com.graduate.system.arrage.dto.*;
 import com.graduate.system.arrage.model.Arrage;
 import com.graduate.system.arrage.service.ArrageService;
 import com.graduate.system.course.model.Course;
@@ -344,6 +341,29 @@ public class ArrageController extends BaseController {
             arrage.setGroups(groups);
             arrageService.save(arrage);
             return BaseJsonData.ok();
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return BaseJsonData.fail(e);
+        }
+    }
+
+    @ApiOperation(value="根据arrageId返回督导组", notes="")
+    @RequestMapping(value="/find/groups", method=RequestMethod.POST)
+    public BaseJsonData editArrageGroups(
+            @ApiParam(value = "听课安排id")@RequestParam(value = "id") Long id){
+        try {
+            Arrage arrage = arrageService.findOne(id);
+            String [] groups = arrage.getGroups().split(",");
+            List<ArrageGroup> map = new ArrayList<>();
+            for(int i=0;i<groups.length;i++){
+                ArrageGroup group = new ArrageGroup();
+                group.setId(groups[i]);
+                String [] ids = new String[]{groups[i]};
+                group.setName(userService.findAllUserNameByIds(ids));
+                map.add(group);
+            }
+            return BaseJsonData.ok(map);
         }catch (Exception e){
             e.printStackTrace();
             logger.error(e.getMessage(),e);
