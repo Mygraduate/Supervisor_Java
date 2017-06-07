@@ -308,6 +308,7 @@ public class ArrageController extends BaseController {
             for(Arrage arrage : arrages){
                 String uid = role.getUid().toString();
                 String [] groups = arrage.getGroups().split(",");
+
                 for(int i=0;i<groups.length;i++){
                     //如果改督导员属于该安排
                     if(uid.equals(groups[i])){

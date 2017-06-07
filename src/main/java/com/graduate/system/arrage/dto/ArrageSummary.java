@@ -40,24 +40,24 @@ public class ArrageSummary {
 
     public void addWeekNum(int week,boolean isChief){
         Boolean isFind = false;
+
         for(WeekSummary weekSummary : this.weekSummaries){
             if(weekSummary.getWeek() == week){
                 weekSummary.addNum();
-                if(isChief){
-                    weekSummary.isChief();
-                }
+                weekSummary.setChief(isChief);
                 isFind = true;
             }
         }
         if(!isFind){
-            addWeekSummary(week);
+            addWeekSummary(week,isChief);
         }
     }
 
-    private void addWeekSummary(int week){
+    private void addWeekSummary(int week,Boolean isChief){
         WeekSummary weekSummary = new WeekSummary();
         weekSummary.setWeek(week);
         weekSummary.addNum();
+        weekSummary.setChief(isChief);
         this.weekSummaries.add(weekSummary);
     }
     public void setWeekSummaries(List<WeekSummary> weekSummaries) {
@@ -98,7 +98,9 @@ public class ArrageSummary {
         }
 
         public void setChief(Boolean chief) {
-            isChief = chief;
+            if(chief){
+                isChief = chief;
+            }
         }
     }
 
