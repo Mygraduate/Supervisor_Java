@@ -27,7 +27,7 @@ import java.util.zip.ZipOutputStream;
 import static com.graduate.utils.CourseUtil.findListByDay;
 import static com.graduate.utils.CourseUtil.findListByWeek;
 import static com.graduate.utils.CourseUtil.isSeries;
-import static com.sun.tools.doclint.Entity.mu;
+
 
 /**
  * Created by konglinghai on 2017/5/16.

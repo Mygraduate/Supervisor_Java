@@ -9,6 +9,7 @@ import com.graduate.system.arrage.model.Arrage;
 import com.graduate.system.arrage.service.ArrageService;
 import com.graduate.system.course.model.Course;
 import com.graduate.system.course.service.CourseService;
+import com.graduate.system.sparetime.dto.SumDTO;
 import com.graduate.system.sparetime.model.SpareTime;
 import com.graduate.system.sparetime.service.SparetimeService;
 import com.graduate.system.user.model.User;
@@ -21,10 +22,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import me.chanjar.weixin.cp.bean.WxCpMessage;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,14 +39,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-import static antlr.build.ANTLR.root;
-import static com.sun.tools.doclets.formats.html.markup.HtmlStyle.title;
-import static org.apache.coyote.http11.Constants.a;
 
 /**
  * Created by konglinghai on 2017/5/20.
@@ -299,7 +296,7 @@ public class ArrageController extends BaseController {
         searchVals.put("cid",cid);
         List<UserAndRole> userAndRoleList=userAndRoleService.findAllByField(searchVals);//该学院的全部督导员
         HashMap<String,ArrageSummary> map = new HashMap<>();
-        //初始化统计信息
+        //初始化统计信息,总听课次数置零，每周安排情况置零
         for(UserAndRole role : userAndRoleList){
             ArrageSummary summary = new ArrageSummary();
             summary.setUser(role.getUser());
@@ -307,16 +304,21 @@ public class ArrageController extends BaseController {
             summary.setTotal(0);
             map.put(role.getUid().toString(),summary);
         }
-
         for(UserAndRole role: userAndRoleList){
             for(Arrage arrage : arrages){
                 String uid = role.getUid().toString();
                 String [] groups = arrage.getGroups().split(",");
                 for(int i=0;i<groups.length;i++){
+                    //如果改督导员属于该安排
                     if(uid.equals(groups[i])){
                         ArrageSummary summary =  map.get(uid);;
-                        summary.addWeekNum(arrage.getCourse().getWeek());
-                        summary.addTotal();
+                        if(i == 0){
+                            summary.addWeekNum(arrage.getCourse().getWeek(),true);//记录这一周，相应听课次数+
+                            summary.addChiefNum();//组长次数
+                        }else{
+                            summary.addWeekNum(arrage.getCourse().getWeek(),false);//记录这一周，相应听课次数+
+                        }
+                        summary.addTotal();//总听课次数+1
                     }
                 }
             }

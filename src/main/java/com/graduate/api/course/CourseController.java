@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.sun.tools.doclint.Entity.ne;
+
 
 /**
  * Created by konglinghai on 2017/5/16.
@@ -110,7 +110,8 @@ public class CourseController extends BaseController {
             @ApiParam(value = "页长")@RequestParam(value = "pageSize") int pageSize,
             @ApiParam(value = "学院id")@RequestParam(value = "cid") Long cid,
             @ApiParam(value = "周数")@RequestParam(value = "week",required = false) Integer week,
-            @ApiParam(value = "天数")@RequestParam(value = "day",required = false) Integer day
+            @ApiParam(value = "天数")@RequestParam(value = "day",required = false) Integer day,
+            @ApiParam(value = "教师姓名")@RequestParam(value = "teacher",required = false) String teacher
            ){
         try {
             HashMap<String,Object> searchVals = new HashMap<>();
@@ -118,6 +119,7 @@ public class CourseController extends BaseController {
             searchVals.put("week",week);
             searchVals.put("day",day);
             searchVals.put("isArrange",0);
+            searchVals.put("teacher",teacher);
             HashMap<String,String> orderVals = new HashMap<>();
             orderVals.put("week","ASC");
             Page<Course> page =  courseService.findAll(pageNo,pageSize,orderVals,searchVals);

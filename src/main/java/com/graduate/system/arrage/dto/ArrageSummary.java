@@ -11,6 +11,7 @@ import java.util.List;
 public class ArrageSummary {
     private User user;
     private int total = 0;
+    private int chiefNum = 0;
     private List<WeekSummary> weekSummaries = new ArrayList<>();
 
     public int getTotal() {
@@ -37,11 +38,14 @@ public class ArrageSummary {
         this.total++;
     }
 
-    public void addWeekNum(int week){
+    public void addWeekNum(int week,boolean isChief){
         Boolean isFind = false;
         for(WeekSummary weekSummary : this.weekSummaries){
             if(weekSummary.getWeek() == week){
                 weekSummary.addNum();
+                if(isChief){
+                    weekSummary.isChief();
+                }
                 isFind = true;
             }
         }
@@ -63,6 +67,7 @@ public class ArrageSummary {
     public class WeekSummary{
         private int num = 0;
         private int week;
+        private Boolean isChief = false;
 
         public int getNum() {
             return num;
@@ -83,5 +88,29 @@ public class ArrageSummary {
         public void addNum(){
             this.num++;
         }
+
+        public void isChief(){
+            this.isChief = true;
+        }
+
+        public Boolean getChief() {
+            return isChief;
+        }
+
+        public void setChief(Boolean chief) {
+            isChief = chief;
+        }
+    }
+
+    public int getChiefNum() {
+        return chiefNum;
+    }
+
+    public void setChiefNum(int chiefNum) {
+        this.chiefNum = chiefNum;
+    }
+
+    public void addChiefNum(){
+        this.chiefNum++;
     }
 }

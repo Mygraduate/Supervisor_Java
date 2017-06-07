@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 
 import javax.persistence.*;
 
-import static com.sun.tools.doclint.Entity.ne;
 
 /**
  * Created by konglinghai on 2017/3/19.

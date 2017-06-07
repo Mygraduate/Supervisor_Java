@@ -2,6 +2,7 @@ package com.graduate.common;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -181,6 +182,93 @@ public abstract  class BaseService<T>{
                     }
                 }
                 return predicate;
+            }
+        };
+    }
+
+    public Page<T> replacePageContent(List<T> replactList,Page<T> sourcePage){
+        return new Page<T>() {
+            @Override
+            public int getTotalPages() {
+                return sourcePage.getTotalPages();
+            }
+
+            @Override
+            public long getTotalElements() {
+                return sourcePage.getTotalElements();
+            }
+
+            @Override
+            public <S> Page<S> map(Converter<? super T, ? extends S> converter) {
+                return null;
+            }
+
+            @Override
+            public int getNumber() {
+                return sourcePage.getNumber();
+            }
+
+            @Override
+            public int getSize() {
+                return sourcePage.getSize();
+            }
+
+            @Override
+            public int getNumberOfElements() {
+                return sourcePage.getNumberOfElements();
+            }
+
+            @Override
+            public List<T> getContent() {
+                return replactList;
+            }
+
+            @Override
+            public boolean hasContent() {
+                if(replactList.size()>0){
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public Sort getSort() {
+                return sourcePage.getSort();
+            }
+
+            @Override
+            public boolean isFirst() {
+                return sourcePage.isFirst();
+            }
+
+            @Override
+            public boolean isLast() {
+                return sourcePage.isLast();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return sourcePage.hasNext();
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return sourcePage.hasPrevious();
+            }
+
+            @Override
+            public Pageable nextPageable() {
+                return sourcePage.nextPageable();
+            }
+
+            @Override
+            public Pageable previousPageable() {
+                return sourcePage.previousPageable();
+            }
+
+            @Override
+            public Iterator<T> iterator() {
+                return sourcePage.iterator();
             }
         };
     }
