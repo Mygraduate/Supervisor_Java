@@ -187,16 +187,16 @@ public class UserController extends BaseController {
             User user=userService.findOne(userAndRole.getUid());
             if(user.getWecat().trim()==userAndRole.getUser().getWecat().trim()){
                 try {
-                    WxCpUser wxCpUseruser = new WxCpUser();
-                    wxCpUseruser.setName(user.getUsername());
-                    wxCpUseruser.setUserId(user.getWecatid().toString());
-                    wxCpUseruser.setWeiXinId(user.getWecat());
-                    College college=collegeService.findCollegeByid(user.getCid());
-                    Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
-                    wxCpUseruser.setDepartIds(departIds);
-                    wxCpUseruser.setEmail(user.getEmail());
-                    wxCpUseruser.setMobile(user.getPhone());
-                    wecatService.updateUser(wxCpUseruser);
+//                    WxCpUser wxCpUseruser = new WxCpUser();
+//                    wxCpUseruser.setName(user.getUsername());
+//                    wxCpUseruser.setUserId(user.getWecatid().toString());
+//                    wxCpUseruser.setWeiXinId(user.getWecat());
+//                    College college=collegeService.findCollegeByid(user.getCid());
+//                    Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
+//                    wxCpUseruser.setDepartIds(departIds);
+//                    wxCpUseruser.setEmail(user.getEmail());
+//                    wxCpUseruser.setMobile(user.getPhone());
+//                    wecatService.updateUser(wxCpUseruser);
                     userAndRole.getUser().setIsSynchro(1);
                     userAndRole.getUser().setWecatid(user.getId());
                     userAndRoleService.save(userAndRole);

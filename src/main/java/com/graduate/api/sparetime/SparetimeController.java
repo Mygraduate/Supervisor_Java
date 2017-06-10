@@ -112,14 +112,18 @@ public class SparetimeController {
         try{
             Long uid=spareTimeListnew.get(0).getUid();
             List<SpareTime> spareTimeListold=sparetimeService.findSpareTimeByuid(uid);
-            for(SpareTime oldList : spareTimeListold){
-                for(SpareTime newList : spareTimeListnew ){
-                    if(newList.getWeek().equals(oldList.getWeek())&&newList.getDay().equals(oldList.getDay())){
-                        oldList.setScope(newList.getScope());
+            if(spareTimeListold.size()==0){
+                sparetimeService.save(spareTimeListnew);
+            }else{
+                for(SpareTime oldList : spareTimeListold){
+                    for(SpareTime newList : spareTimeListnew ){
+                        if(newList.getWeek().equals(oldList.getWeek())&&newList.getDay().equals(oldList.getDay())){
+                            oldList.setScope(newList.getScope());
+                        }
                     }
                 }
+                sparetimeService.save(spareTimeListold);
             }
-            sparetimeService.save(spareTimeListold);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
