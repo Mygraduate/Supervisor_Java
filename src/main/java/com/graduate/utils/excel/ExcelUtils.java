@@ -8,7 +8,6 @@ import com.graduate.utils.DateUtil;
 import com.graduate.utils.excel.config.ImportField;
 import com.graduate.utils.excel.config.TestField;
 import com.graduate.utils.excel.exception.FormatException;
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -28,9 +27,6 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 
-import static com.sun.org.apache.xml.internal.serialize.OutputFormat.Defaults.Encoding;
-import static com.sun.tools.doclets.formats.html.markup.HtmlStyle.title;
-import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
 
 /**
  * Created by konglinghai on 2017/4/26.
@@ -331,7 +327,7 @@ public class ExcelUtils {
                         break;
                     case 8:
                         //听课时间
-                        dataRow.createCell(i).setCellValue(arrage.getCourse().getTime());
+                        dataRow.createCell(i).setCellValue(arrage.getCourse().getTime()+" "+arrage.getCourse().getScope());
                         break;
                     case 9:
                         //听课人员安排

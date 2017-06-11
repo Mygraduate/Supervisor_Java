@@ -34,8 +34,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.graduate.utils.UserUtil.getUser;
-import static org.springframework.security.oauth2.common.AuthenticationScheme.form;
 
 /**
  * Created by konglinghai on 2017/5/14.
