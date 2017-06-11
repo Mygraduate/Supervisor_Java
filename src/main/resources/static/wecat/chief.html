@@ -1,63 +1,64 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <title>教学质量评估系统-首席督导员意见反馈</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-  <meta name="description" content="教学质量评估系统&lt;p&gt;首席督导表&lt;/p&gt;">
-  <link rel="stylesheet" href="../css/weui.css">
-  <link rel="stylesheet" href="../css/jquery-weui.css">
-  <link rel="stylesheet" href="../css/weixin.css">
-  <link rel="stylesheet" href="../css/jquery-ui.css">
+    <meta charset="utf-8">
+    <title>教学质量评估系统-首席督导员意见反馈</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0,minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="description" content="教学质量评估系统&lt;p&gt;首席督导表&lt;/p&gt;">
+    <link rel="stylesheet" href="../css/weui.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/weixin.css">
+    <link rel="stylesheet" href="../css/jquery-ui.css">
 </head>
 <body>
- <div class="header ">
-  <label>教学&nbsp;|&nbsp;质量评估</label><br>
-  <label style="font-size:16px;">首席督导员意见反馈</label>
+<div class="header ">
+    <label>教学&nbsp;|&nbsp;质量评估</label><br>
+    <label style="font-size:16px;">首席督导员意见反馈</label>
 </div>
 <div class="container">
-<p class="detail blue">上课老师信息:</p>
-    <div id = "detail" class="detail">
+    <p class="detail blue">上课老师信息:</p>
+    <div id="detail" class="detail">
 
 
     </div>
 
-<div class="weui_cells weui_cells_form">
-  <p class="detail blue">评分:</p>
-  <div class="weui_cell">
-      <div class="weui_cells_title detail1 ">
-        <input class="weui_textarea" placeholder="综合得分"  type = "text" name= "number" id = "chief0"/>
-      </div>
-  </div>
-    <div class="weui_cells weui_cells_form"> 
-   <div class="weui_cell">
-    <div class="weui_cell_bd weui_cell_primary ">
-     <div class="weui_cells_title detail1 "><p class="blue">综合意见:</p></div>
-      <textarea id="chief1"class="weui_textarea" placeholder="请输入评论" rows="3"></textarea>
-      <div class="weui_textarea_counter"><span>0</span>/200</div>
+    <div class="weui_cells weui_cells_form">
+        <p class="detail blue">评分:</p>
+        <div class="weui_cell">
+            <div class="weui_cells_title detail1 ">
+                <input class="weui_textarea" placeholder="综合得分" type="text" name="number" id="chief0"/>
+            </div>
+        </div>
+        <div class="weui_cells weui_cells_form">
+            <div class="weui_cell">
+                <div class="weui_cell_bd weui_cell_primary ">
+                    <div class="weui_cells_title detail1 "><p class="blue">综合意见:</p></div>
+                    <textarea id="chief1" class="weui_textarea" placeholder="请输入评论" rows="3"></textarea>
+                    <div class="weui_textarea_counter"><span>0</span>/200</div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-</div>
-<a href="javascript:;" id="submit" class="weui_btn weui_btn_primary">提交</a>
+    <a href="javascript:;" id="submit" class="weui_btn weui_btn_primary">提交</a>
     <script src="../js/jquery-2.1.4.js"></script>
     <script src="../js/jquery-weui.js"></script>
     <script src="../js/jquery-ui.js"></script>
     <script>
 
         $(function () {
-            var  id = getUrlParam("id");
-            var userId= getUrlParam("userId");
+            var id = getUrlParam("id");
+            var userId = getUrlParam("userId");
             var host = getUrlHost();
             $.ajax({
                 type: "GET",
-                url: host+"/sas/wecat/arrage/detail",
-                data:{
-                    id:id,
-                    userId:userId
+                url: host + "/sas/wecat/arrage/detail",
+                data: {
+                    id: id,
+                    userId: userId
                 },
-                contentType:"application/json",
-                success : function(json) {
+                contentType: "application/json",
+                success: function (json) {
                     if (json.code == 1) {
 
                         //教师姓名，年级，时间，地点，课程名称，内容
@@ -85,20 +86,20 @@
             });
 
             $("#submit").click(function () {
-                var data ={
-                    chief0:$("#chief0").val(),
-                    chief1:$("#chief1").val()
+                var data = {
+                    chief0: $("#chief0").val(),
+                    chief1: $("#chief1").val()
                 }
                 $.ajax({
                     type: 'POST',
-                    url: host+"/sas/wecat/evaluate/chief?id="+id+"&"+"userId="+userId,
+                    url: host + "/sas/wecat/evaluate/chief?id=" + id + "&" + "userId=" + userId,
                     data: JSON.stringify(data),
                     contentType: "application/json",
                     success: function (json) {
-                        if(json.code == 1){
-                            window.location.href = host +"/sas/wecat/success.html";
-                        }else{
-                            window.location.href= host +"/sas/wecat/fail.html";
+                        if (json.code == 1) {
+                            window.location.href = host + "/sas/wecat/success.html";
+                        } else {
+                            window.location.href = host + "/sas/wecat/fail.html";
                         }
                     }
                 });
@@ -110,11 +111,12 @@
         function getUrlParam(name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
             var r = window.location.search.substr(1).match(reg);  //匹配目标参数
-            if (r != null) return unescape(r[2]); return null; //返回参数值
+            if (r != null) return unescape(r[2]);
+            return null; //返回参数值
         }
 
         function getUrlHost() {
-            return window.location.protocol+"//"+window.location.host;
+            return window.location.protocol + "//" + window.location.host;
         }
     </script>
 </body>
