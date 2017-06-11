@@ -51,7 +51,6 @@ public class EvaluateController extends BaseController {
     private WordService wordService;
 
     @ApiOperation(value="查询反馈信息", notes="")
-    @PreAuthorize("hasRole('ROLE_MASTER') or hasRole('ROLE_SUPERVISOR') or hasRole('ROLE_TEACHER')")
     @RequestMapping(value = "/list",method = RequestMethod.POST)
     @ResponseBody
     public BaseJsonData getEvaluateList(
