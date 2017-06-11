@@ -112,7 +112,6 @@ public class TeacherController {
     }
 
     @ApiOperation(value="获取全部老师列表", notes="")
-    @PreAuthorize("hasRole('ROLE_MASTER')")
     @RequestMapping(value={"/list/all"}, method=RequestMethod.POST)
     public BaseJsonData getAllTeacherList(
             @ApiParam(value = "学院id")@RequestParam(value = "cid") Long cid
