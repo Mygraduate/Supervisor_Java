@@ -196,7 +196,7 @@ public class UserController extends BaseController {
                     wxCpUseruser.setDepartIds(departIds);
                     wxCpUseruser.setEmail(user.getEmail());
                     wxCpUseruser.setMobile(user.getPhone());
-                    wecatService.updateUser(wxCpUseruser);
+                    wecatService.addUser(wxCpUseruser);
                     userAndRole.getUser().setIsSynchro(1);
                     userAndRole.getUser().setWecatid(user.getId());
                     userAndRoleService.save(userAndRole);

@@ -67,11 +67,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationTokenFilter();
     }
 
+    //未授权处理（未登录）
     @Bean
     public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint(){
         return new JwtAuthenticationEntryPoint("/login");
     }
 
+    //越权处理
     @Bean
     public JwtAccessDeniedHandler jwtAccessDeniedHandler(){
         return new JwtAccessDeniedHandler("/login");
@@ -80,18 +82,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
    @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                // 由于使用的是JWT，我们这里不需要csrf
+                // 使用JWT鉴权模式
                 .csrf().disable()
-
-                .exceptionHandling()
-                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .exceptionHandling()//使用默认的异常处理
+                .accessDeniedHandler(jwtAccessDeniedHandler)//越权处理
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint())
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint())//未授权处理
                 .and()
                 // 基于token，所以不需要session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-
                 .authorizeRequests()
 //                // 允许对于网站静态资源的无授权访问
                 .antMatchers(
