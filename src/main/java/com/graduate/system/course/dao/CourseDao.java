@@ -7,6 +7,7 @@ import com.graduate.system.teacher.model.Teacher;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,7 +17,10 @@ import java.util.List;
 
 public interface CourseDao extends BaseDao<Course> {
 
-    public void deleteByTid(Long tid);
 
-    public List<Course> findAllByTid(Long tid);
+     void deleteByTid(Long tid);
+
+    List<Course> findAllByTid(Long tid);
+
+
 }

@@ -17,4 +17,5 @@ import java.util.List;
 public interface  UserDao extends BaseDao<User> {
     User findUserByUsername(String username);//根据账号查找用户信息
     User findUserById(Long id);//根据用户id查找用户信息
+    List<User> findUserByTid(Long tid);//根据tid查找用户
 }

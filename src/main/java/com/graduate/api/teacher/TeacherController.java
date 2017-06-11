@@ -3,16 +3,22 @@ package com.graduate.api.teacher;
 import com.alibaba.fastjson.JSON;
 import com.graduate.api.course.CourseController;
 import com.graduate.common.BaseJsonData;
+import com.graduate.system.course.model.Course;
+import com.graduate.system.course.service.CourseService;
 import com.graduate.system.teacher.model.Teacher;
 import com.graduate.system.teacher.service.TeacherService;
+import com.graduate.system.user.model.User;
+import com.graduate.system.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -30,6 +36,7 @@ public class TeacherController {
 
     @Autowired
     private TeacherService<Teacher> teacherService;
+
 
     @ApiOperation(value="新增老师", notes="")
     @PreAuthorize("hasRole('ROLE_MASTER')")
@@ -77,10 +84,10 @@ public class TeacherController {
     @ApiOperation(value="删除老师", notes="")
     @PreAuthorize("hasRole('ROLE_MASTER')")
     @RequestMapping(value={"/delete"}, method=RequestMethod.POST)
-    public BaseJsonData deleteTeacherList(@RequestBody List<Teacher> teacher) {
+    public BaseJsonData deleteTeacherList(@RequestBody List<Teacher> teachers) {
         BaseJsonData data = new BaseJsonData();
         try{
-            teacherService.delete(teacher);
+            teacherService.delete(teachers);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();

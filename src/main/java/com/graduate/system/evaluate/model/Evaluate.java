@@ -1,6 +1,8 @@
 package com.graduate.system.evaluate.model;
 
 import com.graduate.system.arrage.model.Arrage;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -24,6 +26,7 @@ public class Evaluate {
 
     @OneToOne(cascade = {CascadeType.PERSIST} )
     @JoinColumn(name="arrage_id",referencedColumnName = "id",insertable = false,updatable = false)
+    @NotFound(action= NotFoundAction.IGNORE)
     private Arrage arrage;
 
     @Column(name = "grade")

@@ -5,6 +5,8 @@ import com.graduate.common.BaseService;
 import com.graduate.system.course.dao.CourseDao;
 import com.graduate.system.course.model.Course;
 import com.graduate.system.sparetime.model.SpareTime;
+import com.graduate.system.teacher.dao.TeacherDao;
+import com.graduate.system.teacher.model.Teacher;
 import com.graduate.system.user.dao.UserDao;
 import com.graduate.utils.CourseUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +31,7 @@ public class CourseService<T> extends BaseService<T> {
     @Autowired
     private CourseDao mapper;
 
+
     @Override
     public BaseDao init() {
         return mapper;
@@ -47,6 +50,17 @@ public class CourseService<T> extends BaseService<T> {
 
     public Course findCourseById(Long id){
         return mapper.findOne(id);
+    }
+
+    @Transactional
+    public void deleteCourseByTid(List<Teacher> teachers){
+        for(Teacher teacher : teachers) {
+            Long id = teacher.getId();
+            if(id != null){
+                mapper.deleteByTid(id);
+            }
+        }
+
     }
 
 }

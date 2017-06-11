@@ -90,6 +90,7 @@ public class CourseUtil {
             times.add(time);
         }else{
             for(Course course : courses){
+                scopes = "";
                 for(int scope = 1;scope<12;scope++){
                     if(!CourseUtil.isSeries(course.getScope(),scope)){
                         scopes = scopes +","+scope;

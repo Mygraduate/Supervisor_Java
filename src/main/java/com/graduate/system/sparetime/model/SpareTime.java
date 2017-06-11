@@ -1,6 +1,8 @@
 package com.graduate.system.sparetime.model;
 
 import com.graduate.system.user.model.User;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 
@@ -20,6 +22,7 @@ public class SpareTime {
 
     @ManyToOne(cascade = CascadeType.PERSIST  )
     @JoinColumn(name="uid",referencedColumnName = "id",insertable = false,updatable = false)
+    @NotFound(action= NotFoundAction.IGNORE)
     private User user;
 
     @Column(nullable=false,name = "cid")

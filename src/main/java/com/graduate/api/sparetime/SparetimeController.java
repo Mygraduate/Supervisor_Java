@@ -112,14 +112,18 @@ public class SparetimeController {
         try{
             Long uid=spareTimeListnew.get(0).getUid();
             List<SpareTime> spareTimeListold=sparetimeService.findSpareTimeByuid(uid);
-            for(SpareTime oldList : spareTimeListold){
-                for(SpareTime newList : spareTimeListnew ){
-                    if(newList.getWeek().equals(oldList.getWeek())&&newList.getDay().equals(oldList.getDay())){
-                        oldList.setScope(newList.getScope());
+            if(spareTimeListold.size()==0){
+                sparetimeService.save(spareTimeListnew);
+            }else{
+                for(SpareTime oldList : spareTimeListold){
+                    for(SpareTime newList : spareTimeListnew ){
+                        if(newList.getWeek().equals(oldList.getWeek())&&newList.getDay().equals(oldList.getDay())){
+                            oldList.setScope(newList.getScope());
+                        }
                     }
                 }
+                sparetimeService.save(spareTimeListold);
             }
-            sparetimeService.save(spareTimeListold);
             return data.ok();
         }catch (Exception e){
             e.printStackTrace();
@@ -127,6 +131,7 @@ public class SparetimeController {
             return data.fail(e.getMessage());
         }
     }
+
 
     @ApiOperation(value="获取学院督导员已填写空闲时间", notes="")
     @RequestMapping(value={"/getsparetime"}, method=RequestMethod.POST)
@@ -159,6 +164,9 @@ public class SparetimeController {
                     list.put(String.valueOf(ur.getUid()),sum);
                 }else{//已填写空闲时间的督导员
                     for (SpareTime s: spareTimeList) {
+                        if(!StringUtils.isNoneBlank(s.getScope())){
+                            continue;
+                        }
                         if(!list.containsKey(String.valueOf(s.getUid()))){
                             SumDTO sum=new SumDTO();
                             sum.setUid(s.getUid());

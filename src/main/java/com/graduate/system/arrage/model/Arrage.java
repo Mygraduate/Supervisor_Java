@@ -5,6 +5,8 @@ import com.graduate.system.course.model.Course;
 import com.graduate.system.evaluate.model.Evaluate;
 import com.graduate.system.teacher.model.Teacher;
 import com.graduate.system.user.model.User;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -27,8 +29,10 @@ public class Arrage {
 
     @Column(nullable=false,name = "course_id")
     private Long courseId;//课程id
+
     @OneToOne(cascade = {CascadeType.REFRESH} )
     @JoinColumn(name="course_id",referencedColumnName = "id",insertable = false,updatable = false)
+    @NotFound(action= NotFoundAction.IGNORE)
     private Course course;
 
 
@@ -37,12 +41,14 @@ public class Arrage {
 
     @OneToOne(cascade = {CascadeType.REFRESH} )
     @JoinColumn(name="college_id",referencedColumnName = "id",insertable = false,updatable = false)
+    @NotFound(action=NotFoundAction.IGNORE)
     private College college;
 
     @Column(nullable=false,name = "tid")
     private Long tid;//教师id
     @OneToOne(cascade = {CascadeType.REFRESH} )
     @JoinColumn(name="tid",referencedColumnName = "id",insertable = false,updatable = false)
+    @NotFound(action=NotFoundAction.IGNORE)
     private Teacher teacher;
 
     @Column(nullable=false,name = "groups")

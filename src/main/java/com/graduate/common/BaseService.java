@@ -8,6 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -107,18 +109,19 @@ public abstract  class BaseService<T>{
     }
 
 
+    @Modifying
     public void delete(T t) throws Exception {
         getRepository().delete(t);
     }
 
-
+    @Modifying
     public void delete(List<? extends T> iterable) throws Exception {
 
         getRepository().delete(iterable);
 
     }
 
-
+    @Modifying
     public void deleteAll() throws Exception {
         getRepository().deleteAll();
     }

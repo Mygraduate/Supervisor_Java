@@ -4,6 +4,8 @@ import com.graduate.system.college.model.College;
 import com.graduate.system.teacher.model.Teacher;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -25,8 +27,9 @@ public class User{
     @Column(name = "tid")
     @ApiModelProperty(notes = "教师id",required = false)
     private Long tid;//教师表id
-    @ManyToOne(cascade = CascadeType.PERSIST )
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name="tid",referencedColumnName = "id",insertable = false,updatable = false)
+    @NotFound(action=NotFoundAction.IGNORE)
     private Teacher teacher;
 
     @Column(nullable=false,name = "cid")
@@ -35,6 +38,7 @@ public class User{
 
     @ManyToOne(cascade = CascadeType.PERSIST )
     @JoinColumn(name="cid",referencedColumnName = "id",insertable = false,updatable = false)
+    @NotFound(action=NotFoundAction.IGNORE)
     private College college;
 
     @Column(nullable=false,name = "username",unique = true)

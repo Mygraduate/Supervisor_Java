@@ -185,19 +185,8 @@ public class UserController extends BaseController {
         try{
             userAndRole.getUser().setLastPasswordResetDate(new Date());
             User user=userService.findOne(userAndRole.getUid());
-            if(user.getWecat().trim()==userAndRole.getUser().getWecat().trim()){
+            if(user.getWecat().trim().equals(userAndRole.getUser().getWecat().trim())){
                 try {
-                    WxCpUser wxCpUseruser = new WxCpUser();
-                    wxCpUseruser.setName(user.getUsername());
-                    wxCpUseruser.setUserId(user.getWecatid().toString());
-                    wxCpUseruser.setWeiXinId(user.getWecat());
-                    College college=collegeService.findCollegeByid(user.getCid());
-                    Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
-                    wxCpUseruser.setDepartIds(departIds);
-                    wxCpUseruser.setEmail(user.getEmail());
-                    wxCpUseruser.setMobile(user.getPhone());
-                    wecatService.addUser(wxCpUseruser);
-                    userAndRole.getUser().setIsSynchro(1);
                     userAndRole.getUser().setWecatid(user.getId());
                     userAndRoleService.save(userAndRole);
                 }catch (Exception e){
@@ -210,12 +199,12 @@ public class UserController extends BaseController {
                      wxCpUseruser.setName(user.getUsername());
                      wxCpUseruser.setUserId(user.getId().toString());
                      wxCpUseruser.setWeiXinId(userAndRole.getUser().getWecat().trim());
-                     College college=collegeService.findCollegeByid(user.getCid());
+                     College college=collegeService.findCollegeByid(userAndRole.getUser().getCid());
                      Integer [] departIds = new Integer[]{Integer.parseInt(college.getWecatid())};
                      wxCpUseruser.setDepartIds(departIds);
-                     wxCpUseruser.setEmail(user.getEmail());
-                     wxCpUseruser.setMobile(user.getPhone());
-                     wecatService.updateUser(wxCpUseruser);
+                     wxCpUseruser.setEmail(userAndRole.getUser().getEmail());
+                     wxCpUseruser.setMobile(userAndRole.getUser().getPhone());
+                     wecatService.addUser(wxCpUseruser);
                      userAndRole.getUser().setIsSynchro(1);
                      userAndRole.getUser().setWecatid(user.getId());
                      userAndRoleService.save(userAndRole);

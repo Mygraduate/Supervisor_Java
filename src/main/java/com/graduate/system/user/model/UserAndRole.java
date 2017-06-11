@@ -1,5 +1,8 @@
 package com.graduate.system.user.model;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import javax.persistence.*;
 
 /**
@@ -16,11 +19,14 @@ public class UserAndRole {
     private Long uid;//用户id
     @OneToOne(cascade = { CascadeType.MERGE,CascadeType.PERSIST, CascadeType.REMOVE } )
     @JoinColumn(name="uid",referencedColumnName = "id",insertable = false,updatable = false)
+    @NotFound(action= NotFoundAction.IGNORE)
     private User user;
+
     @Column(name = "role_id")
     private Long roleId;//角色id
     @ManyToOne(cascade = CascadeType.PERSIST  )
     @JoinColumn(name="role_id",referencedColumnName = "id",insertable = false,updatable = false)
+    @NotFound(action=NotFoundAction.IGNORE)
     private Role role;
 
     public Long getId() {
